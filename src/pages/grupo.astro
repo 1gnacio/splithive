@@ -8,10 +8,15 @@ import Layout from '../layouts/Layout.astro';
     <div id="detalle-grupo"></div>
 
     <script>
-        var grupo = {
-            nombre: 'grupo1',
-            integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }]
-        };
+        if (!sessionStorage.getItem('grupo')) {
+            var grupo = {
+                nombre: 'grupo1',
+                integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }]
+            };
+            sessionStorage.setItem('grupo', JSON.stringify(grupo));
+        } else {
+            var grupo = JSON.parse(sessionStorage.getItem('grupo'));
+        }
 
         var contenedorDetalleGrupo = document.getElementById('detalle-grupo');
 

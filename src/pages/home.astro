@@ -36,10 +36,15 @@ import Layout from '../layouts/Layout.astro';
         </div>
 
         <script>
-            var grupos = [
-                { nombre: 'grupo1', integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }] },
-                { nombre: 'grupo2', integrantes: [{ nombre: 'Camila' }, { nombre: 'Raul' }, { nombre: 'Maria' }] }
-            ];
+            if (!sessionStorage.getItem('grupos')) {
+                var grupos = [
+                    { nombre: 'grupo1', integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }] },
+                    { nombre: 'grupo2', integrantes: [{ nombre: 'Camila' }, { nombre: 'Raul' }, { nombre: 'Maria' }] }
+                ];
+                sessionStorage.setItem('grupos', JSON.stringify(grupos));
+            } else {
+                var grupos = JSON.parse(sessionStorage.getItem('grupos'));
+            }
 
             function actualizarListaGrupos() {
                 var contenedorGrupos = document.getElementById('grupos');
@@ -110,6 +115,7 @@ import Layout from '../layouts/Layout.astro';
                 var nuevoGrupo = { nombre: nombreGrupo, integrantes: integrantes };
 
                 grupos.push(nuevoGrupo);
+                sessionStorage.setItem('grupos', JSON.stringify(grupos));
 
                 actualizarListaGrupos();
 
