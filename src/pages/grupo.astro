@@ -1,42 +1,8 @@
 ---
+import GroupDetails from '../components/GroupDetails';
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Detalla de Grupo">
-	<h1>Detalle de Grupo</h1>
-
-    <div id="detalle-grupo"></div>
-
-    <script>
-        if (!sessionStorage.getItem('grupo')) {
-            var grupo = {
-                nombre: 'grupo1',
-                integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }]
-            };
-            sessionStorage.setItem('grupo', JSON.stringify(grupo));
-        } else {
-            var grupo = JSON.parse(sessionStorage.getItem('grupo'));
-        }
-
-        var contenedorDetalleGrupo = document.getElementById('detalle-grupo');
-
-        var nombreGrupoElemento = document.createElement('h2');
-        nombreGrupoElemento.textContent = 'Nombre del Grupo: ' + grupo.nombre;
-
-        var integrantesLista = document.createElement('ul');
-        grupo.integrantes.forEach(function(integrante) {
-            var integranteItem = document.createElement('li');
-            integranteItem.textContent = integrante.nombre;
-            integrantesLista.appendChild(integranteItem);
-        });
-
-        contenedorDetalleGrupo.appendChild(nombreGrupoElemento);
-        contenedorDetalleGrupo.appendChild(integrantesLista);
-    </script>
+    <GroupDetails client:load></GroupDetails>
 </Layout>
-
-<style>
-    html {
-        background-color: white;
-    }
-</style>
