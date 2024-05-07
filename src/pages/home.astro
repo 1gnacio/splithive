@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { Button } from "@nextui-org/react"
 ---
 
 <Layout title="Welcome to Splithive">
@@ -28,8 +29,8 @@ import Layout from '../layouts/Layout.astro';
                     <button type="button" id="agregarIntegranteBtn">+</button><br><br>
 
                     <div style="margin-top: 10px;">
-                        <button type="submit">Crear</button>
-                        <button id="cerrarFormBtn" type="button">Cancelar</button>
+                        <button style="background-color: lightblue; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" type="submit">Crear</button>
+                        <button style="background-color: lightgrey; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" id="cerrarFormBtn" type="button">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -83,7 +84,7 @@ import Layout from '../layouts/Layout.astro';
             });
 
             document.getElementById('cerrarFormBtn').addEventListener('click', function() {
-                document.getElementById('crearGrupoForm').style.display = 'none';
+                document.getElementById('modal').style.display = 'none';
             });
 
             var contadorIntegrantes = 1; 
@@ -257,5 +258,19 @@ import Layout from '../layouts/Layout.astro';
 
     #crearGrupoFormulario {
         margin-top: 40px;
+    }
+
+    label, h2, input {
+        color: black;
+    }
+
+    input:disabled {
+        background-color: transparent;
+    }
+
+    input {
+        background-color: wheat; 
+        border: 3px; border-color: black; 
+        border-radius: 5px;
     }
 </style>
