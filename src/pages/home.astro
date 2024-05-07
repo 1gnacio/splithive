@@ -12,20 +12,27 @@ import Layout from '../layouts/Layout.astro';
 
         <button id="crearGrupoBtn">Crear grupo</button>
 
-        <div id="crearGrupoForm" style="display: none;">
-            <form id="crearGrupoFormulario">
-                <label for="nombreGrupo">Nombre del grupo:</label>
-                <input type="text" id="nombreGrupo" name="nombreGrupo"><br><br>
-                
-                <label for="nombreIntegrante1">Nombre del integrante 1:</label>
-                <input type="text" id="nombreIntegrante1" name="nombreIntegrante1" value="Cami" disabled><br><br>
+        <div id="modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" id="closeModal">&times;</span>
+                <h2>Crear Nuevo Grupo</h2>
+                <form id="crearGrupoFormulario">
+                    <label for="nombreGrupo">Nombre del grupo:</label>
+                    <input type="text" id="nombreGrupo" name="nombreGrupo"><br><br>
+                    
+                    <label for="nombreIntegrante1">Nombre del integrante 1:</label>
+                    <input type="text" id="nombreIntegrante1" name="nombreIntegrante1" value="Cami" disabled><br><br>
 
-                <div id="integrantesContainer"></div>
+                    <div id="integrantesContainer"></div>
 
-                <button type="button" id="agregarIntegranteBtn">+</button>
-                <button type="submit">Crear</button>
-                <button id="cerrarFormBtn" type="button">Cancelar</button>
-            </form>
+                    <button type="button" id="agregarIntegranteBtn">+</button><br><br>
+
+                    <div style="margin-top: 10px;">
+                        <button type="submit">Crear</button>
+                        <button id="cerrarFormBtn" type="button">Cancelar</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <script>
@@ -52,6 +59,24 @@ import Layout from '../layouts/Layout.astro';
                     contenedorGrupos.appendChild(enlaceDetalle);
                 });
             }
+
+            var modal = document.getElementById('modal');
+            var btnAbrirModal = document.getElementById('crearGrupoBtn');
+            var spanCerrar = document.getElementById('closeModal');
+
+            btnAbrirModal.onclick = function() {
+                modal.style.display = 'block';
+            };
+
+            spanCerrar.onclick = function() {
+                modal.style.display = 'none';
+            };
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
 
             document.getElementById('crearGrupoBtn').addEventListener('click', function() {
                 document.getElementById('crearGrupoForm').style.display = 'block';
@@ -88,7 +113,8 @@ import Layout from '../layouts/Layout.astro';
 
                 actualizarListaGrupos();
 
-                document.getElementById('crearGrupoForm').style.display = 'none';
+                modal.style.display = 'none'; 
+                document.getElementById('crearGrupoFormulario').reset();
             });
 
             actualizarListaGrupos();
@@ -121,6 +147,41 @@ import Layout from '../layouts/Layout.astro';
     .grupo-card p {
         margin: 0;
     }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
     #crearGrupoBtn {
         background-color: #FFD93D; 
         color: black; 
@@ -128,10 +189,12 @@ import Layout from '../layouts/Layout.astro';
         padding: 15px 30px; 
         margin-top: 40px;
     }
+
     #agregarIntegranteBtn {
         background-color: #F6F1E9;  
         color: black; 
     }
+
     #crearGrupoFormulario {
         margin-top: 40px;
     }
