@@ -3,12 +3,37 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Welcome to Splithive">
-	<main>
-		<h1>Bienvenido a <span class="text-gradient">Splithive</span></h1>
+    <main>
+        <h1>Bienvenido a <span class="text-gradient">Splithive</span></h1>
 
         <h1>Lista de Grupos</h1>
 
         <div id="grupos"></div>
+
+        <button id="crearGrupoBtn">Crear grupo</button>
+
+        <div id="modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" id="closeModal">&times;</span>
+                <h2>Crear Nuevo Grupo</h2>
+                <form id="crearGrupoFormulario">
+                    <label for="nombreGrupo">Nombre del grupo:</label>
+                    <input type="text" id="nombreGrupo" name="nombreGrupo"><br><br>
+                    
+                    <label for="nombreIntegrante1">Nombre del integrante 1:</label>
+                    <input type="text" id="nombreIntegrante1" name="nombreIntegrante1" value="Cami" disabled><br><br>
+
+                    <div id="integrantesContainer"></div>
+
+                    <button type="button" id="agregarIntegranteBtn">+</button><br><br>
+
+                    <div style="margin-top: 10px;">
+                        <button type="submit">Crear</button>
+                        <button id="cerrarFormBtn" type="button">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <script>
             var grupos = [
@@ -16,23 +41,85 @@ import Layout from '../layouts/Layout.astro';
                 { nombre: 'grupo2', integrantes: [{ nombre: 'Camila' }, { nombre: 'Raul' }, { nombre: 'Maria' }] }
             ];
 
-            var contenedorGrupos = document.getElementById('grupos');
+            function actualizarListaGrupos() {
+                var contenedorGrupos = document.getElementById('grupos');
+                contenedorGrupos.innerHTML = ''; 
 
-            grupos.forEach(function(grupo) {
-                var grupoElemento = document.createElement('div');
+                grupos.forEach(function(grupo) {
+                    var grupoElemento = document.createElement('div');
 
-                var cantidadIntegrantes = grupo.integrantes.length;
-                grupoElemento.innerHTML = '<h2>' + grupo.nombre + '</h2><p>Cantidad de integrantes: ' + cantidadIntegrantes + '</p>';
+                    var cantidadIntegrantes = grupo.integrantes.length;
+                    grupoElemento.innerHTML = '<h2>' + grupo.nombre + '</h2><p>Cantidad de integrantes: ' + cantidadIntegrantes + '</p>';
 
-                var enlaceDetalle = document.createElement('a');
-                enlaceDetalle.classList.add('grupo-card');
-                enlaceDetalle.href = 'grupo.html';
-                
-                enlaceDetalle.appendChild(grupoElemento);
-                contenedorGrupos.appendChild(enlaceDetalle);
+                    var enlaceDetalle = document.createElement('a');
+                    enlaceDetalle.classList.add('grupo-card');
+                    enlaceDetalle.href = 'grupo.html';
+                    
+                    enlaceDetalle.appendChild(grupoElemento);
+                    contenedorGrupos.appendChild(enlaceDetalle);
+                });
+            }
+
+            var modal = document.getElementById('modal');
+            var btnAbrirModal = document.getElementById('crearGrupoBtn');
+            var spanCerrar = document.getElementById('closeModal');
+
+            btnAbrirModal.onclick = function() {
+                modal.style.display = 'block';
+            };
+
+            spanCerrar.onclick = function() {
+                modal.style.display = 'none';
+            };
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+
+            document.getElementById('crearGrupoBtn').addEventListener('click', function() {
+                document.getElementById('crearGrupoForm').style.display = 'block';
             });
+
+            document.getElementById('cerrarFormBtn').addEventListener('click', function() {
+                document.getElementById('crearGrupoForm').style.display = 'none';
+            });
+
+            var contadorIntegrantes = 1; 
+
+            document.getElementById('agregarIntegranteBtn').addEventListener('click', function() {
+                contadorIntegrantes++; 
+                var integrantesContainer = document.getElementById('integrantesContainer');
+                var nuevoCampoIntegrante = document.createElement('div');
+                nuevoCampoIntegrante.innerHTML = `<label for="nombreIntegrante${contadorIntegrantes}">Nombre del integrante ${contadorIntegrantes}:</label>
+                                                <input type="text" id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}"><br><br>`;
+                integrantesContainer.appendChild(nuevoCampoIntegrante);
+            });
+
+            document.getElementById('crearGrupoFormulario').addEventListener('submit', function(event) {
+                event.preventDefault(); 
+
+                var nombreGrupo = document.getElementById('nombreGrupo').value;
+                var integrantes = [];
+                for (var i = 1; i <= contadorIntegrantes; i++) {
+                    var nombreIntegrante = document.getElementById(`nombreIntegrante${i}`).value;
+                    integrantes.push({ nombre: nombreIntegrante });
+                }
+
+                var nuevoGrupo = { nombre: nombreGrupo, integrantes: integrantes };
+
+                grupos.push(nuevoGrupo);
+
+                actualizarListaGrupos();
+
+                modal.style.display = 'none'; 
+                document.getElementById('crearGrupoFormulario').reset();
+            });
+
+            actualizarListaGrupos();
         </script>
-	</main>
+    </main>
 </Layout>
 
 <style is:global>
@@ -62,6 +149,7 @@ import Layout from '../layouts/Layout.astro';
         margin: 0;
         color: grey;
     }
+
     main {
 		margin: auto;
 		padding: 1rem;
@@ -119,4 +207,55 @@ import Layout from '../layouts/Layout.astro';
 		gap: 2rem;
 		padding: 0;
 	}
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    #crearGrupoBtn {
+        background-color: #FFD93D; 
+        color: black; 
+        font-size: 20px;
+        padding: 15px 30px; 
+        margin-top: 40px;
+    }
+
+    #agregarIntegranteBtn {
+        background-color: #F6F1E9;  
+        color: black; 
+    }
+
+    #crearGrupoFormulario {
+        margin-top: 40px;
+    }
 </style>
