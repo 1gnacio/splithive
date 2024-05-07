@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { Button } from "@nextui-org/react"
 ---
 
 <Layout title="Welcome to Splithive">
@@ -28,8 +29,8 @@ import Layout from '../layouts/Layout.astro';
                     <button type="button" id="agregarIntegranteBtn">+</button><br><br>
 
                     <div style="margin-top: 10px;">
-                        <button type="submit">Crear</button>
-                        <button id="cerrarFormBtn" type="button">Cancelar</button>
+                        <button style="background-color: lightblue; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" type="submit">Crear</button>
+                        <button style="background-color: lightgrey; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" id="cerrarFormBtn" type="button">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -88,7 +89,7 @@ import Layout from '../layouts/Layout.astro';
             });
 
             document.getElementById('cerrarFormBtn').addEventListener('click', function() {
-                document.getElementById('crearGrupoForm').style.display = 'none';
+                document.getElementById('modal').style.display = 'none';
             });
 
             var contadorIntegrantes = 1; 
@@ -135,7 +136,7 @@ import Layout from '../layouts/Layout.astro';
         gap: 20px;
     }
     .grupo-card {
-        background-color: #f0f0f0;
+        background-color: honeydew;
         border-radius: 8px;
         padding: 20px;
         width: calc(33.33% - 20px);
@@ -149,10 +150,70 @@ import Layout from '../layouts/Layout.astro';
     }
     .grupo-card h2 {
         margin-top: 0;
+        color: black;
     }
     .grupo-card p {
         margin: 0;
+        color: grey;
     }
+
+    main {
+		margin: auto;
+		padding: 1rem;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+	.astro-a {
+		position: absolute;
+		top: -32px;
+		left: 50%;
+		transform: translatex(-50%);
+		width: 220px;
+		height: auto;
+		z-index: -1;
+	}
+	h1 {
+		font-size: 4rem;
+		font-weight: 700;
+		line-height: 1;
+		text-align: center;
+		margin-bottom: 1em;
+        color: burlywood;
+	}
+	.text-gradient {
+		background-image: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-size: 400%;
+		background-position: 0%;
+	}
+	.instructions {
+		margin-bottom: 2rem;
+		border: 1px solid rgba(var(--accent-light), 25%);
+		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
+		padding: 1.5rem;
+		border-radius: 8px;
+	}
+	.instructions code {
+		font-size: 0.8em;
+		font-weight: bold;
+		background: rgba(var(--accent-light), 12%);
+		color: rgb(var(--accent-light));
+		border-radius: 4px;
+		padding: 0.3em 0.4em;
+	}
+	.instructions strong {
+		color: rgb(var(--accent-light));
+	}
+	.link-card-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+		gap: 2rem;
+		padding: 0;
+	}
     .modal {
         display: none;
         position: fixed;
@@ -204,3 +265,18 @@ import Layout from '../layouts/Layout.astro';
     #crearGrupoFormulario {
         margin-top: 40px;
     }
+
+    label, h2, input {
+        color: black;
+    }
+
+    input:disabled {
+        background-color: transparent;
+    }
+
+    input {
+        background-color: wheat; 
+        border: 3px; border-color: black; 
+        border-radius: 5px;
+    }
+</style>
