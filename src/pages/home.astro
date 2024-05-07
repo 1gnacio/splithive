@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Welcome to Splithive">
+	<main>
+		<h1>Bienvenido a <span class="text-gradient">Splithive</span></h1>
+
+        <h1>Lista de Grupos</h1>
+
+        <div id="grupos"></div>
+
+        <script>
+            var grupos = [
+                { nombre: 'grupo1', integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }] },
+                { nombre: 'grupo2', integrantes: [{ nombre: 'Camila' }, { nombre: 'Raul' }, { nombre: 'Maria' }] }
+            ];
+
+            var contenedorGrupos = document.getElementById('grupos');
+
+            grupos.forEach(function(grupo) {
+                var grupoElemento = document.createElement('div');
+
+                var cantidadIntegrantes = grupo.integrantes.length;
+                grupoElemento.innerHTML = '<h2>' + grupo.nombre + '</h2><p>Cantidad de integrantes: ' + cantidadIntegrantes + '</p>';
+
+                var enlaceDetalle = document.createElement('a');
+                enlaceDetalle.classList.add('grupo-card');
+                enlaceDetalle.href = 'grupo.html';
+                
+                enlaceDetalle.appendChild(grupoElemento);
+                contenedorGrupos.appendChild(enlaceDetalle);
+            });
+        </script>
+	</main>
+</Layout>
+
+<style is:global>
+    #grupos {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    .grupo-card {
+        background-color: #f0f0f0;
+        border-radius: 8px;
+        padding: 20px;
+        width: calc(33.33% - 20px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+        text-decoration: none;
+        color: inherit;
+    }
+    .grupo-card:hover {
+        transform: translateY(-5px);
+    }
+    .grupo-card h2 {
+        margin-top: 0;
+    }
+    .grupo-card p {
+        margin: 0;
+    }
+</style>
