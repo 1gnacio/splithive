@@ -7,7 +7,7 @@ const { id } = Astro.params;
 
 <Layout title="Welcome to Splithive">
     <main>
-        <GroupDetails client:load id={id}></GroupDetails>
+        <GroupDetails client:only id={id}></GroupDetails>
 
 
 
@@ -83,8 +83,8 @@ const { id } = Astro.params;
                 if (deudores.innerHTML != '') {
                     return;
                 }
-
-                var integrantes = grupos[+document.getElementById('gruopId').innerText - 1].integrantes;
+                console.log(document.getElementById('gruopId').innerText)
+                var integrantes = grupos[+document.getElementById('gruopId').innerText].integrantes;
 
                 var dropdown = document.getElementById("quienPago")
 
@@ -151,15 +151,13 @@ const { id } = Astro.params;
                 var monto = +document.getElementById('montoGasto').value;
                 var quienPago = document.getElementById("quienPago").value;
                 var deudores = [];
-                var id = +document.getElementById('gruopId').innerText - 1;
+                var id = +document.getElementById('gruopId').innerText;
                 
                 grupos[id].integrantes.forEach(function(integrante, i) {
                     if (document.getElementById('deudor' + i).checked) {
                         deudores.push(integrante.nombre);
                     }
                 });
-                console.log("El payer es: ")
-                console.log(quienPago)
                 var total = monto;
                 monto = Math.round((monto / deudores.length) * 100) / 100;
 

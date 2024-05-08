@@ -18,7 +18,6 @@ export default function calcularDeudas(integrantes,gastos){
         })
     })
 
-    console.log(map)
     return map
 
 

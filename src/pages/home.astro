@@ -39,16 +39,16 @@ import { Button } from "@nextui-org/react"
         <script>
             var currentDate = new Date();
 
-// Getting the current date components
-var year = currentDate.getFullYear();
-var month = currentDate.getMonth() + 1; // Months are zero-based, so January is 0
-var day = currentDate.getDate();
-var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
-if (!sessionStorage.getItem('grupos')) {
-    var grupos = [
-        { nombre: 'grupo1', integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }], gastos: [ { nombre: "boleta de luz", payer:"Tomas",fecha:fechaActual,montoTotal:120,deuda: 40, deudores: ["Tomas", "Manu", "Juan"] } ] },
-        { nombre: 'grupo2', integrantes: [{ nombre: 'Camila' }, { nombre: 'Raul' }, { nombre: 'Maria' }], gastos: [ { nombre: "supermercado", payer:"Camila",fecha:fechaActual,montoTotal:200,deuda: 100, deudores: ["Camila", "Maria"] }, { nombre: "colegio", payer:"Raul", fecha:fechaActual,montoTotal: 80,deuda: 80, deudores: ["Raul"] } ] }
-    ];
+            // Getting the current date components
+            var year = currentDate.getFullYear();
+            var month = currentDate.getMonth() + 1; // Months are zero-based, so January is 0
+            var day = currentDate.getDate();
+            var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
+            if (!sessionStorage.getItem('grupos')) {
+                var grupos = [
+                    { nombre: 'grupo1', integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }], gastos: [ { nombre: "boleta de luz", payer:"Tomas",fecha:fechaActual,montoTotal:120,deuda: 40, deudores: ["Tomas", "Manu", "Juan"] } ] },
+                    { nombre: 'grupo2', integrantes: [{ nombre: 'Camila' }, { nombre: 'Raul' }, { nombre: 'Maria' }], gastos: [ { nombre: "supermercado", payer:"Camila",fecha:fechaActual,montoTotal:200,deuda: 100, deudores: ["Camila", "Maria"] }, { nombre: "colegio", payer:"Raul", fecha:fechaActual,montoTotal: 80,deuda: 80, deudores: ["Raul"] } ] }
+                ];
                 sessionStorage.setItem('grupos', JSON.stringify(grupos));
             } else {
                 var grupos = JSON.parse(sessionStorage.getItem('grupos'))
@@ -66,7 +66,7 @@ if (!sessionStorage.getItem('grupos')) {
 
                     var enlaceDetalle = document.createElement('a');
                     enlaceDetalle.classList.add('grupo-card');
-                    enlaceDetalle.href = 'grupos/' + (i + 1);
+                    enlaceDetalle.href = 'grupos/' + (i);
                     
                     enlaceDetalle.appendChild(grupoElemento);
                     contenedorGrupos.appendChild(enlaceDetalle);

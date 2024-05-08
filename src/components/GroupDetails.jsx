@@ -4,33 +4,25 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 
 export default function GroupDetails(props) {
-    var id_group = props.id;
+
+
+    let [id,setId] = useState(props.id)
+    let [grupos, setGrupos] = useState(null)
+    let [grupo, setGroup] = useState(JSON.parse(window.sessionStorage.getItem("grupos"))[id])
+
+
     var currentDate = new Date();
-    console.log(id_group)
 
     // Getting the current date components
     var year = currentDate.getFullYear();
     var month = currentDate.getMonth() + 1; // Months are zero-based, so January is 0
     var day = currentDate.getDate();
     var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
-    const grupo = {
+    var sgrupo = {
         nombre: 'grupo1',
         integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }],
         gastos: [{ nombre: "comida", montoTotal:100, fecha:fechaActual,payer: "Camila",deuda: 50, deudores: ["Camila", "Mateo"]}, { nombre: "factura de luz", montoTotal: 400,fecha:fechaActual,payer:"Camila",deuda: 100, deudores: ["Camila","Juan", "Manu", "Ignacio"]}]
     };
-
-    let [grupos, setGrupos] = useState(null)
-
-    useEffect(() => {
-        
-            if(sessionStorage.getItem('grupos')) {
-                setGrupos(JSON.parse(sessionStorage.getItem('grupos')))
-            }
-            console.log(grupos)
-            console.log("asdasdasd")
-    },[])  
-    
-
     return <div className="p-5">
 <Card className='p-4'>
         <CardHeader>
