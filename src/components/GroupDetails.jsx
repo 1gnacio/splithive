@@ -9,7 +9,7 @@ export default function GroupDetails(props) {
     let [id,setId] = useState(props.id)
     let [grupos, setGrupos] = useState(null)
     let [grupo, setGroup] = useState(JSON.parse(window.sessionStorage.getItem("grupos"))[id])
-
+    let [deudas, setDeudas] = useState(calcularDeudas(grupo.integrantes, grupo.gastos))
 
     var currentDate = new Date();
 
@@ -33,12 +33,14 @@ export default function GroupDetails(props) {
         <CardBody>
             <Tabs aria-label="Options">
                 <Tab key="integrantes" title="Integrantes">
-                    {Array.from(calcularDeudas(grupo.integrantes,grupo.gastos),([nombre,deuda])=>
+                    {Array.from(deudas,([nombre, deuda])=>
                     (
                         <Card key={nombre} className='w-50 gap gap-2'>
+
                         <CardBody>
                             <b>{nombre}</b>
-                            <p style={{color: deuda < 0 ? 'red' : 'green'}}>Saldo: {deuda}</p>                            
+                            <p style={{color: deuda < 0 ? 'red' : 'green'}}>Saldo: {deuda}</p>
+                            <Button onClick={e => {setDeudas(new Map(deudas.set(nombre, 0)));}}>Saldar</Button>                          
                         </CardBody>
                         </Card>
                     ))
