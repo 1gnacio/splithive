@@ -1,0 +1,10 @@
+---
+import GroupDetails from '../../components/GroupDetails';
+import Layout from '../../layouts/Layout.astro';
+
+const { id } = Astro.params;
+---
+
+<Layout title="Detalla de Grupo">
+    <GroupDetails client:load id={id}></GroupDetails>
+</Layout>

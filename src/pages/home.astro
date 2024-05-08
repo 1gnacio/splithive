@@ -39,19 +39,19 @@ import { Button } from "@nextui-org/react"
         <script>
             if (!sessionStorage.getItem('grupos')) {
                 var grupos = [
-                    { nombre: 'grupo1', integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }] },
-                    { nombre: 'grupo2', integrantes: [{ nombre: 'Camila' }, { nombre: 'Raul' }, { nombre: 'Maria' }] }
+                    { nombre: 'grupo1', integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }], gastos: [ { nombre: "boleta de luz", deuda: 40, deudores: ["Tomas", "Manu", "Juan"] } ] },
+                    { nombre: 'grupo2', integrantes: [{ nombre: 'Camila' }, { nombre: 'Raul' }, { nombre: 'Maria' }], gastos: [ { nombre: "supermercado", deuda: 100, deudores: ["Camila", "Maria"] }, { nombre: "colegio", deuda: 80, deudores: ["Raul"] } ] }
                 ];
                 sessionStorage.setItem('grupos', JSON.stringify(grupos));
             } else {
-                var grupos = JSON.parse(sessionStorage.getItem('grupos'));
+                var grupos = JSON.parse(sessionStorage.getItem('grupos'))
             }
-
+            
             function actualizarListaGrupos() {
                 var contenedorGrupos = document.getElementById('grupos');
                 contenedorGrupos.innerHTML = ''; 
 
-                grupos.forEach(function(grupo) {
+                grupos.forEach(function(grupo, i) {
                     var grupoElemento = document.createElement('div');
 
                     var cantidadIntegrantes = grupo.integrantes.length;
@@ -59,7 +59,7 @@ import { Button } from "@nextui-org/react"
 
                     var enlaceDetalle = document.createElement('a');
                     enlaceDetalle.classList.add('grupo-card');
-                    enlaceDetalle.href = 'grupo.html';
+                    enlaceDetalle.href = 'grupos/' + (i + 1);
                     
                     enlaceDetalle.appendChild(grupoElemento);
                     contenedorGrupos.appendChild(enlaceDetalle);
@@ -113,7 +113,7 @@ import { Button } from "@nextui-org/react"
                     integrantes.push({ nombre: nombreIntegrante });
                 }
 
-                var nuevoGrupo = { nombre: nombreGrupo, integrantes: integrantes };
+                var nuevoGrupo = { nombre: nombreGrupo, integrantes: integrantes, gastos: [] };
 
                 grupos.push(nuevoGrupo);
                 sessionStorage.setItem('grupos', JSON.stringify(grupos));

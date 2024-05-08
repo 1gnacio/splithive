@@ -1,13 +1,16 @@
 import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter, Button, Link} from '@nextui-org/react';
+import { useEffect, useState } from 'react';
 
-export default function GroupDetails() {
-    const grupo = {
-        nombre: 'grupo1',
-        integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }],
-        gastos: [{ nombre: "comida", deuda: 50, deudores: ["Camila", "Mateo"]}, { nombre: "factura de luz", deuda: 100, deudores: ["Juan", "Manu", "Ignacio"]}]
-    };
+export default function GroupDetails({ id }) {
+    const [grupo, setGrupo] = useState(undefined);
+
+    useEffect(() => {
+        const grupos = JSON.parse(window.sessionStorage.getItem('grupos'));
+        setGrupo(grupos[(Number(id) - 1)])
+    }, []);
 
     return <div className="p-5">
+        {grupo &&
 <Card className='p-4'>
         <CardHeader>
             <h4 className="font-bold text-large">
@@ -31,6 +34,7 @@ export default function GroupDetails() {
                 <Tab key="gastos" title="Gastos">
                     <Card>
                         <CardBody>
+                        {grupo.gastos.length > 0 &&
                         <Listbox
                             items={grupo.gastos}
                             aria-label="Gastos"
@@ -47,7 +51,7 @@ export default function GroupDetails() {
                                 <p>Deudores: {item.deudores.length > 0 && item.deudores.reduce((acc, x) => acc + ", " + x)}</p>
                             </ListboxItem>
                             )}
-                        </Listbox>
+                        </Listbox>}
                         </CardBody>
                     </Card>
                 </Tab>
@@ -58,7 +62,7 @@ export default function GroupDetails() {
                 Volver
             </Button>
         </CardFooter>
-    </Card>
+    </Card>}
     </div>
         
 }
