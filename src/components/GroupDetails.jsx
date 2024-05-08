@@ -1,16 +1,37 @@
 import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter, Button, Link} from '@nextui-org/react';
+import calcularDeudas from '../utils/logicaNegocio';
+import React from 'react';
 import { useEffect, useState } from 'react';
 
-export default function GroupDetails({ id }) {
-    const [grupo, setGrupo] = useState(undefined);
+export default function GroupDetails(props) {
+    var id_group = props.id;
+    var currentDate = new Date();
+    console.log(id_group)
+
+    // Getting the current date components
+    var year = currentDate.getFullYear();
+    var month = currentDate.getMonth() + 1; // Months are zero-based, so January is 0
+    var day = currentDate.getDate();
+    var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
+    const grupo = {
+        nombre: 'grupo1',
+        integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }],
+        gastos: [{ nombre: "comida", montoTotal:100, fecha:fechaActual,payer: "Camila",deuda: 50, deudores: ["Camila", "Mateo"]}, { nombre: "factura de luz", montoTotal: 400,fecha:fechaActual,payer:"Camila",deuda: 100, deudores: ["Camila","Juan", "Manu", "Ignacio"]}]
+    };
+
+    let [grupos, setGrupos] = useState(null)
 
     useEffect(() => {
-        const grupos = JSON.parse(window.sessionStorage.getItem('grupos'));
-        setGrupo(grupos[(Number(id) - 1)])
-    }, []);
+        
+            if(sessionStorage.getItem('grupos')) {
+                setGrupos(JSON.parse(sessionStorage.getItem('grupos')))
+            }
+            console.log(grupos)
+            console.log("asdasdasd")
+    },[])  
+    
 
     return <div className="p-5">
-        {grupo &&
 <Card className='p-4'>
         <CardHeader>
             <h4 className="font-bold text-large">
@@ -20,21 +41,20 @@ export default function GroupDetails({ id }) {
         <CardBody>
             <Tabs aria-label="Options">
                 <Tab key="integrantes" title="Integrantes">
-                    {grupo.integrantes.map(x => {
-                        const deuda = grupo.gastos.filter(y => y.deudores.includes(x.nombre)).map(y => y.deuda).reduce((acc, y) => acc + y, 0);
-
-                        return <Card key={x.nombre} className='w-50 gap gap-2'>
+                    {Array.from(calcularDeudas(grupo.integrantes,grupo.gastos),([nombre,deuda])=>
+                    (
+                        <Card key={nombre} className='w-50 gap gap-2'>
                         <CardBody>
-                            <b>{x.nombre}</b>
-                            <p style={{color: deuda > 0 ? 'red' : 'green'}}>Deuda: {deuda}</p>                            
+                            <b>{nombre}</b>
+                            <p style={{color: deuda < 0 ? 'red' : 'green'}}>Saldo: {deuda}</p>                            
                         </CardBody>
-                    </Card>
-                    })}
+                        </Card>
+                    ))
+                    }
                 </Tab>
                 <Tab key="gastos" title="Gastos">
                     <Card>
                         <CardBody>
-                        {grupo.gastos.length > 0 &&
                         <Listbox
                             items={grupo.gastos}
                             aria-label="Gastos"
@@ -47,11 +67,14 @@ export default function GroupDetails({ id }) {
                                 className={""}
                             >
                                 <b>{item.nombre}</b>
+                                <p>Quien pagó: {item.payer}</p>
+                                <p>Monto Total: {item.montoTotal}</p>
+                                <p>Fecha: {item.fecha}</p>
                                 <p style={{color: 'red'}}>Deuda: {item.deuda} c/u</p>
                                 <p>Deudores: {item.deudores.length > 0 && item.deudores.reduce((acc, x) => acc + ", " + x)}</p>
                             </ListboxItem>
                             )}
-                        </Listbox>}
+                        </Listbox>
                         </CardBody>
                     </Card>
                 </Tab>
@@ -62,7 +85,7 @@ export default function GroupDetails({ id }) {
                 Volver
             </Button>
         </CardFooter>
-    </Card>}
+    </Card>
     </div>
         
 }
