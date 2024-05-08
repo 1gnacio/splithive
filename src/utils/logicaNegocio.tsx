@@ -9,7 +9,7 @@ export default function calcularDeudas(integrantes,gastos){
     gastos.forEach(gasto =>{
         gasto.deudores.forEach(deudor =>{
             if (deudor ==gasto.payer){
-                map.set(deudor,map.get(deudor) + gasto.montoTotal)
+                map.set(deudor,map.get(deudor) + gasto.montoTotal - gasto.deuda)
             }
             else{
                 map.set(deudor, map.get(deudor) - gasto.deuda)
