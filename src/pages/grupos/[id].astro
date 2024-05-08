@@ -5,6 +5,313 @@ import Layout from '../../layouts/Layout.astro';
 const { id } = Astro.params;
 ---
 
-<Layout title="Detalla de Grupo">
-    <GroupDetails client:load id={id}></GroupDetails>
+<Layout title="Welcome to Splithive">
+    <main>
+        <GroupDetails client:load id={id}></GroupDetails>
+
+
+
+        <button id="crearGastoBtn">Crear gasto</button>
+
+        <div id="modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" id="closeModal">&times;</span>
+                <h2>Crear Nuevo gasto</h2>
+                <form id="crearGastoFormulario">
+                    <label for="nombreGasto">Nombre del gasto:</label>
+                    <input type="text" id="nombreGasto" name="nombreGasto"><br><br>
+                    <label for="montoGasto ">Monto:</label>
+                    <input type="number" step="0.01" min="0" id="montoGasto" name="montoGasto"><br><br>
+                    <div id="deudoresContainer"></div>
+                    <!-- <button type="button" id="agregarDeudorBtn">+</button><br><br> -->
+                    <div style="margin-top: 10px;">
+                        <button style="background-color: lightblue; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" type="submit">Crear</button>
+                        <button style="background-color: lightgrey; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" id="cerrarFormBtn" type="button">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <p id="gruopId" style="display: none;">{id}</p>
+        <script>
+            if (!sessionStorage.getItem('grupos')) {
+                var grupos = [
+                    { nombre: 'grupo1', integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }], gastos: [ { nombre: "boleta de luz", deuda: 40, deudores: ["Tomas", "Manu", "Juan"] } ] },
+                    { nombre: 'grupo2', integrantes: [{ nombre: 'Camila' }, { nombre: 'Raul' }, { nombre: 'Maria' }], gastos: [ { nombre: "supermercado", deuda: 100, deudores: ["Camila", "Maria"] }, { nombre: "colegio", deuda: 80, deudores: ["Raul"] } ] }
+                ];
+                sessionStorage.setItem('grupos', JSON.stringify(grupos));
+            } else {
+                var grupos = JSON.parse(sessionStorage.getItem('grupos'))
+            }
+            function actualizarListaGastos() {
+                // var contenedorGastos = document.getElementById('gastos');
+                // contenedorGastos.innerHTML = ''; 
+
+                // grupos.forEach(function(gasto, i) {
+                //     var gastoElemento = document.createElement('div');
+
+                //     var cantidadDeudores = gasto.deudores.length;
+                //     gastoElemento.innerHTML = '<h2>' + gasto.nombre + '</h2><p>Cantidad de deudores: ' + cantidadDeudores + '</p>';
+
+                //     var enlaceDetalle = document.createElement('a');
+                //     enlaceDetalle.classList.add('gasto-card');
+                //     enlaceDetalle.href = 'gastos/' + (i + 1);
+                    
+                //     enlaceDetalle.appendChild(gastoElemento);
+                //     contenedorGastos.appendChild(enlaceDetalle);
+                // });
+            }
+
+            var modal = document.getElementById('modal');
+            var btnAbrirModal = document.getElementById('crearGastoBtn');
+            var spanCerrar = document.getElementById('closeModal');
+
+            btnAbrirModal.onclick = function() {
+                modal.style.display = 'block';
+
+                var deudores = document.getElementById('deudoresContainer');
+                if (deudores.innerHTML != '') {
+                    return;
+                }
+
+                var integrantes = grupos[+document.getElementById('gruopId').innerText - 1].integrantes;
+                integrantes.forEach(function(integrante, i) {
+                    var checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = 'deudor' + i;
+                    checkbox.name = 'deudor' + i;
+                    var label = document.createElement('label');
+                    label.htmlFor = 'deudor' + i;
+                    label.textContent = integrante.nombre;
+                    var container = document.createElement('div');
+                    container.classList.add("deudor-checkbox");
+                    container.appendChild(checkbox);
+                    container.appendChild(label);
+                    deudores.appendChild(container);
+                    if (integrante.nombre == 'Camila') {
+                        checkbox.checked = true;
+                        checkbox.disabled = true;
+                    }
+                });
+            };
+
+            spanCerrar.onclick = function() {
+                modal.style.display = 'none';
+            };
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+
+
+            document.getElementById('cerrarFormBtn').addEventListener('click', function() {
+                document.getElementById('modal').style.display = 'none';
+            });
+
+            //var contadorDeudores = 0; 
+
+            // document.getElementById('agregarDeudorBtn').addEventListener('click', function() {
+            //     contadorDeudores++; 
+            //     var deudoresContainer = document.getElementById('deudoresContainer');
+            //     var nuevoCampoDeudor = document.createElement('div');
+            //     nuevoCampoDeudor.innerHTML = `<label for="nombreDeudor${contadorDeudores}">Nombre del deudor ${contadorDeudores}:</label>
+            //                                     <input type="text" id="nombreDeudor${contadorDeudores}" name="nombreDeudor${contadorDeudores}"><br><br>`;
+            //     deudoresContainer.appendChild(nuevoCampoDeudor);
+            // });
+
+//            { nombre: "colegio", deuda: 80, deudores: ["Raul"] } 
+
+            document.getElementById('crearGastoFormulario').addEventListener('submit', function(event) {
+                event.preventDefault(); 
+                if (document.getElementById('nombreGasto').value == '' || document.getElementById('montoGasto').value == '') {
+                    alert('Por favor complete todos los campos');
+                    return;
+                }
+
+                var nombreGasto = document.getElementById('nombreGasto').value;
+                var monto = +document.getElementById('montoGasto').value;
+                var deudores = [];
+                var id = +document.getElementById('gruopId').innerText - 1;
+                
+                grupos[id].integrantes.forEach(function(integrante, i) {
+                    if (document.getElementById('deudor' + i).checked) {
+                        deudores.push(integrante.nombre);
+                    }
+                });
+
+                monto = Math.round((monto / deudores.length) * 100) / 100;
+
+                var nuevoGasto = { nombre: nombreGasto, deuda: monto, deudores: deudores };
+
+                console.log(grupos[id].gastos);
+                grupos[id].gastos.push(nuevoGasto);
+                sessionStorage.setItem('grupos', JSON.stringify(grupos));
+
+                modal.style.display = 'none'; 
+                document.getElementById('crearGastoFormulario').reset();
+                location.reload();
+            });
+
+            actualizarListaGastos();
+        </script>
+    </main>
 </Layout>
+
+<style is:global>
+    #gastos {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    .gasto-card {
+        background-color: honeydew;
+        border-radius: 8px;
+        padding: 20px;
+        width: calc(33.33% - 20px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+        text-decoration: none;
+        color: inherit;
+    }
+    .gasto-card:hover {
+        transform: translateY(-5px);
+    }
+    .gasto-card h2 {
+        margin-top: 0;
+        color: black;
+    }
+    .gasto-card p {
+        margin: 0;
+        color: grey;
+    }
+
+    main {
+		margin: auto;
+		padding: 1rem;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+	.astro-a {
+		position: absolute;
+		top: -32px;
+		left: 50%;
+		transform: translatex(-50%);
+		width: 220px;
+		height: auto;
+		z-index: -1;
+	}
+	h1 {
+		font-size: 4rem;
+		font-weight: 700;
+		line-height: 1;
+		text-align: center;
+		margin-bottom: 1em;
+        color: burlywood;
+	}
+	.text-gradient {
+		background-image: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-size: 400%;
+		background-position: 0%;
+	}
+	.instructions {
+		margin-bottom: 2rem;
+		border: 1px solid rgba(var(--accent-light), 25%);
+		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
+		padding: 1.5rem;
+		border-radius: 8px;
+	}
+	.instructions code {
+		font-size: 0.8em;
+		font-weight: bold;
+		background: rgba(var(--accent-light), 12%);
+		color: rgb(var(--accent-light));
+		border-radius: 4px;
+		padding: 0.3em 0.4em;
+	}
+	.instructions strong {
+		color: rgb(var(--accent-light));
+	}
+	.link-card-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+		gap: 2rem;
+		padding: 0;
+	}
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .deudor-checkbox {
+        display: inline-block;
+        margin-right: 10px; /* Adjust as needed */
+    }
+
+    #crearGastoBtn {
+        background-color: #FFD93D; 
+        color: black; 
+        font-size: 20px;
+        padding: 15px 30px; 
+        margin-top: 40px;
+    }
+
+    #agregarDeudorBtn {
+        background-color: #F6F1E9;  
+        color: black; 
+    }
+
+    #crearGastoFormulario {
+        margin-top: 40px;
+    }
+
+    label, h2, input {
+        color: black;
+    }
+
+    input:disabled {
+        background-color: transparent;
+    }
+
+    input {
+        background-color: wheat; 
+        border: 3px; border-color: black; 
+        border-radius: 5px;
+    }
+</style>
