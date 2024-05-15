@@ -11,7 +11,6 @@ import { contactos } from '../../../public/bees.astro';
                 {contactos.map((contacto, index) => (
                     <a href={`/${contacto.usuario}`} class="contact-card" key={index}>
                         <p>{contacto.nombre}</p>
-                        <p>{contacto.usuario}</p>
                     </a>
                 ))}
             </div>
@@ -20,7 +19,10 @@ import { contactos } from '../../../public/bees.astro';
 
     <style is:global>
         body {
-            background-color: #201F1B;
+        background-image: url('/public/fondo.jpeg'); 
+        background-size: cover; 
+        background-position: center; 
+        height: 100vh; 
         }
     
         .container {
