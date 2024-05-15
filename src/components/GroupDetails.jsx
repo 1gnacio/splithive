@@ -1,4 +1,4 @@
-import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter, Button, Link} from '@nextui-org/react';
+import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input} from '@nextui-org/react';
 import calcularDeudas from '../utils/logicaNegocio';
 import React from 'react';
 import { useEffect, useState } from 'react';
@@ -8,6 +8,9 @@ export default function GroupDetails(props) {
     let [grupos, setGrupos] = useState(JSON.parse(window.sessionStorage.getItem("grupos")));
     let [grupo, setGrupo] = useState(grupos[id]);
     let [deudas, setDeudas] = useState(calcularDeudas(grupo.integrantes, grupo.gastos))
+    let [editMode, setEditMode] = useState(grupo.gastos.map(x => false));
+    let [newName, setNewName] = useState("");
+    let [nuevaDeuda, setNuevaDeuda] = useState("");
     const [editingGroup, setEditingGroup] = useState(false);
     const [newGroupName, setNewGroupName] = useState(grupo.nombre);
     const [editingMember, setEditingMember] = useState(null);
@@ -134,30 +137,37 @@ export default function GroupDetails(props) {
                                 ))}
                             </Tab>
                             <Tab key="gastos" title="Gastos">
-                                <Card>
-                                    <CardBody>
-                                    <Listbox
-                                        items={grupo.gastos}
-                                        aria-label="Gastos"
-                                        onAction={(key) => alert(key)}
-                                    >
-                                        {(item) => (
-                                        <ListboxItem
-                                            key={item.nombre}
-                                            color={"default"}
-                                            className={""}
-                                        >
-                                            <b>{item.nombre}</b>
+                                {grupo.gastos.map((item, index) => 
+                                    <Card className='p-4'>
+                                        <CardBody>
+                                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                {editMode[index] ? <Input value={newName} onValueChange={setNewName} className='max-w-[220px]' label="Nombre"></Input> : <b>{item.nombre}</b>}
+                                                <Button color='primary' onClick={() => {
+                                                    if(editMode[index]) {
+                                                        const gruposSerializados = JSON.stringify(grupos);
+                                                        const itemSerializado = JSON.stringify(item);
+                                                        const copiaItem = { ...item };
+                                                        copiaItem.nombre = newName;
+                                                        copiaItem.deuda = nuevaDeuda;
+                                                        const nuevoItemSerializado = JSON.stringify(copiaItem);
+                                                        const nuevosGruposSerializados = gruposSerializados.replace(itemSerializado, nuevoItemSerializado);
+                                                        window.sessionStorage.setItem('grupos', nuevosGruposSerializados);
+                                                        setGrupos(JSON.parse(nuevosGruposSerializados));
+                                                        setGrupo(JSON.parse(nuevosGruposSerializados)[id]);
+                                                    }
+                                                    setNewName(item.nombre);
+                                                    setNuevaDeuda(item.deuda);
+                                                    setEditMode(editMode.map((x, i) => i != index ? x : !x));
+                                                }}>{editMode[index] ? "Guardar" : "Editar"}</Button>
+                                            </div>
                                             <p>Quien pagó: {item.payer}</p>
                                             <p>Monto Total: {item.montoTotal}</p>
                                             <p>Fecha: {item.fecha}</p>
-                                            <p style={{color: 'red'}}>Deuda: {item.deuda} c/u</p>
+                                            {editMode[index] ? <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> : <p style={{color: 'red'}}>Deuda: {item.deuda} c/u</p>}
                                             <p>Deudores: {item.deudores.length > 0 && item.deudores.reduce((acc, x) => acc + ", " + x)}</p>
-                                        </ListboxItem>
-                                        )}
-                                    </Listbox>
-                                    </CardBody>
-                                </Card>
+                                        </CardBody>
+                                    </Card>
+                                    )}
                             </Tab>
                         </Tabs>
                     </CardBody>
