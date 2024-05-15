@@ -47,8 +47,8 @@ import { Button } from "@nextui-org/react"
             var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
             if (!sessionStorage.getItem('grupos')) {
                 var grupos = [
-                    { nombre: 'grupo1', integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }], gastos: [ { nombre: "boleta de luz", payer:"Tomas",fecha:fechaActual,montoTotal:120,deuda: 40, deudores: ["Tomas", "Manu", "Juan"] } ] },
-                    { nombre: 'grupo2', integrantes: [{ nombre: 'Camila' }, { nombre: 'Raul' }, { nombre: 'Maria' }], gastos: [ { nombre: "supermercado", payer:"Camila",fecha:fechaActual,montoTotal:200,deuda: 100, deudores: ["Camila", "Maria"] }, { nombre: "colegio", payer:"Raul", fecha:fechaActual,montoTotal: 80,deuda: 80, deudores: ["Raul"] } ] }
+                    { nombre: 'grupo1', integrantes: [{ nombre: 'Camila',userID:6 }, { nombre: 'Mateo', userID: 7}, { nombre: 'Ignacio', userID:4 }, { nombre: 'Juan', userID:0 }, { nombre: 'Manu' ,userID:5}, { nombre: 'Tomas', userID:3 }], gastos: [ { nombre: "boleta de luz", payer:"Tomas",fecha:fechaActual,montoTotal:120,deuda: 40, deudores: ["Tomas", "Manu", "Juan"] } ] },
+                    { nombre: 'grupo2', integrantes: [{ nombre: 'Camila', userID:6 }, { nombre: 'Raul', userID:8 }, { nombre: 'Maria', userID:1 }], gastos: [ { nombre: "supermercado", payer:"Camila",fecha:fechaActual,montoTotal:200,deuda: 100, deudores: ["Camila", "Maria"] }, { nombre: "colegio", payer:"Raul", fecha:fechaActual,montoTotal: 80,deuda: 80, deudores: ["Raul"] } ] }
                 ];
                 sessionStorage.setItem('grupos', JSON.stringify(grupos));
             } else {
