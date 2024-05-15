@@ -4,12 +4,14 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 
 export default function GroupDetails(props) {
-
-
-    let [id,setId] = useState(props.id)
-    let [grupos, setGrupos] = useState(null)
-    let [grupo, setGroup] = useState(JSON.parse(window.sessionStorage.getItem("grupos"))[id])
+    let [id,setId] = useState(props.id);
+    let [grupos, setGrupos] = useState(JSON.parse(window.sessionStorage.getItem("grupos")));
+    let [grupo, setGrupo] = useState(grupos[id]);
     let [deudas, setDeudas] = useState(calcularDeudas(grupo.integrantes, grupo.gastos))
+    const [editingGroup, setEditingGroup] = useState(false);
+    const [newGroupName, setNewGroupName] = useState(grupo.nombre);
+    const [editingMember, setEditingMember] = useState(null);
+    const [newMemberName, setNewMemberName] = useState(null);
 
     var currentDate = new Date();
 
@@ -18,68 +20,163 @@ export default function GroupDetails(props) {
     var month = currentDate.getMonth() + 1; // Months are zero-based, so January is 0
     var day = currentDate.getDate();
     var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
-    var sgrupo = {
-        nombre: 'grupo1',
-        integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }],
-        gastos: [{ nombre: "comida", montoTotal:100, fecha:fechaActual,payer: "Camila",deuda: 50, deudores: ["Camila", "Mateo"]}, { nombre: "factura de luz", montoTotal: 400,fecha:fechaActual,payer:"Camila",deuda: 100, deudores: ["Camila","Juan", "Manu", "Ignacio"]}]
-    };
-    return <div className="p-5">
-<Card className='p-4'>
-        <CardHeader>
-            <h4 className="font-bold text-large">
-                {grupo.nombre}
-            </h4>
-        </CardHeader>
-        <CardBody>
-            <Tabs aria-label="Options">
-                <Tab key="integrantes" title="Integrantes">
-                    {Array.from(deudas,([nombre, deuda])=>
-                    (
-                        <Card key={nombre} className='w-50 gap gap-2'>
+    
 
-                        <CardBody>
-                            <b>{nombre}</b>
-                            <p style={{color: deuda < 0 ? 'red' : 'green'}}>Saldo: {deuda}</p>
-                            <Button onClick={e => {setDeudas(new Map(deudas.set(nombre, 0)));}}>Saldar</Button>                          
-                        </CardBody>
-                        </Card>
-                    ))
-                    }
-                </Tab>
-                <Tab key="gastos" title="Gastos">
-                    <Card>
-                        <CardBody>
-                        <Listbox
-                            items={grupo.gastos}
-                            aria-label="Gastos"
-                            onAction={(key) => alert(key)}
-                        >
-                            {(item) => (
-                            <ListboxItem
-                                key={item.nombre}
-                                color={"default"}
-                                className={""}
-                            >
-                                <b>{item.nombre}</b>
-                                <p>Quien pagó: {item.payer}</p>
-                                <p>Monto Total: {item.montoTotal}</p>
-                                <p>Fecha: {item.fecha}</p>
-                                <p style={{color: 'red'}}>Deuda: {item.deuda} c/u</p>
-                                <p>Deudores: {item.deudores.length > 0 && item.deudores.reduce((acc, x) => acc + ", " + x)}</p>
-                            </ListboxItem>
+    const handleGroupNameEdit = (event) => {
+        setNewGroupName(event.target.value);
+    };
+
+    const handleMemberNameEdit = (nombre) => (event) => {
+        setNewMemberName(event.target.value);
+    };
+
+    const startEditingGroup = () => {
+        setEditingGroup(true);
+    };
+
+    const startEditingMemberName = (nombre) => {
+        setEditingMember(nombre);
+        setNewMemberName(nombre);
+    };
+
+    const stopEditingGroup = () => {
+        setEditingGroup(false);
+    };
+    
+    const stopEditingMemberName = () => {
+        setEditingMember(null);
+        setNewMemberName(null);
+    };
+
+    const saveEdit = (type) => (event) => {
+        let nuevosGrupos = [...grupos];
+    
+        if (type === "group") {
+            nuevosGrupos[id].nombre = newGroupName;
+            stopEditingGroup();
+        } else if (type === "member") {
+            const integrantesActualizados = grupo.integrantes.map(integrante => {
+                if (integrante.nombre === editingMember) {
+                    return {
+                        ...integrante,
+                        nombre: newMemberName
+                    };
+                }
+                return integrante;
+            });
+    
+            nuevosGrupos[id].integrantes = integrantesActualizados;
+            stopEditingMemberName();
+        }
+    
+        setGrupos(nuevosGrupos);
+        window.sessionStorage.setItem("grupos", JSON.stringify(nuevosGrupos));
+        window.location.reload();
+    };
+
+    return <div className="p-5">
+                <Card className='p-4'>
+                    <CardHeader>
+                        <h4 className="font-bold text-large">
+                            {editingGroup ? (
+                                <input
+                                    type="text"
+                                    value={newGroupName}
+                                    onChange={handleGroupNameEdit}
+                                    autoFocus
+                                />
+                            ) : (
+                                <>
+                                    {grupo.nombre}
+                                    <button name="edit" onClick={startEditingGroup}>
+                                        <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
+                                    </button>
+                                </>
                             )}
-                        </Listbox>
-                        </CardBody>
-                    </Card>
-                </Tab>
-            </Tabs>
-        </CardBody>
-        <CardFooter>
-            <Button href='/home' as={Link} color="primary" showAnchorIcon variant="solid">
-                Volver
-            </Button>
-        </CardFooter>
-    </Card>
-    </div>
+                        </h4>
+                    </CardHeader>
+                    <CardBody>
+                        <Tabs aria-label="Options">
+                            <Tab key="integrantes" title="Integrantes">
+                                {Array.from(deudas,([nombre, deuda])=>
+                                (
+                                    <Card key={nombre} className='w-50 gap gap-2' style={{marginBottom: "10px"}}>
+                                        {/* <CardBody>
+                                            <div>
+                                                <span>{nombre}</span>
+                                                <button name="edit" onClick={startEditingGroup}>
+                                                    <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
+                                                </button>
+                                            </div>
+                                            <p style={{color: deuda < 0 ? 'red' : 'green'}}>Saldo: {deuda}</p>
+                                        </CardBody> */}
+                                        <CardBody>
+                                            <div>
+                                                {editingMember === nombre ? (
+                                                    <input
+                                                        type="text"
+                                                        value={newMemberName}
+                                                        onChange={handleMemberNameEdit(nombre)}
+                                                        autoFocus
+                                                    />
+                                                ) : (
+                                                    <>
+                                                        <span>{nombre}</span>
+                                                        <button onClick={() => startEditingMemberName(nombre)}>
+                                                            <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </div>
+                                            <p style={{color: deudas.get(nombre) < 0 ? 'red' : 'green'}}>Saldo: {deudas.get(nombre)}</p>
+                                        </CardBody>
+                                    </Card>
+                                ))}
+                            </Tab>
+                            <Tab key="gastos" title="Gastos">
+                                <Card>
+                                    <CardBody>
+                                    <Listbox
+                                        items={grupo.gastos}
+                                        aria-label="Gastos"
+                                        onAction={(key) => alert(key)}
+                                    >
+                                        {(item) => (
+                                        <ListboxItem
+                                            key={item.nombre}
+                                            color={"default"}
+                                            className={""}
+                                        >
+                                            <b>{item.nombre}</b>
+                                            <p>Quien pagó: {item.payer}</p>
+                                            <p>Monto Total: {item.montoTotal}</p>
+                                            <p>Fecha: {item.fecha}</p>
+                                            <p style={{color: 'red'}}>Deuda: {item.deuda} c/u</p>
+                                            <p>Deudores: {item.deudores.length > 0 && item.deudores.reduce((acc, x) => acc + ", " + x)}</p>
+                                        </ListboxItem>
+                                        )}
+                                    </Listbox>
+                                    </CardBody>
+                                </Card>
+                            </Tab>
+                        </Tabs>
+                    </CardBody>
+                    <CardFooter>
+                        {editingGroup && (
+                            <Button onClick={saveEdit("group")} color="primary">
+                                Guardar
+                            </Button>
+                        )}
+                        {editingMember && (
+                            <Button onClick={saveEdit("member")} color="primary">
+                                Guardar
+                            </Button>
+                        )}
+                        <Button href='/home' as={Link} color="primary" showAnchorIcon variant="solid">
+                            Volver
+                        </Button>
+                    </CardFooter>
+                </Card>
+            </div>
         
 }
