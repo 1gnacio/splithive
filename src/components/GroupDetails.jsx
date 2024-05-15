@@ -129,6 +129,7 @@ export default function GroupDetails(props) {
                                                 )}
                                             </div>
                                             <p style={{color: deudas.get(nombre) < 0 ? 'red' : 'green'}}>Saldo: {deudas.get(nombre)}</p>
+                                            <Button onClick={e => {setDeudas(new Map(deudas.set(nombre, 0)));}}>Saldar</Button>
                                         </CardBody>
                                     </Card>
                                 ))}
