@@ -12,6 +12,7 @@ import { Button } from "@nextui-org/react"
         <div id="grupos"></div>
 
         <button id="crearGrupoBtn">Crear grupo</button>
+        <button id="beesBtn">Bees</button>
 
         <div id="modal" class="modal" style="display: none;">
             <div class="modal-content">
@@ -93,6 +94,10 @@ import { Button } from "@nextui-org/react"
 
             document.getElementById('crearGrupoBtn').addEventListener('click', function() {
                 document.getElementById('crearGrupoForm').style.display = 'block';
+            });
+
+            document.getElementById('beesBtn').addEventListener('click', function() {
+                window.location.href = 'bees/bees'; 
             });
 
             document.getElementById('cerrarFormBtn').addEventListener('click', function() {
@@ -264,7 +269,7 @@ import { Button } from "@nextui-org/react"
         cursor: pointer;
     }
 
-    #crearGrupoBtn {
+    #crearGrupoBtn, #beesBtn {
         background-color: #FFD93D; 
         color: black; 
         font-size: 20px;
