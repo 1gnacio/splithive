@@ -4,12 +4,12 @@ export default function calcularSaldos(integrantes, gastos){
 
     // Resultado: <Clave>: integrante. <Valor>: lista de gente a quien le debo, y cuanto.
 
-    var saldos = new Map();
+    var saldos = new Map;
 
     gastos.forEach(gasto =>{
         gasto.deudores.forEach(deudor =>{
-            if (!saldos.has(deudor)) {
-                saldos.set(deudor, new Map())
+            if (!(saldos.has(deudor))) {
+                saldos.set(deudor, new Map)
             }
 
             if (deudor != gasto.payer) {
@@ -20,7 +20,7 @@ export default function calcularSaldos(integrantes, gastos){
                 else {
                     saldos.set(deudor, saldos.get(deudor).set(gasto.payer, gasto.deuda))
                 }
-                saldos.set(deudor,saldos.get(deudor) + gasto.montoTotal - gasto.deuda)
+                // saldos.set(deudor,saldos.get(deudor) + gasto.montoTotal - gasto.deuda)
             }
         })
     })
