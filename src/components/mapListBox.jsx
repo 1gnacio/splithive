@@ -3,10 +3,12 @@ import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter,
 import { useEffect, useState } from 'react';
 import calcularSaldos from '../utils/calcularSaldos';
 import { addScaleCorrector } from 'framer-motion';
+import {getUsuarios} from "../utils/utilities"
 
 export function MapListbox(props) {
 
     let [saldos, setSaldos] = useState(props.map_saldos);
+    let [usuarios, setUsuarios] = useState(getUsuarios());
     console.log(saldos);
 
     return (
@@ -18,7 +20,7 @@ export function MapListbox(props) {
                             return (
                                 <ul>
                                     <li key={deudor}> 
-                                        {deudor} le debe {monto} a {acreedor}
+                                        {usuarios[deudor].nombre} le debe {monto} a {usuarios[acreedor].nombre}
                                         <div>
                                             <button>Saldar</button>
                                         </div>
