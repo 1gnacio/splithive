@@ -12,11 +12,31 @@ export function MapListbox(props) {
     console.log(saldos);
 
     return (
-        <div>
+        /* <div>
             {Array.from(saldos).map(([deudor, deudas]) => {
                 return (
                     <div key={deudor}>
                         {Array.from(deudas).map(([acreedor, monto]) => {
+                            return (
+                                <ul>
+                                    <li key={deudor}> 
+                                        {usuarios[deudor].nombre} le debe {monto} a {usuarios[acreedor].nombre}
+                                        <div>
+                                            <button>Saldar</button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            );
+                        })}
+                    </div>
+                );
+            })}
+        </div> */
+        <div>
+            {Object.entries(saldos).map(([deudor, deudas]) => {
+                return (
+                    <div key={deudor}>
+                        {Object.entries(deudas).map(([acreedor, monto]) => {
                             return (
                                 <ul>
                                     <li key={deudor}> 
