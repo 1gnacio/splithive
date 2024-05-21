@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Button } from "@nextui-org/react"
+import { Button } from "@nextui-org/react";
+
 ---
 
 <Layout title="Welcome to Splithive">
@@ -38,28 +39,40 @@ import { Button } from "@nextui-org/react"
         </div>
 
         <script>
-            var currentDate = new Date();
+            import { hives } from "../../public/hives.astro";
+import { usuarios } from "../../public/usuarios.astro";
+import cargarDatos from "../utils/initLogica";
+            import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
 
+            var currentDate = new Date();
+            var currentUser = 6; 
+            sessionStorage.setItem("userID",JSON.stringify(currentUser));
             // Getting the current date components
             var year = currentDate.getFullYear();
             var month = currentDate.getMonth() + 1; // Months are zero-based, so January is 0
             var day = currentDate.getDate();
             var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
-            if (!sessionStorage.getItem('grupos')) {
+            cargarDatos();
+            /*if (!sessionStorage.getItem('grupos')) {
                 var grupos = [
-                    { nombre: 'grupo1', integrantes: [{ nombre: 'Camila' }, { nombre: 'Mateo' }, { nombre: 'Ignacio' }, { nombre: 'Juan' }, { nombre: 'Manu' }, { nombre: 'Tomas' }], gastos: [ { nombre: "boleta de luz", payer:"Tomas",fecha:fechaActual,montoTotal:120,deuda: 40, deudores: ["Tomas", "Manu", "Juan"] } ] },
-                    { nombre: 'grupo2', integrantes: [{ nombre: 'Camila' }, { nombre: 'Raul' }, { nombre: 'Maria' }], gastos: [ { nombre: "supermercado", payer:"Camila",fecha:fechaActual,montoTotal:200,deuda: 100, deudores: ["Camila", "Maria"] }, { nombre: "colegio", payer:"Raul", fecha:fechaActual,montoTotal: 80,deuda: 80, deudores: ["Raul"] } ] }
+                    { nombre: 'grupo1', integrantes: [{ nombre: 'Camila',userID:6 }, { nombre: 'Mateo', userID: 7}, { nombre: 'Ignacio', userID:4 }, { nombre: 'Juan', userID:0 }, { nombre: 'Manu' ,userID:5}, { nombre: 'Tomas', userID:3 }], gastos: [ { nombre: "boleta de luz", payer:"Tomas",fecha:fechaActual,montoTotal:120,deuda: 40, deudores: ["Tomas", "Manu", "Juan"] } ] },
+                    { nombre: 'grupo2', integrantes: [{ nombre: 'Camila', userID:6 }, { nombre: 'Raul', userID:8 }, { nombre: 'Maria', userID:1 }], gastos: [ { nombre: "supermercado", payer:"Camila",fecha:fechaActual,montoTotal:200,deuda: 100, deudores: ["Camila", "Maria"] }, { nombre: "colegio", payer:"Raul", fecha:fechaActual,montoTotal: 80,deuda: 80, deudores: ["Raul"] } ] }
                 ];
                 sessionStorage.setItem('grupos', JSON.stringify(grupos));
             } else {
                 var grupos = JSON.parse(sessionStorage.getItem('grupos'))
-            }
-            
+            }*/
+            var grupos = getGrupos();
+            var hive_userActual = getHives();
+            console.log(hive_userActual[currentUser])
             function actualizarListaGrupos() {
+                hive_userActual = getHives()
                 var contenedorGrupos = document.getElementById('grupos');
                 contenedorGrupos.innerHTML = ''; 
 
-                grupos.forEach(function(grupo, i) {
+                hive_userActual[currentUser].forEach(i => {
+                    var grupo = grupos[i];
+                    console.log(grupo)
                     var grupoElemento = document.createElement('div');
 
                     var cantidadIntegrantes = grupo.integrantes.length;
@@ -120,16 +133,39 @@ import { Button } from "@nextui-org/react"
 
                 var nombreGrupo = document.getElementById('nombreGrupo').value;
                 var integrantes = [];
+                integrantes.push(currentUser)
+                var maximo = 0;
+                for (const key in grupos){
+                    if (grupos.hasOwnProperty(key)){
+                        if (Number(key) > Number(maximo)){
+                            maximo = Number(key);
+                        }
+                    }
+                }
+                hives[currentUser].push(maximo+1)
                 for (var i = 1; i <= contadorIntegrantes; i++) {
                     var nombreIntegrante = document.getElementById(`nombreIntegrante${i}`).value;
-                    integrantes.push({ nombre: nombreIntegrante });
+                    var id_integrante;
+                    for (const key in usuarios){
+                        if (usuarios.hasOwnProperty(key)){
+                            if (usuarios[key].usuario == nombreIntegrante){
+                                integrantes.push(Number(key))
+                                hives[key].push(maximo+1)
+                            }
+                        }
+                    }
+                    integrantes.push();
                 }
 
                 var nuevoGrupo = { nombre: nombreGrupo, integrantes: integrantes, gastos: [] };
 
-                grupos.push(nuevoGrupo);
+
+
+
+                grupos[maximo+1] = nuevoGrupo;
                 sessionStorage.setItem('grupos', JSON.stringify(grupos));
 
+                sessionStorage.setItem("hives", JSON.stringify(hives))
                 actualizarListaGrupos();
 
                 modal.style.display = 'none'; 

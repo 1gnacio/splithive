@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { bees } from '../../../public/bees.astro';
+import { bees } from '../../../public/beesDeprecated.astro';
+
 ---
 
 <Layout title="Welcome to Splithive">
@@ -42,23 +43,37 @@ import { bees } from '../../../public/bees.astro';
     </main>
 
     <script>
-import { bees } from "../../../public/bees.astro";
+import { bees } from "../../../public/beesDeprecated.astro";
+import { calcularDeudasAtravesDeGrupos } from '../../utils/logicaNegocio';
+import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../../utils/utilities"
 
-        var contactos = [];
-        if (!sessionStorage.getItem('contactos')) {
-            contactos = [
-                    { nombre: 'Juan', usuario: 'juanito' }
-                ];
-            sessionStorage.setItem('contactos', JSON.stringify(contactos));
-        } else {
-            contactos = JSON.parse(sessionStorage.getItem('contactos'))
-        }
+        var currentUser = getCurrentUser();
+        var contactos = getContactos()[currentUser];
+        var usuarios = getUsuarios();
+
+        var grupos = getGrupos();
+        var gastos = getGastos();
 
         contactos.forEach((contacto, index) => {
             var card = document.createElement('a');
             card.href = `/${contacto.usuario}`;
             card.className = 'contact-card';
-            card.innerHTML = `<p>${contacto.nombre}</p>`;
+
+            var deudaAcumulada = calcularDeudasAtravesDeGrupos(grupos,contacto, currentUser);
+            var color = deudaAcumulada < 0 ? 'red' : 'green';
+
+            if (deudaAcumulada < 0){
+                var deudaText = ` Le debo : <span style="color: ${color};">${deudaAcumulada}</span>`;
+            }
+
+            else if (deudaAcumulada > 0){
+                var deudaText = ` Me debe: <span style="color: ${color};">${deudaAcumulada}</span>`;
+            }
+            else{
+                var deudaText = ""
+            }
+
+            card.innerHTML = `<p>${usuarios[contacto].nombre}${deudaText}</p>`;
             document.querySelector('.contact-list').appendChild(card);
         });
 
@@ -87,25 +102,27 @@ import { bees } from "../../../public/bees.astro";
 
         document.getElementById('newBeeFormulario').addEventListener('submit', function(event) {
                 event.preventDefault(); 
-
+                var usuarios = getUsuarios();
                 var user = document.getElementById('usuarioBee').value;
-                var nombre = "";
+                var nombre =0;
                 var existe = false;
-                bees.forEach((bee) => {
-                    if (bee.usuario == user) {
-                        existe = true;
-                        nombre = bee.nombre;
-                        return;
+                for (const key in usuarios){
+                    if (usuarios.hasOwnProperty(key)){
+                        if (usuarios[key].usuario == user){
+                            existe = true
+                            nombre = key
+                            break
+                        }
                     }
-                });
+                }
                 if (!existe) {
                     alert('El usuario no existe');
                     return;
                 }
-                
                 var esContacto = false;
+                
                 contactos.forEach((contacto) => {
-                    if (contacto.usuario == user) {
+                    if (contacto == nombre) {
                         esContacto = true;
                     }
                 });
@@ -114,9 +131,10 @@ import { bees } from "../../../public/bees.astro";
                     return;
                 }
 
-                var nuevoContacto = { nombre: nombre, usuario: user };
-                contactos.push(nuevoContacto);
-                sessionStorage.setItem('contactos', JSON.stringify(contactos));
+                contactos.push(Number(nombre))
+                var lista_contactos = getContactos();
+                lista_contactos[currentUser] = contactos
+                sessionStorage.setItem('contactos', JSON.stringify(lista_contactos));
 
                 modal.style.display = 'none'; 
                 document.getElementById('newBeeFormulario').reset();

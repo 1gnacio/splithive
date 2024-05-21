@@ -1,21 +1,28 @@
-import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter, Button, Link} from '@nextui-org/react';
+import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input} from '@nextui-org/react';
 import calcularDeudas from '../utils/logicaNegocio';
 import calcularSaldos from '../utils/calcularSaldos';
 import MapListbox from './mapListBox';
 import React from 'react';
 import { useEffect, useState } from 'react';
+import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
+
 
 export default function GroupDetails(props) {
     let [id,setId] = useState(props.id);
-    let [grupos, setGrupos] = useState(JSON.parse(window.sessionStorage.getItem("grupos")));
+    let [grupos, setGrupos] = useState(getGrupos());
+    let [usuarios, setUsuarios] = useState(getUsuarios())
     let [grupo, setGrupo] = useState(grupos[id]);
-    let [deudas, setDeudas] = useState(calcularDeudas(grupo.integrantes, grupo.gastos));
+    let [deudas, setDeudas] = useState(calcularDeudas(grupo.integrantes, grupo.gastos))
+    let [editMode, setEditMode] = useState(grupo.gastos.map(x => false));
+    let [newName, setNewName] = useState("");
+    let [nuevaDeuda, setNuevaDeuda] = useState("");
+    let [gastos,setGastos] = useState(getGastos()); 
     let [saldos, setSaldos] = useState(calcularSaldos(grupo.integrantes, grupo.gastos));
     const [editingGroup, setEditingGroup] = useState(false);
     const [newGroupName, setNewGroupName] = useState(grupo.nombre);
     const [editingMember, setEditingMember] = useState(null);
     const [newMemberName, setNewMemberName] = useState(null);
-
+    console.log(deudas)
     var currentDate = new Date();
 
     // Getting the current date components
@@ -115,43 +122,53 @@ export default function GroupDetails(props) {
                                                     />
                                                 ) : (
                                                     <>
-                                                        <span>{nombre}</span>
+                                                        {console.log(nombre)}
+                                                        <span>{usuarios[nombre].nombre}</span>
                                                         <button onClick={() => startEditingMemberName(nombre)}>
                                                             <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
                                                         </button>
                                                     </>
                                                 )}
                                             </div>
-                                            <p style={{color: deudas.get(nombre) < 0 ? 'red' : 'green'}}>Saldo: {deudas.get(nombre)}</p>
+                                            <p style={{color: deudas.get(nombre) < 0 ? 'red' : 'green'}}>Saldo: {deuda}</p>
                                         </CardBody>
                                     </Card>
                                 ))}
                             </Tab>
                             <Tab key="gastos" title="Gastos">
-                                <Card>
-                                    <CardBody>
-                                    <Listbox
-                                        items={grupo.gastos}
-                                        aria-label="Gastos"
-                                        onAction={(key) => alert(key)}
-                                    >
-                                        {(item) => (
-                                        <ListboxItem
-                                            key={item.nombre}
-                                            color={"default"}
-                                            className={""}
-                                        >
-                                            <b>{item.nombre}</b>
-                                            <p>Quien pagó: {item.payer}</p>
-                                            <p>Monto Total: {item.montoTotal}</p>
-                                            <p>Fecha: {item.fecha}</p>
-                                            <p style={{color: 'red'}}>Deuda: {item.deuda} c/u</p>
-                                            <p>Deudores: {item.deudores.length > 0 && item.deudores.reduce((acc, x) => acc + ", " + x)}</p>
-                                        </ListboxItem>
-                                        )}
-                                    </Listbox>
-                                    </CardBody>
-                                </Card>
+                                {grupo.gastos.map((id, index) =>
+                                
+                                    
+                                    <Card className='p-4'>
+                                        <CardBody>
+                                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                {editMode[index] ? <Input value={newName} onValueChange={setNewName} className='max-w-[220px]' label="Nombre"></Input> : <b>{gastos[id].nombre}</b>}
+                                                <Button color='primary' onClick={() => {
+                                                    if(editMode[index]) {
+                                                        const gruposSerializados = JSON.stringify(grupos);
+                                                        const itemSerializado = JSON.stringify(gastos[id]);
+                                                        const copiaItem = { ...gastos[id] };
+                                                        copiaItem.nombre = newName;
+                                                        copiaItem.deuda = nuevaDeuda;
+                                                        const nuevoItemSerializado = JSON.stringify(copiaItem);
+                                                        const nuevosGruposSerializados = gruposSerializados.replace(itemSerializado, nuevoItemSerializado);
+                                                        window.sessionStorage.setItem('grupos', nuevosGruposSerializados);
+                                                        setGrupos(JSON.parse(nuevosGruposSerializados));
+                                                        setGrupo(JSON.parse(nuevosGruposSerializados)[id]);
+                                                    }
+                                                    setNewName(gastos[id].nombre);
+                                                    setNuevaDeuda(gastos[id].deuda);
+                                                    setEditMode(editMode.map((x, i) => i != index ? x : !x));
+                                                }}>{editMode[index] ? "Guardar" : "Editar"}</Button>
+                                            </div>
+                                            <p>Quien pagó: {usuarios[gastos[id].payer].nombre}</p>
+                                            <p>Monto Total: {gastos[id].monto}</p>
+                                            <p>Fecha: {gastos[id].fecha}</p>
+                                            {editMode[index] ? <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> : <p style={{color: 'red'}}>Deuda: {gastos[id].deuda} c/u</p>}
+                                            <p>Deudores: {gastos[id].deudores.length > 0 && gastos[id].deudores.reduce((acc, x) => acc + ", " + usuarios[x].nombre)}</p>
+                                        </CardBody>
+                                    </Card>
+                                    )}
                             </Tab>
                             <Tab key="saldos" title="Saldos">
                                 <MapListbox map_saldos = {saldos}></MapListbox>
