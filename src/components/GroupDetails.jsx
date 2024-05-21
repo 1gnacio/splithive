@@ -17,7 +17,7 @@ export default function GroupDetails(props) {
     let [newName, setNewName] = useState("");
     let [nuevaDeuda, setNuevaDeuda] = useState("");
     let [gastos,setGastos] = useState(getGastos()); 
-    let [saldos, setSaldos] = useState(calcularSaldos(grupo.integrantes, grupo.gastos));
+    let [saldos, setSaldos] = useState(calcularSaldos(grupo.gastos, gastos));
     const [editingGroup, setEditingGroup] = useState(false);
     const [newGroupName, setNewGroupName] = useState(grupo.nombre);
     const [editingMember, setEditingMember] = useState(null);
@@ -172,32 +172,6 @@ export default function GroupDetails(props) {
                             </Tab>
                             <Tab key="saldos" title="Saldos">
                                 <MapListbox map_saldos = {saldos}></MapListbox>
-                                {/* {Array.from(deudas,([nombre, deuda]) =>
-                                (
-                                    <Card key={nombre} className='w-50 gap gap-2' style={{marginBottom: "10px"}}>
-                                        <CardBody>
-                                            <div>
-                                                {editingMember === nombre ? (
-                                                    <input
-                                                        type="text"
-                                                        value={newMemberName}
-                                                        onChange={handleMemberNameEdit(nombre)}
-                                                        autoFocus
-                                                    />
-                                                ) : (
-                                                    <>
-                                                        <span>{nombre}</span>
-                                                        <button onClick={() => startEditingMemberName(nombre)}>
-                                                            <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
-                                                        </button>
-                                                    </>
-                                                )}
-                                            </div>
-                                            <p style={{color: deudas.get(nombre) < 0 ? 'red' : 'green'}}>Saldo: {deudas.get(nombre)}</p>
-                                            <Button onClick={e => {setDeudas(new Map(deudas.set(nombre, 0)));}}>Saldar</Button>
-                                        </CardBody>
-                                    </Card>
-                                ))} */}
                             </Tab>
                         </Tabs>
                     </CardBody>
