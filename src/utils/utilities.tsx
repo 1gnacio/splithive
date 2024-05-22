@@ -23,7 +23,8 @@ export const getCurrentUser =() =>{
 }
 
 export const getSaldos =() =>{
-    return JSON.parse(sessionStorage.getItem("saldos"))
+    var metaSaldos = JSON.parse(sessionStorage.getItem("saldos"))
+    return metaSaldos ? metaSaldos : {}
 }
 
 export const getUserByUsername = (username) => {
