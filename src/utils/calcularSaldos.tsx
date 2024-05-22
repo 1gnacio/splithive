@@ -5,27 +5,22 @@ export default function calcularSaldos(id_grupo, id_gastos, gastos){
     // Resultado: <Clave>: integrante. <Valor>: lista de gente a quien le debo, y cuanto.
 
     var metaSaldos = JSON.parse(sessionStorage.getItem("saldos"))
-    var saldos;
+    var saldos = {};
     if (!metaSaldos) {
         metaSaldos = {}
-        saldos = {}
     }
-    else saldos = metaSaldos[id_grupo]
+    else if (id_grupo in metaSaldos) {
+        saldos = metaSaldos[id_grupo]
+    }
+
+    let gastosProcesados = JSON.parse(sessionStorage.getItem("gastosProcesados"))
+    if (!gastosProcesados) gastosProcesados = {}
 
     id_gastos.forEach(id =>{
+        if (id in gastosProcesados) return;
+        gastosProcesados[id] = 1
+
         gastos[id].deudores.forEach(deudor =>{
-
-            /* if (!(saldos.has(deudor))) {
-                saldos.set(deudor, new Map)
-            }
-
-            if (saldos.get(deudor).has(gastos[id].payer)) {
-                var saldo_anterior = saldos.get(deudor).get(gastos[id].payer)
-                saldos.set(deudor, saldos.get(deudor).set(gastos[id].payer, saldo_anterior + gastos[id].reparto[deudor]))
-            }
-            else {
-                saldos.set(deudor, saldos.get(deudor).set(gastos[id].payer, gastos[id].reparto[deudor]))
-            } */
             if (!(deudor in saldos)) {
                 saldos[deudor] = {}
             }
@@ -42,7 +37,16 @@ export default function calcularSaldos(id_grupo, id_gastos, gastos){
 
     metaSaldos[id_grupo] = saldos
 
+    sessionStorage.setItem("gastosProcesados", JSON.stringify(gastosProcesados))
     sessionStorage.setItem("saldos", JSON.stringify(metaSaldos))
 
     return saldos
+}
+
+export const saldar = (id_grupo, id_deudor, id_acreedor) => {
+    var metaSaldos = JSON.parse(sessionStorage.getItem("saldos"))
+    if (!metaSaldos) return
+
+    metaSaldos[id_grupo][id_deudor][id_acreedor] = 0
+    sessionStorage.setItem("saldos", JSON.stringify(metaSaldos))
 }
