@@ -1,0 +1,44 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Inicio">
+  <main>
+    <a href="/home" class="logo-link">
+      <img src='/public/splithive.png' alt="Logo" class="logo">
+    </a>
+  </main>
+</Layout>
+
+<style>
+  :global(body) {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/public/fondo.jpg'); 
+    background-size: cover; 
+    height: 100vh; 
+  }
+
+  main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .logo-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .logo {
+    max-width: 50%;
+    max-height: 50%;
+  }
+</style>

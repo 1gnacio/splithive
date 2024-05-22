@@ -7,7 +7,7 @@ import { Button } from "@nextui-org/react";
 <Layout title="Welcome to Splithive">
     <main>
         <div class="header">
-            <img src='/public/splithive.png' alt="Bees" class="titulo-imagen" />
+            <img src='/public/splithive.png' alt="Bees" class="img-logo" />
         </div>
         <h1 class="page-title">Lista de Grupos</h1>
 
@@ -41,8 +41,8 @@ import { Button } from "@nextui-org/react";
 
         <script>
             import { hives } from "../../public/hives.astro";
-import { usuarios } from "../../public/usuarios.astro";
-import cargarDatos from "../utils/initLogica";
+            import { usuarios } from "../../public/usuarios.astro";
+            import cargarDatos from "../utils/initLogica";
             import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
 
             var currentDate = new Date();
@@ -335,7 +335,7 @@ import cargarDatos from "../utils/initLogica";
         border: 3px; border-color: black; 
         border-radius: 5px;
     }
-    .titulo-imagen {
+    .img-logo {
         position: absolute;
         top: 0;
         left: 0;
