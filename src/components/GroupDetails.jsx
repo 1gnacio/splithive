@@ -12,7 +12,6 @@ export default function GroupDetails(props) {
     let [grupos, setGrupos] = useState(getGrupos());
     let [usuarios, setUsuarios] = useState(getUsuarios())
     let [grupo, setGrupo] = useState(grupos[id]);
-    let [deudas, setDeudas] = useState(calcularDeudas(grupo.integrantes, grupo.gastos))
     let [editMode, setEditMode] = useState(grupo.gastos.map(x => false));
     let [newName, setNewName] = useState("");
     let [nuevaDeuda, setNuevaDeuda] = useState("");
@@ -30,6 +29,7 @@ export default function GroupDetails(props) {
     var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
 
     calcularSaldos(id, grupo.gastos, gastos)
+    let [deudas, setDeudas] = useState(calcularDeudas(id, grupo.integrantes))
     
 
     const handleGroupNameEdit = (event) => {
@@ -125,7 +125,7 @@ export default function GroupDetails(props) {
                     <CardBody>
                         <Tabs aria-label="Options">
                             <Tab key="integrantes" title="Integrantes">
-                                {Array.from(deudas,([nombre, deuda])=>
+                                {Object.entries(deudas).map(([nombre, deuda]) =>
                                 (
                                     <Card key={nombre} className='w-50 gap gap-2' style={{marginBottom: "10px"}}>
                                         <CardBody>
@@ -146,7 +146,7 @@ export default function GroupDetails(props) {
                                                     </>
                                                 )}
                                             </div>
-                                            <p style={{color: deudas.get(nombre) < 0 ? 'red' : 'green'}}>Saldo: {deuda}</p>
+                                            <p style={{color: deudas[nombre] < 0 ? 'red' : 'green'}}>Saldo: {deuda}</p>
                                         </CardBody>
                                     </Card>
                                 ))}
