@@ -17,12 +17,11 @@ export default function GroupDetails(props) {
     let [newName, setNewName] = useState("");
     let [nuevaDeuda, setNuevaDeuda] = useState("");
     let [gastos,setGastos] = useState(getGastos()); 
-    let [saldos, setSaldos] = useState(calcularSaldos(grupo.gastos, gastos));
+    let [saldos, setSaldos] = useState(calcularSaldos(id, grupo.gastos, gastos));
     const [editingGroup, setEditingGroup] = useState(false);
     const [newGroupName, setNewGroupName] = useState(grupo.nombre);
     const [editingMember, setEditingMember] = useState(null);
     const [newMemberName, setNewMemberName] = useState(null);
-    console.log(deudas)
     var currentDate = new Date();
 
     // Getting the current date components
@@ -122,7 +121,6 @@ export default function GroupDetails(props) {
                                                     />
                                                 ) : (
                                                     <>
-                                                        {console.log(nombre)}
                                                         <span>{usuarios[nombre].nombre}</span>
                                                         <button onClick={() => startEditingMemberName(nombre)}>
                                                             <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
@@ -171,7 +169,7 @@ export default function GroupDetails(props) {
                                     )}
                             </Tab>
                             <Tab key="saldos" title="Saldos">
-                                <MapListbox map_saldos = {saldos}></MapListbox>
+                                <MapListbox id_grupo = {id}></MapListbox>
                             </Tab>
                         </Tabs>
                     </CardBody>
