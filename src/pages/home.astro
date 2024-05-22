@@ -105,11 +105,13 @@ import { Button } from "@nextui-org/react";
 
             spanCerrar.onclick = function() {
                 modal.style.display = 'none';
+                document.getElementById('integrantesContainer').innerHTML = '';
             };
 
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = 'none';
+                    document.getElementById('integrantesContainer').innerHTML = '';
                 }
             };
 
@@ -123,6 +125,7 @@ import { Button } from "@nextui-org/react";
 
             document.getElementById('cerrarFormBtn').addEventListener('click', function() {
                 document.getElementById('modal').style.display = 'none';
+                document.getElementById('integrantesContainer').innerHTML = '';
             });
             
             var userContacts = contactos[currentUser] || [];
@@ -218,6 +221,7 @@ import { Button } from "@nextui-org/react";
 
                 document.getElementById('modal').style.display = 'none';
                 document.getElementById('crearGrupoFormulario').reset();
+                document.getElementById('integrantesContainer').innerHTML = '';
             });
 
             actualizarListaGrupos();
