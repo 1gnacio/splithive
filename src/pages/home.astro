@@ -19,26 +19,34 @@ import { Button } from "@nextui-org/react";
         <div id="modal" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close" id="closeModal">&times;</span>
-                <h2>Crear Nuevo Grupo</h2>
+                <img src='/public/bee.png' alt="Bees" style="width: 100px; "/>
+                
                 <form id="crearGrupoFormulario">
-                    <label for="nombreGrupo">Nombre del grupo:</label>
-                    <input type="text" id="nombreGrupo" name="nombreGrupo"><br><br>
-
-                    <div>
-                        <input style="width: 75%;" type="text" id="searchUsername" name="searchUsername" placeholder="Ingresar nombre de usuario">
-                        <button id="executeSearch" style="background-color: lightblue; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" type="button">Agregar</button>    
-                    </div>
                     
-                    <label for="nombreIntegrante1">Nombre del integrante 1:</label>
-                    <input type="text" id="nombreIntegrante1" name="nombreIntegrante1" value="Cami" disabled><br><br>
+                    <div class="form-group">
+                        <label for="nombreGrupo">Nombre del grupo:</label>
+                        <input type="text" id="nombreGrupo" name="nombreGrupo" class="input-field">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nombreIntegrante1">Integrantes:</label>
+                        <input type="text" id="nombreIntegrante1" name="nombreIntegrante1" value="Cami" class="input-field" disabled>
+                    </div>
 
                     <div id="integrantesContainer"></div>
 
-                    <button type="button" id="agregarIntegranteBtn">+</button><br><br>
+                    <div class="form-group">
+                        <button type="button" id="agregarIntegranteBtn">+</button>
+                    </div>
+                    
+                    <div>
+                        <input style="width: 75%;" type="text" id="searchUsername" name="searchUsername" placeholder="Ingresar nombre de usuario">
+                        <button id="executeSearch" style="background-color: #FFD93D; border: 3px; border-color: black; border-radius: 5px; padding: 3px 10px; color: black;" type="button">Agregar</button>    
+                    </div>
 
-                    <div style="margin-top: 10px;">
-                        <button style="background-color: lightblue; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" type="submit">Crear</button>
-                        <button style="background-color: lightgrey; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" id="cerrarFormBtn" type="button">Cancelar</button>
+                    <div style="margin-top: 60px;">
+                        <button style="background-color: #FFD93D; border: 3px; border-color: black; border-radius: 5px; padding: 3px 10px; color: black;" type="submit">Crear</button>
+                        <button style="background-color: lightgrey; border: 3px; border-color: black; border-radius: 5px; padding: 3px 10px; color: black;" id="cerrarFormBtn" type="button">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -120,15 +128,20 @@ import { Button } from "@nextui-org/react";
             var integrantesContainer = document.getElementById('integrantesContainer');
 
             document.getElementById('agregarIntegranteBtn').addEventListener('click', function() {
-                /*contadorIntegrantes++; */
-                var contadorIntegrantes = integrantesContainer.children.length + 2; // Adjusted to start from 2
+                var contadorIntegrantes = integrantesContainer.children.length + 2;
                 var nuevoCampoIntegrante = document.createElement('div');
+
+                //nuevoCampoIntegrante.className = 'form-group';  // Add form-group class for consistent styling
+                var contactosDisponibles = userContactsNames.filter(name => {
+                    // Comprobar si el contacto ya ha sido seleccionado
+                    return ![...integrantesContainer.querySelectorAll('select')].some(select => select.value === name);
+                });
+
                 nuevoCampoIntegrante.innerHTML = `
-                    <label for="nombreIntegrante${contadorIntegrantes}">Nombre del integrante ${contadorIntegrantes}:</label>
-                    <select id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}">
-                        <option value="">Selecciona un integrante</option>
-                        ${userContactsNames.map(name => `<option value="${name}">${name}</option>`).join('')}
-                    </select><br><br>`;
+                <select id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select">
+                    <option value="">Selecciona un integrante</option>
+                    ${contactosDisponibles.map(name => `<option value="${name}">${name}</option>`).join('')}
+                </select>`;
                 integrantesContainer.appendChild(nuevoCampoIntegrante);
             });
 
@@ -150,7 +163,6 @@ import { Button } from "@nextui-org/react";
                 }
             });
 
-            //nuevo
             var userContactsMap = {};
             userContacts.forEach(id => {
                 var nombre = usuarios[id]?.nombre || `Usuario ${id}`;
@@ -348,6 +360,7 @@ import { Button } from "@nextui-org/react";
         font-size: 20px;
         padding: 15px 30px; 
         margin-top: 40px;
+        border-radius: 8px;
     }
 
     #agregarIntegranteBtn {
@@ -355,23 +368,41 @@ import { Button } from "@nextui-org/react";
         color: black; 
     }
 
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+    }
+
     #crearGrupoFormulario {
-        margin-top: 40px;
+        margin-top: 10px;
         color: black;
+        flex-direction: column;
+        display: flex;
+        margin-bottom: 10px; /* Espacio inferior entre los grupos de formulario */
     }
 
     label, h2, input {
         color: black;
+        margin-right: 10px;
     }
 
     input:disabled {
-        background-color: transparent;
+        background-color: #fde688;
     }
 
-    input {
-        background-color: wheat; 
-        border: 3px; border-color: black; 
+    input, .custom-select {
+        background-color: #fde688; 
+        border: 3px; 
+        border-color: black; 
         border-radius: 5px;
+        margin-top: 10px;
+        width: 100%;
+        padding: 3px;
+    }
+    .custom-select option[value=""] {
+        /* Estilo para la opción "Selecciona un integrante" */
+        color: #888; /* Cambia el color del texto a un gris tenue */
     }
     .img-logo {
         position: absolute;
