@@ -25,3 +25,16 @@ export const getCurrentUser =() =>{
 export const getSaldos =() =>{
     return JSON.parse(sessionStorage.getItem("saldos"))
 }
+
+export const getUserByUsername = (username) => {
+    const usuarios = getUsuarios();
+    for(const id in usuarios) {
+        if(usuarios[id].usuario === username) {
+            return {
+                ...usuarios[id],
+                id: id
+            };
+        }
+    }
+    return null;
+}

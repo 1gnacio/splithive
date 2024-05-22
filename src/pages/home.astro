@@ -6,9 +6,10 @@ import { Button } from "@nextui-org/react";
 
 <Layout title="Welcome to Splithive">
     <main>
-        <h1>Bienvenido a <span class="text-gradient">Splithive</span></h1>
-
-        <h1>Lista de Grupos</h1>
+        <div class="header">
+            <img src='/public/splithive.png' alt="Bees" class="img-logo" />
+        </div>
+        <h1 class="page-title">Lista de Grupos</h1>
 
         <div id="grupos"></div>
 
@@ -22,6 +23,11 @@ import { Button } from "@nextui-org/react";
                 <form id="crearGrupoFormulario">
                     <label for="nombreGrupo">Nombre del grupo:</label>
                     <input type="text" id="nombreGrupo" name="nombreGrupo"><br><br>
+
+                    <div>
+                        <input style="width: 75%;" type="text" id="searchUsername" name="searchUsername" placeholder="Ingresar nombre de usuario">
+                        <button id="executeSearch" style="background-color: lightblue; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" type="button">Agregar</button>    
+                    </div>
                     
                     <label for="nombreIntegrante1">Nombre del integrante 1:</label>
                     <input type="text" id="nombreIntegrante1" name="nombreIntegrante1" value="Cami" disabled><br><br>
@@ -40,31 +46,19 @@ import { Button } from "@nextui-org/react";
 
         <script>
             import { hives } from "../../public/hives.astro";
-import { usuarios } from "../../public/usuarios.astro";
-import cargarDatos from "../utils/initLogica";
-            import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
+            import { usuarios } from "../../public/usuarios.astro";
+            import cargarDatos from "../utils/initLogica";
+            import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser, getUserByUsername } from "../utils/utilities"
+            import { contactos } from '../../public/contactos.astro';
 
             var currentDate = new Date();
             var currentUser = 6; 
             sessionStorage.setItem("userID",JSON.stringify(currentUser));
-            // Getting the current date components
-            var year = currentDate.getFullYear();
-            var month = currentDate.getMonth() + 1; // Months are zero-based, so January is 0
-            var day = currentDate.getDate();
-            var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
             cargarDatos();
-            /*if (!sessionStorage.getItem('grupos')) {
-                var grupos = [
-                    { nombre: 'grupo1', integrantes: [{ nombre: 'Camila',userID:6 }, { nombre: 'Mateo', userID: 7}, { nombre: 'Ignacio', userID:4 }, { nombre: 'Juan', userID:0 }, { nombre: 'Manu' ,userID:5}, { nombre: 'Tomas', userID:3 }], gastos: [ { nombre: "boleta de luz", payer:"Tomas",fecha:fechaActual,montoTotal:120,deuda: 40, deudores: ["Tomas", "Manu", "Juan"] } ] },
-                    { nombre: 'grupo2', integrantes: [{ nombre: 'Camila', userID:6 }, { nombre: 'Raul', userID:8 }, { nombre: 'Maria', userID:1 }], gastos: [ { nombre: "supermercado", payer:"Camila",fecha:fechaActual,montoTotal:200,deuda: 100, deudores: ["Camila", "Maria"] }, { nombre: "colegio", payer:"Raul", fecha:fechaActual,montoTotal: 80,deuda: 80, deudores: ["Raul"] } ] }
-                ];
-                sessionStorage.setItem('grupos', JSON.stringify(grupos));
-            } else {
-                var grupos = JSON.parse(sessionStorage.getItem('grupos'))
-            }*/
             var grupos = getGrupos();
             var hive_userActual = getHives();
             console.log(hive_userActual[currentUser])
+
             function actualizarListaGrupos() {
                 hive_userActual = getHives()
                 var contenedorGrupos = document.getElementById('grupos');
@@ -97,11 +91,13 @@ import cargarDatos from "../utils/initLogica";
 
             spanCerrar.onclick = function() {
                 modal.style.display = 'none';
+                document.getElementById('integrantesContainer').innerHTML = '';
             };
 
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = 'none';
+                    document.getElementById('integrantesContainer').innerHTML = '';
                 }
             };
 
@@ -115,22 +111,55 @@ import cargarDatos from "../utils/initLogica";
 
             document.getElementById('cerrarFormBtn').addEventListener('click', function() {
                 document.getElementById('modal').style.display = 'none';
+                document.getElementById('integrantesContainer').innerHTML = '';
             });
-
-            var contadorIntegrantes = 1; 
+            
+            var userContacts = contactos[currentUser] || [];
+            var userContactsNames = userContacts.map(id => usuarios[id]?.nombre || `Usuario ${id}`);
+            /*var contadorIntegrantes = 1; */
+            var integrantesContainer = document.getElementById('integrantesContainer');
 
             document.getElementById('agregarIntegranteBtn').addEventListener('click', function() {
-                contadorIntegrantes++; 
-                var integrantesContainer = document.getElementById('integrantesContainer');
+                /*contadorIntegrantes++; */
+                var contadorIntegrantes = integrantesContainer.children.length + 2; // Adjusted to start from 2
                 var nuevoCampoIntegrante = document.createElement('div');
-                nuevoCampoIntegrante.innerHTML = `<label for="nombreIntegrante${contadorIntegrantes}">Nombre del integrante ${contadorIntegrantes}:</label>
-                                                <input type="text" id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}"><br><br>`;
+                nuevoCampoIntegrante.innerHTML = `
+                    <label for="nombreIntegrante${contadorIntegrantes}">Nombre del integrante ${contadorIntegrantes}:</label>
+                    <select id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}">
+                        <option value="">Selecciona un integrante</option>
+                        ${userContactsNames.map(name => `<option value="${name}">${name}</option>`).join('')}
+                    </select><br><br>`;
                 integrantesContainer.appendChild(nuevoCampoIntegrante);
+            });
+
+            document.getElementById('executeSearch').addEventListener('click', function() {
+                const username = document.getElementById('searchUsername').value;
+                const user = getUserByUsername(username);
+                console.log("User: ", user);
+                if (user) {
+                    var contadorIntegrantes = integrantesContainer.children.length + 2;
+                    var nuevoCampoIntegrante = document.createElement('div');
+                    nuevoCampoIntegrante.innerHTML = `
+                        <label for="nombreIntegrante${contadorIntegrantes}">Nombre del integrante ${contadorIntegrantes}:</label><br>
+                        <select disabled id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}">
+                            <option selected value="${user.usuario}">${user.usuario}</option>
+                        </select><br><br>`;
+                    integrantesContainer.appendChild(nuevoCampoIntegrante);
+                } else {
+                    alert('El usuario no existe');
+                }
+            });
+
+            //nuevo
+            var userContactsMap = {};
+            userContacts.forEach(id => {
+                var nombre = usuarios[id]?.nombre || `Usuario ${id}`;
+                userContactsMap[nombre] = id;
             });
 
             document.getElementById('crearGrupoFormulario').addEventListener('submit', function(event) {
                 event.preventDefault(); 
-
+                hive_userActual = getHives()
                 var nombreGrupo = document.getElementById('nombreGrupo').value;
                 var integrantes = [];
                 integrantes.push(currentUser)
@@ -142,10 +171,21 @@ import cargarDatos from "../utils/initLogica";
                         }
                     }
                 }
-                hives[currentUser].push(maximo+1)
-                for (var i = 1; i <= contadorIntegrantes; i++) {
+                hive_userActual[currentUser].push(maximo+1)
+                for (var i = 2; i <= integrantesContainer.children.length + 1; i++) {
                     var nombreIntegrante = document.getElementById(`nombreIntegrante${i}`).value;
-                    var id_integrante;
+                    var id_integrante = userContactsMap[nombreIntegrante]; 
+                    if (id_integrante != null) {
+                        integrantes.push(Number(id_integrante));
+                        hive_userActual[id_integrante].push(maximo+1);
+                    } 
+                    // Agrego no contacto al grupo
+                    else {
+                        let user = getUserByUsername(nombreIntegrante);
+                        integrantes.push(Number(user.id));
+                        hive_userActual[user.id].push(maximo+1);
+                    }
+                    /*
                     for (const key in usuarios){
                         if (usuarios.hasOwnProperty(key)){
                             if (usuarios[key].usuario == nombreIntegrante){
@@ -153,23 +193,21 @@ import cargarDatos from "../utils/initLogica";
                                 hives[key].push(maximo+1)
                             }
                         }
-                    }
-                    integrantes.push();
+                    }*/
+                    //integrantes.push();
                 }
 
                 var nuevoGrupo = { nombre: nombreGrupo, integrantes: integrantes, gastos: [] };
 
-
-
-
                 grupos[maximo+1] = nuevoGrupo;
                 sessionStorage.setItem('grupos', JSON.stringify(grupos));
 
-                sessionStorage.setItem("hives", JSON.stringify(hives))
+                sessionStorage.setItem("hives", JSON.stringify(hive_userActual));
                 actualizarListaGrupos();
 
-                modal.style.display = 'none'; 
+                document.getElementById('modal').style.display = 'none';
                 document.getElementById('crearGrupoFormulario').reset();
+                document.getElementById('integrantesContainer').innerHTML = '';
             });
 
             actualizarListaGrupos();
@@ -180,9 +218,8 @@ import cargarDatos from "../utils/initLogica";
 <style is:global>
 
     body {
-        background-image: url('/public/fondo.jpeg'); 
+        background-image: url('/public/fondo.jpg'); 
         background-size: cover; 
-        background-position: center; 
         height: 100vh; 
     }
 
@@ -320,6 +357,7 @@ import cargarDatos from "../utils/initLogica";
 
     #crearGrupoFormulario {
         margin-top: 40px;
+        color: black;
     }
 
     label, h2, input {
@@ -334,5 +372,17 @@ import cargarDatos from "../utils/initLogica";
         background-color: wheat; 
         border: 3px; border-color: black; 
         border-radius: 5px;
+    }
+    .img-logo {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 400px; /* Ajusta el tamaño según tus necesidades */
+    }
+    .page-title {
+        margin-top: 10rem; /* Ajusta el margen superior según tus necesidades */
+        text-align: center;
+        color: burlywood;
+        font-size: 3rem; /* Ajusta el tamaño de la fuente según tus necesidades */
     }
 </style>

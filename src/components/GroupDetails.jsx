@@ -84,6 +84,23 @@ export default function GroupDetails(props) {
         window.location.reload();
     };
 
+    function imprimirNombres(gastos, usuarios,id){
+        var index = 0;
+        var names = ""
+        var deudor;
+        console.log(gastos[id])
+        for (deudor in gastos[id].deudores){
+            if (index == 0){
+                names += " " + usuarios[gastos[id].deudores[deudor]].nombre
+                index++;
+            }
+            else{
+                names += ", " + usuarios[gastos[id].deudores[deudor]].nombre
+            }
+        }
+        return names;
+    }
+
     return <div className="p-5">
                 <Card className='p-4'>
                     <CardHeader>
@@ -163,8 +180,8 @@ export default function GroupDetails(props) {
                                             <p>Quien pagó: {usuarios[gastos[id].payer].nombre}</p>
                                             <p>Monto Total: {gastos[id].monto}</p>
                                             <p>Fecha: {gastos[id].fecha}</p>
-                                            {editMode[index] ? <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> : <p style={{color: 'red'}}>Deuda: {gastos[id].deuda} c/u</p>}
-                                            <p>Deudores: {gastos[id].deudores.length > 0 && gastos[id].deudores.reduce((acc, x) => acc + ", " + usuarios[x].nombre)}</p>
+                                            {editMode[index] ? <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> : <p style={{color: 'red'}}>Deuda: {gastos[id].reparto[gastos[id].deudores.at(0)]} c/u</p>}
+                                            <p>Deudores: {gastos[id].deudores.length > 0 && imprimirNombres(gastos,usuarios,id)}</p>
                                         </CardBody>
                                     </Card>
                                     )}
