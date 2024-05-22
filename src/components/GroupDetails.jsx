@@ -29,8 +29,8 @@ export default function GroupDetails(props) {
     var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
 
     calcularSaldos(id, grupo.gastos, gastos)
-    let [deudas, setDeudas] = useState(calcularDeudas(metaSaldos[id], grupo.integrantes))
     let [metaSaldos, setMetaSaldos] = useState(getSaldos())
+    let [deudas, setDeudas] = useState(calcularDeudas(metaSaldos[id], grupo.integrantes))
     
 
     const handleGroupNameEdit = (event) => {
