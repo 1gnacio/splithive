@@ -185,12 +185,12 @@ import { Button } from "@nextui-org/react";
                 hives[currentUser].push(maximo+1)
                 for (var i = 2; i <= integrantesContainer.children.length + 1; i++) {
                     var nombreIntegrante = document.getElementById(`nombreIntegrante${i}`).value;
-                    var id_integrante = userContactsMap[nombreIntegrante];
-                    if (id_integrante) {
+                    var id_integrante = userContactsMap[nombreIntegrante]; 
+                    if (id_integrante != null) {
                         integrantes.push(Number(id_integrante));
                         hives[id_integrante].push(maximo+1);
                     } 
-                    //Agrego no contacto al grupo
+                    // Agrego no contacto al grupo
                     else {
                         let user = getUserByUsername(nombreIntegrante);
                         integrantes.push(Number(user.id));
