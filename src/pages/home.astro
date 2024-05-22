@@ -22,6 +22,11 @@ import { Button } from "@nextui-org/react";
                 <form id="crearGrupoFormulario">
                     <label for="nombreGrupo">Nombre del grupo:</label>
                     <input type="text" id="nombreGrupo" name="nombreGrupo"><br><br>
+
+                    <div>
+                        <input style="width: 75%;" type="text" id="searchUsername" name="searchUsername" placeholder="Ingresar nombre de usuario">
+                        <button id="executeSearch" style="background-color: lightblue; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" type="button">Agregar</button>    
+                    </div>
                     
                     <label for="nombreIntegrante1">Nombre del integrante 1:</label>
                     <input type="text" id="nombreIntegrante1" name="nombreIntegrante1" value="Cami" disabled><br><br>
@@ -40,9 +45,9 @@ import { Button } from "@nextui-org/react";
 
         <script>
             import { hives } from "../../public/hives.astro";
-import { usuarios } from "../../public/usuarios.astro";
-import cargarDatos from "../utils/initLogica";
-            import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
+            import { usuarios } from "../../public/usuarios.astro";
+            import cargarDatos from "../utils/initLogica";
+            import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser, getUserByUsername } from "../utils/utilities"
 
             var currentDate = new Date();
             var currentUser = 6; 
@@ -86,6 +91,22 @@ import cargarDatos from "../utils/initLogica";
                     contenedorGrupos.appendChild(enlaceDetalle);
                 });
             }
+
+            document.getElementById('executeSearch').addEventListener('click', function() {
+                const username = document.getElementById('searchUsername').value;
+                const user = getUserByUsername(username);
+                console.log("User: ", user);
+                if (user) {
+                    contadorIntegrantes++; 
+                    var integrantesContainer = document.getElementById('integrantesContainer');
+                    var nuevoCampoIntegrante = document.createElement('div');
+                    nuevoCampoIntegrante.innerHTML = `<label for="nombreIntegrante${contadorIntegrantes}">Nombre del integrante ${contadorIntegrantes}:</label>
+                                                    <input type="text" value="${user.usuario}" id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}"><br><br>`;
+                    integrantesContainer.appendChild(nuevoCampoIntegrante);
+                } else {
+                    alert('El usuario no existe');
+                }
+            });
 
             var modal = document.getElementById('modal');
             var btnAbrirModal = document.getElementById('crearGrupoBtn');
