@@ -6,9 +6,10 @@ import { Button } from "@nextui-org/react";
 
 <Layout title="Welcome to Splithive">
     <main>
-        <h1>Bienvenido a <span class="text-gradient">Splithive</span></h1>
-
-        <h1>Lista de Grupos</h1>
+        <div class="header">
+            <img src='/public/splithive.png' alt="Bees" class="titulo-imagen" />
+        </div>
+        <h1 class="page-title">Lista de Grupos</h1>
 
         <div id="grupos"></div>
 
@@ -333,5 +334,17 @@ import cargarDatos from "../utils/initLogica";
         background-color: wheat; 
         border: 3px; border-color: black; 
         border-radius: 5px;
+    }
+    .titulo-imagen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 400px; /* Ajusta el tamaño según tus necesidades */
+    }
+    .page-title {
+        margin-top: 10rem; /* Ajusta el margen superior según tus necesidades */
+        text-align: center;
+        color: burlywood;
+        font-size: 3rem; /* Ajusta el tamaño de la fuente según tus necesidades */
     }
 </style>
