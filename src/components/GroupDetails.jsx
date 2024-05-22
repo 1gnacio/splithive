@@ -16,8 +16,7 @@ export default function GroupDetails(props) {
     let [editMode, setEditMode] = useState(grupo.gastos.map(x => false));
     let [newName, setNewName] = useState("");
     let [nuevaDeuda, setNuevaDeuda] = useState("");
-    let [gastos,setGastos] = useState(getGastos()); 
-    let [saldos, setSaldos] = useState(calcularSaldos(id, grupo.gastos, gastos));
+    let [gastos,setGastos] = useState(getGastos());
     const [editingGroup, setEditingGroup] = useState(false);
     const [newGroupName, setNewGroupName] = useState(grupo.nombre);
     const [editingMember, setEditingMember] = useState(null);
@@ -29,6 +28,8 @@ export default function GroupDetails(props) {
     var month = currentDate.getMonth() + 1; // Months are zero-based, so January is 0
     var day = currentDate.getDate();
     var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
+
+    calcularSaldos(id, grupo.gastos, gastos)
     
 
     const handleGroupNameEdit = (event) => {
