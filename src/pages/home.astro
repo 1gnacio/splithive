@@ -44,6 +44,7 @@ import { Button } from "@nextui-org/react";
             import { usuarios } from "../../public/usuarios.astro";
             import cargarDatos from "../utils/initLogica";
             import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
+            import { contactos } from '../../public/contactos.astro';
 
             var currentDate = new Date();
             var currentUser = 6; 
@@ -117,16 +118,31 @@ import { Button } from "@nextui-org/react";
             document.getElementById('cerrarFormBtn').addEventListener('click', function() {
                 document.getElementById('modal').style.display = 'none';
             });
-
-            var contadorIntegrantes = 1; 
+            
+            var userContacts = contactos[currentUser] || [];
+            var userContactsNames = userContacts.map(id => usuarios[id]?.nombre || `Usuario ${id}`);
+            /*var contadorIntegrantes = 1; */
+            var integrantesContainer = document.getElementById('integrantesContainer');
 
             document.getElementById('agregarIntegranteBtn').addEventListener('click', function() {
-                contadorIntegrantes++; 
-                var integrantesContainer = document.getElementById('integrantesContainer');
+                /*contadorIntegrantes++; */
+                var contadorIntegrantes = integrantesContainer.children.length + 2; // Adjusted to start from 2
                 var nuevoCampoIntegrante = document.createElement('div');
-                nuevoCampoIntegrante.innerHTML = `<label for="nombreIntegrante${contadorIntegrantes}">Nombre del integrante ${contadorIntegrantes}:</label>
-                                                <input type="text" id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}"><br><br>`;
+                nuevoCampoIntegrante.innerHTML = `
+                    <label for="nombreIntegrante${contadorIntegrantes}">Nombre del integrante ${contadorIntegrantes}:</label>
+                    <select id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}">
+                    <option value="">Selecciona un integrante</option>
+                    ${userContactsNames.map(name => `<option value="${name}">${name}</option>`).join('')}
+                    </select><br><br>`;
                 integrantesContainer.appendChild(nuevoCampoIntegrante);
+            });
+
+
+            //nuevo
+            var userContactsMap = {};
+            userContacts.forEach(id => {
+                var nombre = usuarios[id]?.nombre || `Usuario ${id}`;
+                userContactsMap[nombre] = id;
             });
 
             document.getElementById('crearGrupoFormulario').addEventListener('submit', function(event) {
@@ -144,9 +160,15 @@ import { Button } from "@nextui-org/react";
                     }
                 }
                 hives[currentUser].push(maximo+1)
-                for (var i = 1; i <= contadorIntegrantes; i++) {
+                for (var i = 1; i <= integrantesContainer.children.length + 1; i++) {
                     var nombreIntegrante = document.getElementById(`nombreIntegrante${i}`).value;
-                    var id_integrante;
+                    //var id_integrante;
+                    var id_integrante = userContactsMap[nombreIntegrante]; //NUEVO
+                    if (id_integrante) {
+                        integrantes.push(Number(id_integrante));
+                        hives[id_integrante].push(maximo+1);
+                    } //TERMINA NUEVO
+                    /*
                     for (const key in usuarios){
                         if (usuarios.hasOwnProperty(key)){
                             if (usuarios[key].usuario == nombreIntegrante){
@@ -154,22 +176,19 @@ import { Button } from "@nextui-org/react";
                                 hives[key].push(maximo+1)
                             }
                         }
-                    }
-                    integrantes.push();
+                    }*/
+                    //integrantes.push();
                 }
 
                 var nuevoGrupo = { nombre: nombreGrupo, integrantes: integrantes, gastos: [] };
 
-
-
-
                 grupos[maximo+1] = nuevoGrupo;
                 sessionStorage.setItem('grupos', JSON.stringify(grupos));
 
-                sessionStorage.setItem("hives", JSON.stringify(hives))
+                sessionStorage.setItem("hives", JSON.stringify(hives));
                 actualizarListaGrupos();
 
-                modal.style.display = 'none'; 
+                document.getElementById('modal').style.display = 'none';
                 document.getElementById('crearGrupoFormulario').reset();
             });
 
@@ -320,6 +339,7 @@ import { Button } from "@nextui-org/react";
 
     #crearGrupoFormulario {
         margin-top: 40px;
+        color: black;
     }
 
     label, h2, input {
