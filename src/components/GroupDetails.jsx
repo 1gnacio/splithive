@@ -3,8 +3,8 @@ import calcularDeudas from '../utils/logicaNegocio';
 import calcularSaldos from '../utils/calcularSaldos';
 import MapListbox from './mapListBox';
 import React from 'react';
-import { useEffect, useState } from 'react';
-import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
+import { useState } from 'react';
+import { getUsuarios, getGrupos, getGastos, getSaldos } from "../utils/utilities"
 
 
 export default function GroupDetails(props) {
@@ -29,7 +29,8 @@ export default function GroupDetails(props) {
     var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
 
     calcularSaldos(id, grupo.gastos, gastos)
-    let [deudas, setDeudas] = useState(calcularDeudas(id, grupo.integrantes))
+    let [deudas, setDeudas] = useState(calcularDeudas(metaSaldos[id], grupo.integrantes))
+    let [metaSaldos, setMetaSaldos] = useState(getSaldos())
     
 
     const handleGroupNameEdit = (event) => {

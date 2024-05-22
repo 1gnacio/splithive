@@ -1,18 +1,16 @@
 import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter, Button, Link} from '@nextui-org/react';
-import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
-import { useState } from "react"
-import { getSaldos } from "../utils/utilities"
+import { getGastos, getHives } from "../utils/utilities"
 
-export default function calcularDeudas(id_grupo, integrantes){
-    let [metaSaldos, setMetaSaldos] = useState(getSaldos())
+export default function calcularDeudas(saldos, integrantes){
+    if (!saldos) return {}
     var deudas = {}
 
     integrantes.forEach(id => {deudas[id] = 0})
 
-    for (const integrante in metaSaldos[id_grupo]) {
-        for (const acreedor in metaSaldos[id_grupo][integrante]) {
-            deudas[integrante] -= metaSaldos[id_grupo][integrante][acreedor]
-            deudas[acreedor] += metaSaldos[id_grupo][integrante][acreedor]
+    for (const integrante in saldos) {
+        for (const acreedor in saldos[integrante]) {
+            deudas[integrante] -= saldos[integrante][acreedor]
+            deudas[acreedor] += saldos[integrante][acreedor]
         }
     }
 
