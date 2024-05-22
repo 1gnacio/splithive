@@ -3,12 +3,12 @@ import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter,
 import { useEffect, useState } from 'react';
 import calcularSaldos, { saldar } from '../utils/calcularSaldos';
 import { addScaleCorrector } from 'framer-motion';
-import {getUsuarios} from "../utils/utilities"
+import {getUsuarios, getSaldos} from "../utils/utilities"
 
 export function MapListbox(props) {
 
-    let [usuarios, setUsuarios] = useState(getUsuarios());
-    let [metaSaldos, setMetaSaldos] = useState(JSON.parse(sessionStorage.getItem("saldos")))
+    let [usuarios, setUsuarios] = useState(getUsuarios())
+    let [metaSaldos, setMetaSaldos] = useState(getSaldos())
 
     return (
         <div>
