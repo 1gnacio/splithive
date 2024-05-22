@@ -1,5 +1,7 @@
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input} from '@nextui-org/react';
 import calcularDeudas from '../utils/logicaNegocio';
+import calcularSaldos from '../utils/calcularSaldos';
+import MapListbox from './mapListBox';
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
@@ -14,12 +16,11 @@ export default function GroupDetails(props) {
     let [editMode, setEditMode] = useState(grupo.gastos.map(x => false));
     let [newName, setNewName] = useState("");
     let [nuevaDeuda, setNuevaDeuda] = useState("");
-    let [gastos,setGastos] = useState(getGastos()); 
+    let [gastos,setGastos] = useState(getGastos());
     const [editingGroup, setEditingGroup] = useState(false);
     const [newGroupName, setNewGroupName] = useState(grupo.nombre);
     const [editingMember, setEditingMember] = useState(null);
     const [newMemberName, setNewMemberName] = useState(null);
-    console.log(deudas)
     var currentDate = new Date();
 
     // Getting the current date components
@@ -27,6 +28,8 @@ export default function GroupDetails(props) {
     var month = currentDate.getMonth() + 1; // Months are zero-based, so January is 0
     var day = currentDate.getDate();
     var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
+
+    calcularSaldos(id, grupo.gastos, gastos)
     
 
     const handleGroupNameEdit = (event) => {
@@ -125,15 +128,6 @@ export default function GroupDetails(props) {
                                 {Array.from(deudas,([nombre, deuda])=>
                                 (
                                     <Card key={nombre} className='w-50 gap gap-2' style={{marginBottom: "10px"}}>
-                                        {/* <CardBody>
-                                            <div>
-                                                <span>{nombre}</span>
-                                                <button name="edit" onClick={startEditingGroup}>
-                                                    <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
-                                                </button>
-                                            </div>
-                                            <p style={{color: deuda < 0 ? 'red' : 'green'}}>Saldo: {deuda}</p>
-                                        </CardBody> */}
                                         <CardBody>
                                             <div>
                                                 {editingMember === nombre ? (
@@ -145,7 +139,6 @@ export default function GroupDetails(props) {
                                                     />
                                                 ) : (
                                                     <>
-                                                        {console.log(nombre)}
                                                         <span>{usuarios[nombre].nombre}</span>
                                                         <button onClick={() => startEditingMemberName(nombre)}>
                                                             <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
@@ -192,6 +185,9 @@ export default function GroupDetails(props) {
                                         </CardBody>
                                     </Card>
                                     )}
+                            </Tab>
+                            <Tab key="saldos" title="Saldos">
+                                <MapListbox id_grupo = {id}></MapListbox>
                             </Tab>
                         </Tabs>
                     </CardBody>

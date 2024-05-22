@@ -18,8 +18,12 @@ export const getGastos =() =>{
     return JSON.parse(sessionStorage.getItem("gastos"))
 }
 
-export const getCurrentUser = () =>{
+export const getCurrentUser =() =>{
     return JSON.parse(sessionStorage.getItem("userID"))
+}
+
+export const getSaldos =() =>{
+    return JSON.parse(sessionStorage.getItem("saldos"))
 }
 
 export const getUserByUsername = (username) => {
