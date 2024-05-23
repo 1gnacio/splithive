@@ -1,0 +1,29 @@
+body {
+    background-image: url('/fondo.jpg'); 
+    background-size: cover;  
+    height: 100%;
+    min-height: 100vh;
+}
+
+main {
+    margin: auto;
+    padding: 1rem;
+    width: 800px;
+    max-width: calc(100% - 2rem);
+    color: white;
+    font-size: 20px;
+    line-height: 1.6;
+}
+
+h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 1em;
+    color: burlywood;
+}
+
+label, h2, input {
+    color: black;
+}

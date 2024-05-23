@@ -1,6 +1,9 @@
 ---
 import GroupDetails from '../../components/GroupDetails';
 import Layout from '../../layouts/Layout.astro';
+import '../../styles/modal.css'
+import '../../styles/yellowBtn.css'
+import '../../styles/global.css'
 
 const { id } = Astro.params;
 ---
@@ -11,25 +14,36 @@ const { id } = Astro.params;
 
 
 
-        <button id="crearGastoBtn">Crear gasto</button>
+        <button id="crearGastoBtn" class="yellowBtn">Crear gasto</button>
 
         <div id="modal" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close" id="closeModal">&times;</span>
-                <h2>Crear Nuevo gasto</h2>
+                <img src='/public/bee.png' alt="Bees" style="width: 100px; "/>
+
                 <form id="crearGastoFormulario">
-                    <label for="nombreGasto">Nombre del gasto:</label>
-                    <input type="text" id="nombreGasto" name="nombreGasto"><br><br>
-                    <label for="montoGasto ">Monto:</label>
-                    <input type="number" step="0.01" min="0" id="montoGasto" name="montoGasto"><br><br>
-                    <label for="dropdown">Quien Pagó:</label>
-                    <select id="quienPago">
-                    </select>
+
+                    <div class="form-group">
+                        <label for="nombreGasto">Nombre del gasto:</label>
+                        <input type="text" id="nombreGasto" name="nombreGasto" class="input-field">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="montoGasto ">Monto:</label>
+                        <input type="number" step="0.01" min="0" id="montoGasto" name="montoGasto">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dropdown">Quien Pagó:</label>
+                        <select id="quienPago">
+                        </select>
+                    </div>
+
                     <div id="deudoresContainer"></div>
                     <!-- <button type="button" id="agregarDeudorBtn">+</button><br><br> -->
                     <div style="margin-top: 10px;">
-                        <button style="background-color: lightblue; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" type="submit">Crear</button>
-                        <button style="background-color: lightgrey; border: 3px; border-color: black; border-radius: 5px; padding: 3px; color: black;" id="cerrarFormBtn" type="button">Cancelar</button>
+                        <button class="submitBtn" type="submit">Crear</button>
+                        <button class="cancelarBtn" id="cerrarFormBtn" type="button">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -178,11 +192,7 @@ const { id } = Astro.params;
 </Layout>
 
 <style is:global>
-    body {
-        background-image: url('/public/fondo.jpg'); 
-        background-size: cover; 
-        
-    }
+
     #gastos {
         display: flex;
         flex-wrap: wrap;
@@ -210,39 +220,6 @@ const { id } = Astro.params;
         color: grey;
     }
 
-    main {
-		margin: auto;
-		padding: 1rem;
-		width: 800px;
-		max-width: calc(100% - 2rem);
-		color: white;
-		font-size: 20px;
-		line-height: 1.6;
-	}
-	.astro-a {
-		position: absolute;
-		top: -32px;
-		left: 50%;
-		transform: translatex(-50%);
-		width: 220px;
-		height: auto;
-		z-index: -1;
-	}
-	h1 {
-		font-size: 4rem;
-		font-weight: 700;
-		line-height: 1;
-		text-align: center;
-		margin-bottom: 1em;
-        color: burlywood;
-	}
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-size: 400%;
-		background-position: 0%;
-	}
 	.instructions {
 		margin-bottom: 2rem;
 		border: 1px solid rgba(var(--accent-light), 25%);
@@ -267,52 +244,10 @@ const { id } = Astro.params;
 		gap: 2rem;
 		padding: 0;
 	}
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 10% auto;
-        padding: 20px;
-        border-radius: 8px;
-        width: 80%;
-        max-width: 500px;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
 
     .deudor-checkbox {
         display: inline-block;
         margin-right: 10px; /* Adjust as needed */
-    }
-
-    #crearGastoBtn {
-        background-color: #FFD93D; 
-        color: black; 
-        font-size: 20px;
-        padding: 15px 30px; 
-        margin-top: 40px;
     }
 
     #agregarDeudorBtn {
@@ -324,9 +259,6 @@ const { id } = Astro.params;
         margin-top: 40px;
     }
 
-    label, h2, input {
-        color: black;
-    }
 
     input:disabled {
         background-color: transparent;
@@ -345,6 +277,7 @@ const { id } = Astro.params;
     border-radius: 4px;
     color: #333
     }
+
     #quienPago option {
     padding: 8px;
     font-size: 16px;

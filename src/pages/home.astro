@@ -1,20 +1,22 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Button } from "@nextui-org/react";
-
+import '../styles/modal.css'
+import '../styles/yellowBtn.css'
+import '../styles/global.css'
 ---
 
 <Layout title="Welcome to Splithive">
     <main>
         <div class="header">
-            <img src='/public/splithive.png' alt="Bees" class="img-logo" />
+            <img src='splithive.png' alt="Bees" class="img-logo" />
         </div>
         <h1 class="page-title">Lista de Grupos</h1>
 
         <div id="grupos"></div>
 
-        <button id="crearGrupoBtn">Crear grupo</button>
-        <button id="beesBtn">Bees</button>
+        <button id="crearGrupoBtn" class="yellowBtn">Crear grupo</button>
+        <button id="beesBtn" class="yellowBtn">Bees</button>
 
         <div id="modal" class="modal" style="display: none;">
             <div class="modal-content">
@@ -41,12 +43,12 @@ import { Button } from "@nextui-org/react";
                     
                     <div>
                         <input style="width: 75%;" type="text" id="searchUsername" name="searchUsername" placeholder="Ingresar nombre de usuario">
-                        <button id="executeSearch" style="background-color: #FFD93D; border: 3px; border-color: black; border-radius: 5px; padding: 3px 10px; color: black;" type="button">Agregar</button>    
+                        <button id="executeSearch" class="submitBtn" type="button">Agregar</button>    
                     </div>
 
                     <div style="margin-top: 60px;">
-                        <button style="background-color: #FFD93D; border: 3px; border-color: black; border-radius: 5px; padding: 3px 10px; color: black;" type="submit">Crear</button>
-                        <button style="background-color: lightgrey; border: 3px; border-color: black; border-radius: 5px; padding: 3px 10px; color: black;" id="cerrarFormBtn" type="button">Cancelar</button>
+                        <button class="submitBtn" type="submit">Crear</button>
+                        <button class="cancelarBtn" id="cerrarFormBtn" type="button">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -153,10 +155,9 @@ import { Button } from "@nextui-org/react";
                     var contadorIntegrantes = integrantesContainer.children.length + 2;
                     var nuevoCampoIntegrante = document.createElement('div');
                     nuevoCampoIntegrante.innerHTML = `
-                        <label for="nombreIntegrante${contadorIntegrantes}">Nombre del integrante ${contadorIntegrantes}:</label><br>
-                        <select disabled id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}">
+                        <select disabled id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select">
                             <option selected value="${user.usuario}">${user.usuario}</option>
-                        </select><br><br>`;
+                        </select>`;
                     integrantesContainer.appendChild(nuevoCampoIntegrante);
                 } else {
                     alert('El usuario no existe');
@@ -229,11 +230,7 @@ import { Button } from "@nextui-org/react";
 
 <style is:global>
 
-    body {
-        background-image: url('/public/fondo.jpg'); 
-        background-size: cover; 
-        height: 100vh; 
-    }
+    
 
     #grupos {
         display: flex;
@@ -262,39 +259,6 @@ import { Button } from "@nextui-org/react";
         color: grey;
     }
 
-    main {
-		margin: auto;
-		padding: 1rem;
-		width: 800px;
-		max-width: calc(100% - 2rem);
-		color: white;
-		font-size: 20px;
-		line-height: 1.6;
-	}
-	.astro-a {
-		position: absolute;
-		top: -32px;
-		left: 50%;
-		transform: translatex(-50%);
-		width: 220px;
-		height: auto;
-		z-index: -1;
-	}
-	h1 {
-		font-size: 4rem;
-		font-weight: 700;
-		line-height: 1;
-		text-align: center;
-		margin-bottom: 1em;
-        color: burlywood;
-	}
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-size: 400%;
-		background-position: 0%;
-	}
 	.instructions {
 		margin-bottom: 2rem;
 		border: 1px solid rgba(var(--accent-light), 25%);
@@ -319,59 +283,11 @@ import { Button } from "@nextui-org/react";
 		gap: 2rem;
 		padding: 0;
 	}
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 10% auto;
-        padding: 20px;
-        border-radius: 8px;
-        width: 80%;
-        max-width: 500px;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    #crearGrupoBtn, #beesBtn {
-        background-color: #FFD93D; 
-        color: black; 
-        font-size: 20px;
-        padding: 15px 30px; 
-        margin-top: 40px;
-        border-radius: 8px;
-    }
+    
 
     #agregarIntegranteBtn {
         background-color: #F6F1E9;  
         color: black; 
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 10px;
     }
 
     #crearGrupoFormulario {
@@ -380,11 +296,6 @@ import { Button } from "@nextui-org/react";
         flex-direction: column;
         display: flex;
         margin-bottom: 10px; /* Espacio inferior entre los grupos de formulario */
-    }
-
-    label, h2, input {
-        color: black;
-        margin-right: 10px;
     }
 
     input:disabled {
@@ -400,10 +311,7 @@ import { Button } from "@nextui-org/react";
         width: 100%;
         padding: 3px;
     }
-    .custom-select option[value=""] {
-        /* Estilo para la opción "Selecciona un integrante" */
-        color: #888; /* Cambia el color del texto a un gris tenue */
-    }
+    
     .img-logo {
         position: absolute;
         top: 0;
