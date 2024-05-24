@@ -19,11 +19,15 @@ export function MapListbox(props) {
                             if (monto != 0) {
                                 return (
                                     <ul>
-                                        <li key={deudor}> 
-                                            {usuarios[deudor].nombre} le debe {monto} a {usuarios[acreedor].nombre}
-                                            <div>
-                                                <Button name="Saldar" onClick={() => {saldar(props.id_grupo, deudor, acreedor), window.location.reload()}}>Saldar</Button>
-                                            </div>
+                                        <li key={deudor}>
+                                        <Card style={{display: "flex", justifyContent: "center", marginBottom: "10px"}}>
+                                            <CardBody>
+                                                {usuarios[deudor].nombre} le debe {monto} a {usuarios[acreedor].nombre}
+                                                <div>
+                                                    <Button style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => {saldar(props.id_grupo, deudor, acreedor), window.location.reload()}}>Saldar</Button>
+                                                </div>
+                                            </CardBody>
+                                        </Card>
                                         </li>
                                     </ul>
                                 );
