@@ -44,15 +44,19 @@ export default function RecaudacionDisplay(props) {
                             </Card>  
                         </Tab>
                         <Tab key="donaciones" title="Donaciones">
-                            {grupo.donaciones.map((id, index) =>
-                                <Card key={id} style={{background:"transparent", borderBlockColor: "gold"}}>
-                                    <CardBody>
-                                        <p style={{color: "gold"}}>Donante: {usuarios[donaciones[id].donante].nombre}</p>
-                                        <p style={{color: "gold"}}>Monto: {donaciones[id].monto}</p>
-                                        <p style={{color: "gold"}}>Fecha: {donaciones[id].fecha}</p>
-                                        <p style={{color: "gold"}}>Mensaje: {(donaciones[id].mensaje != '') ? donaciones[id].mensaje : "No se adjuntó mensaje."}</p>
-                                    </CardBody>
-                                </Card>
+                            {grupo.donaciones.length === 0 ? (
+                                <p style={{color:"gold"}}>No se han recibido donaciones aún.</p>
+                            ) : (
+                                grupo.donaciones.map((id, index) =>
+                                    <Card key={id} style={{background:"transparent", borderBlockColor: "gold"}}>
+                                        <CardBody>
+                                            <p style={{color: "gold"}}>Donante: {usuarios[donaciones[id].donante].nombre}</p>
+                                            <p style={{color: "gold"}}>Monto: {donaciones[id].monto}</p>
+                                            <p style={{color: "gold"}}>Fecha: {donaciones[id].fecha}</p>
+                                            <p style={{color: "gold"}}>Mensaje: {(donaciones[id].mensaje != '') ? donaciones[id].mensaje : "No se adjuntó mensaje."}</p>
+                                        </CardBody>
+                                    </Card>
+                                )
                             )}
                         </Tab>
                     </Tabs>
