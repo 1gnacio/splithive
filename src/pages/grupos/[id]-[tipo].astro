@@ -5,14 +5,12 @@ import '../../styles/modal.css'
 import '../../styles/yellowBtn.css'
 import '../../styles/global.css'
 
-const { id } = Astro.params;
+const { id, tipo } = Astro.params;
 ---
 
 <Layout title="Welcome to Splithive">
     <main>
-        <GroupDetails client:only id={id}></GroupDetails>
-
-
+        {tipo === "gastos" && (<GroupDetails client:only id={id}></GroupDetails>)}
 
         <button id="crearGastoBtn" class="yellowBtn">Crear gasto</button>
 
