@@ -1,0 +1,48 @@
+.main_body{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    padding-top: 15%;
+    gap: 10px;
+}
+
+.username_bar{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    min-width: 50px;
+}
+
+.username_info{
+    color: yellow;
+    font-size: large;
+    padding-top: 7px;
+    padding-left: 5px;
+}
+
+.password_bar{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.password_info{
+    color: yellow;
+    font-size: large;
+    padding-top: 7px;
+    padding-left: 5px;
+}
+
+.bar{
+    max-width: max-content;
+}
+
+.bar_email{
+    max-width: max-content;
+    padding-left: 35px;
+}
+
+.name_bar{
+    max-width: max-content;
+    padding-left: 15px;
+}

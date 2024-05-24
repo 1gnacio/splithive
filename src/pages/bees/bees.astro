@@ -4,11 +4,13 @@ import { bees } from '../../../public/beesDeprecated.astro';
 import '../../styles/yellowBtn.css'
 import '../../styles/global.css'
 import '../../styles/modal.css'
+import CerrarSesion from '../../components/cerrarsesion';
 
 ---
 
 <Layout title="Welcome to Splithive">
     <main>
+        <CerrarSesion client:only></CerrarSesion>
         <div class="container">
             <div style="
             display: flex;

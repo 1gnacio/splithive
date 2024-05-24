@@ -4,12 +4,14 @@ import Layout from '../../layouts/Layout.astro';
 import '../../styles/modal.css'
 import '../../styles/yellowBtn.css'
 import '../../styles/global.css'
+import CerrarSesion from '../../components/cerrarsesion';
 
 const { id } = Astro.params;
 ---
 
 <Layout title="Welcome to Splithive">
     <main>
+        <CerrarSesion client:only></CerrarSesion>
         <GroupDetails client:only id={id}></GroupDetails>
 
 

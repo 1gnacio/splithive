@@ -1,0 +1,16 @@
+.cerrar{
+    z-index: 1;
+    display: inline-flex;
+    max-width:1000px;
+    gap: 300px;
+}
+
+.button{
+    background: rgb(0,0,0);
+    background: linear-gradient(90deg, rgba(0,0,0,1) 4%, rgba(118,121,9,1) 12%, rgba(243,255,0,1) 100%);
+}
+
+.text{
+    color: black;
+    
+}
