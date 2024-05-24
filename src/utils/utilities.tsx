@@ -27,6 +27,10 @@ export const getSaldos =() =>{
     return metaSaldos ? metaSaldos : {}
 }
 
+export const getDonaciones =() =>{
+    return JSON.parse(sessionStorage.getItem("donaciones"))
+}
+
 export const getUserByUsername = (username) => {
     const usuarios = getUsuarios();
     for(const id in usuarios) {

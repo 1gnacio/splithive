@@ -3,6 +3,7 @@ import {contactos} from "../../public/contactos.astro"
 import {grupos} from "../../public/grupos.astro"
 import {hives} from "../../public/hives.astro"
 import {usuarios} from "../../public/usuarios.astro"
+import {donaciones} from "../../public/donaciones.astro"
 
 
 export default function cargarDatos(){
@@ -24,5 +25,9 @@ export default function cargarDatos(){
 
     if (!sessionStorage.getItem('contactos')) {
         sessionStorage.setItem('contactos', JSON.stringify(contactos));
+    }
+
+    if (!sessionStorage.getItem('donaciones')) {
+        sessionStorage.setItem('donaciones', JSON.stringify(donaciones));
     }
 }
