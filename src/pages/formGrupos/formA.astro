@@ -3,6 +3,8 @@ import Layout from '../../layouts/Layout.astro';
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input} from '@nextui-org/react';
 import '../../styles/global.css'
 import '../../styles/formGroups.css'
+
+import ImageContainer from '../../components/groupsForms/ImageContainer'
 ---
 
 <Layout title="New Group">
@@ -10,9 +12,10 @@ import '../../styles/formGroups.css'
 
     <Card className='p-4'>
 
-        <img src='/public/images/bee.png' alt="Bees" style="width: 100px; "/>
-
         <form id="crearGrupoFormulario">
+
+            
+            <ImageContainer rightImageSrc='/public/images/gastos.png'/>
                         
             <div class="form-group">
                 <label for="nombreGrupo">Nombre del grupo:</label>
@@ -30,8 +33,8 @@ import '../../styles/formGroups.css'
                 <button type="button" id="agregarIntegranteBtn">+</button>
             </div>
             
-            <div>
-                <input style="width: 75%;" type="text" id="searchUsername" name="searchUsername" placeholder="Ingresar nombre de usuario">
+            <div class="searchContainer">
+                <input style="width: 75%;" type="text" id="searchUsername" name="searchUsername" placeholder="Ingresar nombre de usuario" class="input-field">
                 <button id="executeSearch" class="submitBtn" type="button">Agregar</button>    
             </div>
 
@@ -83,10 +86,11 @@ import '../../styles/formGroups.css'
                     var contadorIntegrantes = integrantesContainer.children.length + 2;
                     var nuevoCampoIntegrante = document.createElement('div');
                     nuevoCampoIntegrante.innerHTML = `
-                        <select disabled id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select">
+                        <select disabled id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select added-user">
                             <option selected value="${user.usuario}">${user.usuario}</option>
                         </select>`;
                     integrantesContainer.appendChild(nuevoCampoIntegrante);
+                    document.getElementById('searchUsername').value = "";
                 } else {
                     alert('El usuario no existe');
                 }
