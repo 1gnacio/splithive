@@ -20,37 +20,37 @@ export default function RecaudacionDisplay(props) {
 
     return (
         <div className="p-5">
-            <Card className='p-4'>
+            <Card className='p-4' style={{background: "transparent"}}>
                 <CardHeader>
-                    <h4 className="font-bold text-large">
+                    <h4 className="font-bold text-large" style={{color: "gold"}}>
                         {grupo.nombre}
                     </h4>
                 </CardHeader>
                 <CardBody>
-                    <Tabs aria-label="Options">
+                    <Tabs aria-label="Options" color="warning" radius="full">
                         <Tab key="info" title="Info">
-                            <Card>
+                            <Card style={{background:"transparent"}}>
                                 <CardBody>
-                                    <Progress size="lg" color="success" label={labelProgreso} value={porcentajeProgreso}/>
+                                    <Progress size="lg" color="warning" style={{color:"gold"}} label={labelProgreso} value={porcentajeProgreso}/>
                                     {suma >= grupo.objetivo ? (
-                                        <p>Cumplimos con el objetivo!! Muchas gracias a aquellos que colaboraron!!</p>
+                                        <p style={{color: "gold"}}>Cumplimos con el objetivo!! Muchas gracias a aquellos que colaboraron!!</p>
                                     ) : (
-                                        <p>Vamos {suma} pesos! Faltan {grupo.objetivo - suma} para cumplir nuestro objetivo!</p>
+                                        <p style={{color: "gold"}}>Vamos {suma} pesos! Faltan {grupo.objetivo - suma} para cumplir nuestro objetivo!</p>
                                     )}
                                     <div>
-                                        <Button>Donar!</Button>
+                                        <Button color="warning">Donar!</Button>
                                     </div>
                                 </CardBody>
                             </Card>  
                         </Tab>
                         <Tab key="donaciones" title="Donaciones">
                             {grupo.donaciones.map((id, index) =>
-                                <Card key={id}>
+                                <Card key={id} style={{background:"transparent", borderBlockColor: "gold"}}>
                                     <CardBody>
-                                        <p>Donante: {usuarios[donaciones[id].donante].nombre}</p>
-                                        <p>Monto: {donaciones[id].monto}</p>
-                                        <p>Fecha: {donaciones[id].fecha}</p>
-                                        <p>Mensaje: {(donaciones[id].mensaje != '') ? donaciones[id].mensaje : "No se adjuntó mensaje."}</p>
+                                        <p style={{color: "gold"}}>Donante: {usuarios[donaciones[id].donante].nombre}</p>
+                                        <p style={{color: "gold"}}>Monto: {donaciones[id].monto}</p>
+                                        <p style={{color: "gold"}}>Fecha: {donaciones[id].fecha}</p>
+                                        <p style={{color: "gold"}}>Mensaje: {(donaciones[id].mensaje != '') ? donaciones[id].mensaje : "No se adjuntó mensaje."}</p>
                                     </CardBody>
                                 </Card>
                             )}
@@ -58,7 +58,7 @@ export default function RecaudacionDisplay(props) {
                     </Tabs>
                 </CardBody>
                 <CardFooter>
-                    <Button href='/home' as={Link} color="primary" showAnchorIcon variant="solid">
+                    <Button href='/home' as={Link} color="warning" showAnchorIcon variant="solid">
                         Volver
                     </Button>
                 </CardFooter>
