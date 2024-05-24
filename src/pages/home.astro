@@ -5,6 +5,8 @@ import '../styles/modal.css'
 import '../styles/yellowBtn.css'
 import '../styles/global.css'
 import Header from '../components/Header';
+import GroupsModal from '../components/GroupsModal';
+
 ---
 
 <Layout title="Welcome to Splithive">
@@ -19,47 +21,20 @@ import Header from '../components/Header';
         <button id="beesBtn" class="yellowBtn">Bees</button>
 
         <div id="modal" class="modal" style="display: none;">
+            
             <div class="modal-content">
-                <span class="close" id="closeModal">&times;</span>
-                <img src='/public/bee.png' alt="Bees" style="width: 100px; "/>
                 
-                <form id="crearGrupoFormulario">
-                    
-                    <div class="form-group">
-                        <label for="nombreGrupo">Nombre del grupo:</label>
-                        <input type="text" id="nombreGrupo" name="nombreGrupo" class="input-field">
-                    </div>
+                <span class="close" id="closeModal">&times;</span>
 
-                    <div class="form-group">
-                        <label for="nombreIntegrante1">Integrantes:</label>
-                        <input type="text" id="nombreIntegrante1" name="nombreIntegrante1" value="Cami" class="input-field" disabled>
-                    </div>
+                <GroupsModal />
 
-                    <div id="integrantesContainer"></div>
-
-                    <div class="form-group">
-                        <button type="button" id="agregarIntegranteBtn">+</button>
-                    </div>
-                    
-                    <div>
-                        <input style="width: 75%;" type="text" id="searchUsername" name="searchUsername" placeholder="Ingresar nombre de usuario">
-                        <button id="executeSearch" class="submitBtn" type="button">Agregar</button>    
-                    </div>
-
-                    <div style="margin-top: 60px;">
-                        <button class="submitBtn" type="submit">Crear</button>
-                        <button class="cancelarBtn" id="cerrarFormBtn" type="button">Cancelar</button>
-                    </div>
-                </form>
             </div>
         </div>
 
         <script>
-            import { hives } from "../../public/hives.astro";
-            import { usuarios } from "../../public/usuarios.astro";
+            
             import cargarDatos from "../utils/initLogica";
             import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser, getUserByUsername } from "../utils/utilities"
-            import { contactos } from '../../public/contactos.astro';
 
             var currentDate = new Date();
             var currentUser = 6; 
@@ -104,123 +79,8 @@ import Header from '../components/Header';
                 document.getElementById('integrantesContainer').innerHTML = '';
             };
 
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                    document.getElementById('integrantesContainer').innerHTML = '';
-                }
-            };
-
-            document.getElementById('crearGrupoBtn').addEventListener('click', function() {
-                document.getElementById('crearGrupoForm').style.display = 'block';
-            });
-
             document.getElementById('beesBtn').addEventListener('click', function() {
                 window.location.href = 'bees/bees'; 
-            });
-
-            document.getElementById('cerrarFormBtn').addEventListener('click', function() {
-                document.getElementById('modal').style.display = 'none';
-                document.getElementById('integrantesContainer').innerHTML = '';
-            });
-            
-            var userContacts = contactos[currentUser] || [];
-            var userContactsNames = userContacts.map(id => usuarios[id]?.nombre || `Usuario ${id}`);
-            /*var contadorIntegrantes = 1; */
-            var integrantesContainer = document.getElementById('integrantesContainer');
-
-            document.getElementById('agregarIntegranteBtn').addEventListener('click', function() {
-                var contadorIntegrantes = integrantesContainer.children.length + 2;
-                var nuevoCampoIntegrante = document.createElement('div');
-
-                //nuevoCampoIntegrante.className = 'form-group';  // Add form-group class for consistent styling
-                var contactosDisponibles = userContactsNames.filter(name => {
-                    // Comprobar si el contacto ya ha sido seleccionado
-                    return ![...integrantesContainer.querySelectorAll('select')].some(select => select.value === name);
-                });
-
-                nuevoCampoIntegrante.innerHTML = `
-                <select id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select">
-                    <option value="">Selecciona un integrante</option>
-                    ${contactosDisponibles.map(name => `<option value="${name}">${name}</option>`).join('')}
-                </select>`;
-                integrantesContainer.appendChild(nuevoCampoIntegrante);
-            });
-
-            document.getElementById('executeSearch').addEventListener('click', function() {
-                const username = document.getElementById('searchUsername').value;
-                const user = getUserByUsername(username);
-                console.log("User: ", user);
-                if (user) {
-                    var contadorIntegrantes = integrantesContainer.children.length + 2;
-                    var nuevoCampoIntegrante = document.createElement('div');
-                    nuevoCampoIntegrante.innerHTML = `
-                        <select disabled id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select">
-                            <option selected value="${user.usuario}">${user.usuario}</option>
-                        </select>`;
-                    integrantesContainer.appendChild(nuevoCampoIntegrante);
-                } else {
-                    alert('El usuario no existe');
-                }
-            });
-
-            var userContactsMap = {};
-            userContacts.forEach(id => {
-                var nombre = usuarios[id]?.nombre || `Usuario ${id}`;
-                userContactsMap[nombre] = id;
-            });
-
-            document.getElementById('crearGrupoFormulario').addEventListener('submit', function(event) {
-                event.preventDefault(); 
-                hive_userActual = getHives()
-                var nombreGrupo = document.getElementById('nombreGrupo').value;
-                var integrantes = [];
-                integrantes.push(currentUser)
-                var maximo = 0;
-                for (const key in grupos){
-                    if (grupos.hasOwnProperty(key)){
-                        if (Number(key) > Number(maximo)){
-                            maximo = Number(key);
-                        }
-                    }
-                }
-                hive_userActual[currentUser].push(maximo+1)
-                for (var i = 2; i <= integrantesContainer.children.length + 1; i++) {
-                    var nombreIntegrante = document.getElementById(`nombreIntegrante${i}`).value;
-                    var id_integrante = userContactsMap[nombreIntegrante]; 
-                    if (id_integrante != null) {
-                        integrantes.push(Number(id_integrante));
-                        hive_userActual[id_integrante].push(maximo+1);
-                    } 
-                    // Agrego no contacto al grupo
-                    else {
-                        let user = getUserByUsername(nombreIntegrante);
-                        integrantes.push(Number(user.id));
-                        hive_userActual[user.id].push(maximo+1);
-                    }
-                    /*
-                    for (const key in usuarios){
-                        if (usuarios.hasOwnProperty(key)){
-                            if (usuarios[key].usuario == nombreIntegrante){
-                                integrantes.push(Number(key))
-                                hives[key].push(maximo+1)
-                            }
-                        }
-                    }*/
-                    //integrantes.push();
-                }
-
-                var nuevoGrupo = { nombre: nombreGrupo, integrantes: integrantes, gastos: [] };
-
-                grupos[maximo+1] = nuevoGrupo;
-                sessionStorage.setItem('grupos', JSON.stringify(grupos));
-
-                sessionStorage.setItem("hives", JSON.stringify(hive_userActual));
-                actualizarListaGrupos();
-
-                document.getElementById('modal').style.display = 'none';
-                document.getElementById('crearGrupoFormulario').reset();
-                document.getElementById('integrantesContainer').innerHTML = '';
             });
 
             actualizarListaGrupos();
@@ -259,6 +119,8 @@ import Header from '../components/Header';
         color: grey;
     }
 
+
+
 	.instructions {
 		margin-bottom: 2rem;
 		border: 1px solid rgba(var(--accent-light), 25%);
@@ -277,6 +139,7 @@ import Header from '../components/Header';
 	.instructions strong {
 		color: rgb(var(--accent-light));
 	}
+
 	.link-card-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
@@ -284,33 +147,6 @@ import Header from '../components/Header';
 		padding: 0;
 	}
     
-
-    #agregarIntegranteBtn {
-        background-color: #F6F1E9;  
-        color: black; 
-    }
-
-    #crearGrupoFormulario {
-        margin-top: 10px;
-        color: black;
-        flex-direction: column;
-        display: flex;
-        margin-bottom: 10px; /* Espacio inferior entre los grupos de formulario */
-    }
-
-    input:disabled {
-        background-color: #fde688;
-    }
-
-    input, .custom-select {
-        background-color: #fde688; 
-        border: 3px; 
-        border-color: black; 
-        border-radius: 5px;
-        margin-top: 10px;
-        width: 100%;
-        padding: 3px;
-    }
     
     .img-logo {
         position: absolute;

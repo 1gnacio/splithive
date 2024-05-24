@@ -2,7 +2,7 @@ import React from 'react';
 
 const Header = () => (
   <div className="header">
-    <img src='/splithive.png' alt="Bees" className="img-logo" />
+    <img src='/images/splithive.png' alt="Bees" className="img-logo" />
   </div>
 );
 
