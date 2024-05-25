@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { Card } from '@nextui-org/react'
 import '../../styles/global.css'
+import '../../styles/formGroups.css'
 ---
 
 <Layout title="Nueva Rec">
@@ -30,7 +31,7 @@ import '../../styles/global.css'
     </Card>
 
     <script>
-        import { getGrupos, getHives } from "../../utils/utilities"
+        import { getGrupos, getHives, getCurrentUser } from "../../utils/utilities"
 
         document.getElementById('crearRecFormulario').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -48,7 +49,7 @@ import '../../styles/global.css'
             }
             var nuevaRec = { nombre: nombreRec, tipo: "recaudación", objetivo: objetivo, donaciones: []};
 
-            var currentUserID = 6;
+            var currentUserID = getCurrentUser();
 
             var grupos = getGrupos();
 

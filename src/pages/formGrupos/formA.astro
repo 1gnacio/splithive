@@ -46,22 +46,19 @@ import '../../styles/formGroups.css'
 
         import { contactos } from '../../../public/contactos.astro';
         import { usuarios } from "../../../public/usuarios.astro";
-        import { getHives, getUserByUsername, getGrupos } from "../../utils/utilities"
+        import { getHives, getUserByUsername, getGrupos, getCurrentUser } from "../../utils/utilities"
 
-        var currentUser = 6; 
+        var currentUser = getCurrentUser();
         var grupos = getGrupos();
         var hive_userActual = getHives();
 
         var userContacts = contactos[currentUser] || [];
         var userContactsNames = userContacts.map(id => usuarios[id]?.nombre || `Usuario ${id}`);
-        /*var contadorIntegrantes = 1; */
         var integrantesContainer = document.getElementById('integrantesContainer');
 
         document.getElementById('agregarIntegranteBtn').addEventListener('click', function() {
             var contadorIntegrantes = integrantesContainer.children.length + 2;
             var nuevoCampoIntegrante = document.createElement('div');
-
-            //nuevoCampoIntegrante.className = 'form-group';  // Add form-group class for consistent styling
             var contactosDisponibles = userContactsNames.filter(name => {
                 // Comprobar si el contacto ya ha sido seleccionado
                 return ![...integrantesContainer.querySelectorAll('select')].some(select => select.value === name);
@@ -127,16 +124,6 @@ import '../../styles/formGroups.css'
                     integrantes.push(Number(user.id));
                     hive_userActual[user.id].push(maximo+1);
                 }
-                /*
-                for (const key in usuarios){
-                    if (usuarios.hasOwnProperty(key)){
-                        if (usuarios[key].usuario == nombreIntegrante){
-                            integrantes.push(Number(key))
-                            hives[key].push(maximo+1)
-                        }
-                    }
-                }*/
-                //integrantes.push();
             }
 
             var nuevoGrupo = { nombre: nombreGrupo, integrantes: integrantes, tipo: "gastos", gastos: [] };
