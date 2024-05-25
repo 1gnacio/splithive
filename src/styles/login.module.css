@@ -1,0 +1,37 @@
+.main_body{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20%;
+    gap: 10px;
+}
+
+.username_bar{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.username_info{
+    color: yellow;
+    font-size: large;
+    padding-top: 7px;
+    padding-left: 5px;
+}
+
+.password_bar{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.password_info{
+    color: yellow;
+    font-size: large;
+    padding-top: 7px;
+    padding-left: 5px;
+}
+
+.bar{
+    max-width: max-content;
+}

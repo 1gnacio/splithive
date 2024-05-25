@@ -1,14 +1,25 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import '../../styles/global.css'
+import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input} from '@nextui-org/react';
+import '../../styles/global.css'
+import '../../styles/formGroups.css'
+
+import ImageContainer from '../../components/groupsForms/ImageContainer'
 ---
 
-<Layout title="Form">
+<Layout title="New Group">
   <main>
+
+    <Card className='p-4'>
+
+        <form id="crearGrupoFormulario">
+
+            
+            <ImageContainer rightImageSrc='/public/images/listaDeCompras.png'/>
+                        
+        </form>
+    </Card>
 
   </main>
 </Layout>
-
-<style>
-
-</style>

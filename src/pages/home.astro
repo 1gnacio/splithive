@@ -6,13 +6,16 @@ import '../styles/yellowBtn.css'
 import '../styles/global.css'
 import Header from '../components/Header';
 import GroupsModal from '../components/GroupsModal';
+import CerrarSesion from "../components/cerrarsesion"
+import { navigate } from 'astro:transitions/client';
+
 
 ---
 
 <Layout title="Welcome to Splithive">
     <main>
         <Header />
-        
+        <CerrarSesion client:only></CerrarSesion>
         <h1 class="page-title">Lista de Grupos</h1>
 
         <div id="grupos"></div>
@@ -33,16 +36,22 @@ import GroupsModal from '../components/GroupsModal';
 
         <script>
             
-            import cargarDatos from "../utils/initLogica";
+            import { navigate } from "astro:transitions/client";
+import cargarDatos from "../utils/initLogica";
             import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser, getUserByUsername } from "../utils/utilities"
 
             var currentDate = new Date();
-            var currentUser = 6; 
-            sessionStorage.setItem("userID",JSON.stringify(currentUser));
-            cargarDatos();
+            var currentUser = getCurrentUser();
+            if (!currentUser){
+                console.log("asdasd")
+                navigate("/")
+            } 
+            
+
             var grupos = getGrupos();
             var hive_userActual = getHives();
             console.log(hive_userActual[currentUser])
+
 
             function actualizarListaGrupos() {
                 hive_userActual = getHives()
@@ -88,6 +97,7 @@ import GroupsModal from '../components/GroupsModal';
             });
 
             actualizarListaGrupos();
+
         </script>
     </main>
 </Layout>

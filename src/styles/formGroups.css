@@ -5,22 +5,17 @@
     margin-top: 10px;
 }
 
-.custom-select option[value=""] {
-    /* Estilo para la opción "Selecciona un integrante" */
-    color: #888; /* Cambia el color del texto a un gris tenue */
-}
-
 .submitBtn {
     background-color: #FFD93D; 
-    border: 3px; border-color: 
-    black; 
+    border: 3px; 
+    border-color: black; 
     border-radius: 5px; 
     padding: 3px 10px; 
     color: black;
 }
 
-input, .custom-select {
-    background-color: #fde688; 
+.custom-select, .searchUsername, .executeSearch, .input-field, .input-field:focus, .added-user {
+    background-color: #ffd83d; 
     border: 3px; 
     border-color: black; 
     border-radius: 5px;
@@ -38,6 +33,17 @@ input, .custom-select {
 }
 
 #agregarIntegranteBtn {
-    background-color: #F6F1E9;  
+    background-color: #ff8400;  
     color: black; 
+    border-radius: 5px; 
 }
+
+.cancelarBtn{
+    background-color: lightgray; 
+    border: 3px; 
+    border-color: black; 
+    border-radius: 5px; 
+    padding: 3px 10px; 
+    color: black;
+}
+
