@@ -1,25 +1,89 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import '../../styles/global.css'
-import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input} from '@nextui-org/react';
+import { Card } from '@nextui-org/react'
 import '../../styles/global.css'
 import '../../styles/formGroups.css'
-
 import ImageContainer from '../../components/groupsForms/ImageContainer'
 ---
 
-<Layout title="New Group">
+<Layout title="Nueva Rec">
   <main>
-
     <Card className='p-4'>
 
-        <form id="crearGrupoFormulario">
+        <img src='/public/images/bee.png' alt="Bees" style="width: 100px; "/>
 
-            
+        <form id="crearRecFormulario">
             <ImageContainer rightImageSrc='/public/images/recaudacion.png'/>
                         
+            <div class="form-group">
+                <label for="nombreRec">Nombre de la recaudación:</label>
+                <input type="text" id="nombreRec" name="nombreRec" class="input-field">
+            </div>
+
+            <div class="form-group">
+                <label for="objetivo">Dinero a alcanzar:</label>
+                <input type="text" id="objetivo" name="objetivo" class="input-field">
+            </div>
+
+            <div style="margin-top: 60px;">
+                <button class="submitBtn" type="submit">Crear</button>
+                <button class="cancelarBtn" id="cerrarFormBtn" type="button">Cancelar</button>
+            </div>
         </form>
     </Card>
 
+    <script>
+        import { getGrupos, getHives, getCurrentUser } from "../../utils/utilities"
+
+        document.getElementById('crearRecFormulario').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var nombreRec = document.getElementById('nombreRec').value;
+            if (nombreRec === "") {
+                alert("Se debe ingresar un nombre.");
+                window.location.href = '/home';
+                document.getElementById('crearRecFormulario').reset();
+                return;
+            }
+            var objetivo = document.getElementById('objetivo').value;
+            if (objetivo === "" || isNaN(objetivo)) {
+                alert("Se debe ingresar un monto válido.");
+                window.location.href = '/home';
+                document.getElementById('crearRecFormulario').reset();
+                return;
+            }
+            var nuevaRec = { nombre: nombreRec, tipo: "recaudación", objetivo: objetivo, donaciones: []};
+
+            var currentUserID = getCurrentUser();
+
+            var grupos = getGrupos();
+
+            var maxID = 0;
+            for (const id in grupos) {
+                if (grupos.hasOwnProperty(id)){
+                    if (Number(id) > Number(maxID)){
+                        maxID = Number(id);
+                    }
+                }
+            }
+
+            grupos[maxID + 1] = nuevaRec;
+
+            var hives = getHives();
+
+            hives[currentUserID].push(maxID + 1);
+
+            sessionStorage.setItem('grupos', JSON.stringify(grupos));
+
+            sessionStorage.setItem("hives", JSON.stringify(hives));
+
+            window.location.href = '/home';
+
+            document.getElementById('crearRecFormulario').reset();
+        });
+
+        document.getElementById('cerrarFormBtn').addEventListener('click', function() {
+            window.location.href = '/home';
+        });
+    </script>
   </main>
 </Layout>
