@@ -37,12 +37,14 @@ import '../../styles/formGroups.css'
             event.preventDefault();
             var nombreRec = document.getElementById('nombreRec').value;
             if (nombreRec === "") {
+                alert("Se debe ingresar un nombre.");
                 window.location.href = '/home';
                 document.getElementById('crearRecFormulario').reset();
                 return;
             }
             var objetivo = document.getElementById('objetivo').value;
             if (objetivo === "" || isNaN(objetivo)) {
+                alert("Se debe ingresar un monto válido.");
                 window.location.href = '/home';
                 document.getElementById('crearRecFormulario').reset();
                 return;
