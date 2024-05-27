@@ -10,6 +10,21 @@ export default function RecaudacionDisplay(props) {
     let [donaciones, setDonaciones] = useState(getDonaciones());
     let [usuarios, setUsuarios] = useState(getUsuarios());
 
+    const [formDonacion, setfFormDonacion] = useState(false);
+
+    const switchFormDonacion = () => setfFormDonacion(!formDonacion);
+
+    const [montoDonacion, setMontoDonacion] = useState(0);
+    const [mensajeDonacion, setMensajeDonacion] = useState('');
+
+    const handleMonto = (event) => {
+        setMontoDonacion(event.target.value);
+    }
+
+    const handleMensaje = (event) => {
+        setMensajeDonacion(event.target.value);
+    }
+
     var suma = 0;
     grupo.donaciones.map((id, index) =>
         suma += donaciones[id].monto
@@ -17,6 +32,12 @@ export default function RecaudacionDisplay(props) {
     var porcentajeProgreso = suma * 100 / grupo.objetivo
 
     var labelProgreso = (suma < grupo.objetivo) ? "Lleguemos a los " + grupo.objetivo + " pesos!" : "Meta Cumplida!"
+
+    const enviarDonacion = (e) => {
+        e.preventDefault()
+
+        console.log({montoDonacion, mensajeDonacion})
+    }
 
     return (
         <div className="p-5">
@@ -38,7 +59,21 @@ export default function RecaudacionDisplay(props) {
                                         <p style={{color: "gold"}}>Vamos {suma} pesos! Faltan {grupo.objetivo - suma} para cumplir nuestro objetivo!</p>
                                     )}
                                     <div>
-                                        <Button color="warning">Donar!</Button>
+                                        <Button color="warning" onClick={() => {switchFormDonacion()}}>Donar!</Button>
+                                        {formDonacion && (
+                                            <Card className="donacionPopup" id="crearDonacion">
+                                                <CardHeader>Ingrese los datos!</CardHeader>
+                                                <CardBody>
+                                                    <form>
+                                                        <label>Monto:</label><br/>
+                                                        <input type="number" value={montoDonacion} onChange={handleMonto}/><br/>
+                                                        <label>Mensaje:</label><br/>
+                                                        <input type="text" value={mensajeDonacion} onChange={handleMensaje}/><br/>
+                                                        <Button onClick={enviarDonacion} color="warning" type="submit">Enviar donación</Button>
+                                                    </form>
+                                                </CardBody>
+                                            </Card>
+                                        )}
                                     </div>
                                 </CardBody>
                             </Card>  
