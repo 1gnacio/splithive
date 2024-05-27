@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { getGrupos, getDonaciones, getUsuarios } from "../utils/utilities"
+import { getGrupos, getDonaciones, getUsuarios, getCurrentUser } from "../utils/utilities"
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Progress} from '@nextui-org/react';
 
 export default function RecaudacionDisplay(props) {
@@ -36,7 +36,36 @@ export default function RecaudacionDisplay(props) {
     const enviarDonacion = (e) => {
         e.preventDefault()
 
-        console.log({montoDonacion, mensajeDonacion})
+        var fecha = new Date()
+
+        var anio = fecha.getFullYear()
+        var mes = fecha.getMonth() + 1
+        var dia = fecha.getDate()
+
+        var fechaString = dia + '/' + mes + '/' + anio
+
+        var nuevaDonacion = {donante: getCurrentUser(), fecha: fechaString, monto: Number(montoDonacion), mensaje: mensajeDonacion}
+
+        console.log(nuevaDonacion)
+
+        var maxID = 0
+        for (const id in donaciones) {
+            if (donaciones.hasOwnProperty(id)) {
+                if (Number(id) > Number(maxID)) {
+                    maxID = Number(id)
+                }
+            }
+        }
+
+        donaciones[maxID + 1] = nuevaDonacion
+
+        grupo.donaciones.push(maxID + 1)
+
+        sessionStorage.setItem("donaciones", JSON.stringify(donaciones))
+
+        sessionStorage.setItem("grupos", JSON.stringify(grupos))
+
+        window.location.reload()
     }
 
     return (
