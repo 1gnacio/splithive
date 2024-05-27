@@ -27,3 +27,7 @@ h1 {
 label, h2, input {
     color: black;
 }
+
+html {
+    overflow-y: scroll;
+}

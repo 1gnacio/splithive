@@ -20,7 +20,7 @@ export default function RecaudacionDisplay(props) {
 
     return (
         <div className="p-5">
-            <Card className='p-4' style={{background: "transparent"}}>
+            <Card className='p-4' style={{background: "black"}}>
                 <CardHeader>
                     <h4 className="font-bold text-large" style={{color: "gold"}}>
                         {grupo.nombre}
@@ -29,7 +29,7 @@ export default function RecaudacionDisplay(props) {
                 <CardBody>
                     <Tabs aria-label="Options" color="warning" radius="full">
                         <Tab key="info" title="Info">
-                            <Card style={{background:"transparent"}}>
+                            <Card style={{background: "black", borderWidth: "2px", borderColor: "gold"}}>
                                 <CardBody>
                                     <Progress size="lg" color="warning" style={{color:"gold"}} label={labelProgreso} value={porcentajeProgreso}/>
                                     {suma >= grupo.objetivo ? (
@@ -48,7 +48,7 @@ export default function RecaudacionDisplay(props) {
                                 <p style={{color:"gold"}}>No se han recibido donaciones aún.</p>
                             ) : (
                                 grupo.donaciones.map((id, index) =>
-                                    <Card key={id} style={{background:"transparent", borderBlockColor: "gold"}}>
+                                    <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold"}}>
                                         <CardBody>
                                             <p style={{color: "gold"}}>Donante: {usuarios[donaciones[id].donante].nombre}</p>
                                             <p style={{color: "gold"}}>Monto: {donaciones[id].monto}</p>
