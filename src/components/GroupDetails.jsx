@@ -4,7 +4,7 @@ import calcularSaldos from '../utils/calcularSaldos';
 import MapListbox from './mapListBox';
 import React from 'react';
 import { useState } from 'react';
-import { getUsuarios, getGrupos, getGastos, getSaldos } from "../utils/utilities"
+import { getUsuarios, getGrupos, getGastos, getSaldos, getCurrentUser } from "../utils/utilities"
 
 
 export default function GroupDetails(props) {
@@ -20,13 +20,18 @@ export default function GroupDetails(props) {
     const [newGroupName, setNewGroupName] = useState(grupo.nombre);
     const [editingMember, setEditingMember] = useState(null);
     const [newMemberName, setNewMemberName] = useState(null);
-    var currentDate = new Date();
 
-    // Getting the current date components
-    var year = currentDate.getFullYear();
-    var month = currentDate.getMonth() + 1; // Months are zero-based, so January is 0
-    var day = currentDate.getDate();
-    var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
+    const [nombreGasto, setNombreGasto] = useState('');
+
+    const handleNombre = (e) => setNombreGasto(e.target.value);
+
+    const [montoGasto, setMontoGasto] = useState(0);
+
+    const handleMonto = (e) => setMontoGasto(e.target.value);
+
+    const [formGasto, setfFormGasto] = useState(false);
+
+    const switchFormGasto = () => setfFormGasto(!formGasto);
 
     calcularSaldos(id, grupo.gastos, gastos)
     let [metaSaldos, setMetaSaldos] = useState(getSaldos())
@@ -101,6 +106,11 @@ export default function GroupDetails(props) {
         return names;
     }
 
+    const crearGasto = (e) => {
+        e.preventDefault();
+        console.log({nombre: nombreGasto, monto: montoGasto});
+    }
+
     return <div className="p-5">
                 <Card className='p-4'>
                     <CardHeader>
@@ -125,6 +135,39 @@ export default function GroupDetails(props) {
                     <CardBody>
                         <Tabs aria-label="Options">
                             <Tab key="integrantes" title="Integrantes">
+                                <Button color="warning" onClick={() => switchFormGasto()}>Nuevo gasto</Button>
+                                {formGasto && (
+                                    <Card className="crearGasto">
+                                        <CardHeader>Ingrese los datos!</CardHeader>
+                                        <CardBody>
+                                            <form>
+                                                <label>Nombre del gasto:</label><br/>
+                                                <input type="text" value={nombreGasto} onChange={handleNombre}/><br/>
+                                                <label>Monto:</label><br/>
+                                                <input type="number" value={montoGasto} onChange={handleMonto}/><br/>
+                                                <label htmlFor="dropdown">Quién pagó:</label><br/>
+                                                <select id="quienPago">
+                                                {grupo.integrantes.map((id, index) => {
+                                                    return <option value={id}>{usuarios[id].nombre}</option>
+                                                })}
+                                                </select>
+                                                {grupo.integrantes.map((id, index) => {
+                                                    return (
+                                                        <ul>
+                                                            <li key={id}>
+                                                                <label content={usuarios[id].nombre}>
+                                                                    <input type="checkbox" id="deudor"></input>
+                                                                    {usuarios[id].nombre}
+                                                                </label>
+                                                            </li>
+                                                        </ul>
+                                                    )
+                                                })}
+                                                <Button onClick={() => crearGasto} color="warning" type="submit">Crear Gasto</Button>
+                                            </form>
+                                        </CardBody>
+                                    </Card>
+                                )}
                                 {Object.entries(deudas).map(([nombre, deuda]) =>
                                 (
                                     <Card key={nombre} className='w-50 gap gap-2' style={{marginBottom: "10px"}}>
@@ -153,8 +196,6 @@ export default function GroupDetails(props) {
                             </Tab>
                             <Tab key="gastos" title="Gastos">
                                 {grupo.gastos.map((id, index) =>
-                                
-                                    
                                     <Card className='p-4'>
                                         <CardBody>
                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -184,7 +225,7 @@ export default function GroupDetails(props) {
                                             <p>Deudores: {gastos[id].deudores.length > 0 && imprimirNombres(gastos,usuarios,id)}</p>
                                         </CardBody>
                                     </Card>
-                                    )}
+                                )}
                             </Tab>
                             <Tab key="saldos" title="Saldos">
                                 <MapListbox id_grupo = {id}></MapListbox>
@@ -208,5 +249,4 @@ export default function GroupDetails(props) {
                     </CardFooter>
                 </Card>
             </div>
-        
 }
