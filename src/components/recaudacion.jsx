@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { getGrupos, getDonaciones, getUsuarios } from "../utils/utilities"
+import { getGrupos, getDonaciones, getUsuarios, getCurrentUser } from "../utils/utilities"
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Progress} from '@nextui-org/react';
 
 export default function RecaudacionDisplay(props) {
@@ -10,6 +10,21 @@ export default function RecaudacionDisplay(props) {
     let [donaciones, setDonaciones] = useState(getDonaciones());
     let [usuarios, setUsuarios] = useState(getUsuarios());
 
+    const [formDonacion, setfFormDonacion] = useState(false);
+
+    const switchFormDonacion = () => setfFormDonacion(!formDonacion);
+
+    const [montoDonacion, setMontoDonacion] = useState(0);
+    const [mensajeDonacion, setMensajeDonacion] = useState('');
+
+    const handleMonto = (event) => {
+        setMontoDonacion(event.target.value);
+    }
+
+    const handleMensaje = (event) => {
+        setMensajeDonacion(event.target.value);
+    }
+
     var suma = 0;
     grupo.donaciones.map((id, index) =>
         suma += donaciones[id].monto
@@ -17,6 +32,41 @@ export default function RecaudacionDisplay(props) {
     var porcentajeProgreso = suma * 100 / grupo.objetivo
 
     var labelProgreso = (suma < grupo.objetivo) ? "Lleguemos a los " + grupo.objetivo + " pesos!" : "Meta Cumplida!"
+
+    const enviarDonacion = (e) => {
+        e.preventDefault()
+
+        var fecha = new Date()
+
+        var anio = fecha.getFullYear()
+        var mes = fecha.getMonth() + 1
+        var dia = fecha.getDate()
+
+        var fechaString = dia + '/' + mes + '/' + anio
+
+        var nuevaDonacion = {donante: getCurrentUser(), fecha: fechaString, monto: Number(montoDonacion), mensaje: mensajeDonacion}
+
+        console.log(nuevaDonacion)
+
+        var maxID = 0
+        for (const id in donaciones) {
+            if (donaciones.hasOwnProperty(id)) {
+                if (Number(id) > Number(maxID)) {
+                    maxID = Number(id)
+                }
+            }
+        }
+
+        donaciones[maxID + 1] = nuevaDonacion
+
+        grupo.donaciones.push(maxID + 1)
+
+        sessionStorage.setItem("donaciones", JSON.stringify(donaciones))
+
+        sessionStorage.setItem("grupos", JSON.stringify(grupos))
+
+        window.location.reload()
+    }
 
     return (
         <div className="p-5">
@@ -38,7 +88,21 @@ export default function RecaudacionDisplay(props) {
                                         <p style={{color: "gold"}}>Vamos {suma} pesos! Faltan {grupo.objetivo - suma} para cumplir nuestro objetivo!</p>
                                     )}
                                     <div>
-                                        <Button color="warning">Donar!</Button>
+                                        <Button color="warning" onClick={() => {switchFormDonacion()}}>Donar!</Button>
+                                        {formDonacion && (
+                                            <Card className="donacionPopup" id="crearDonacion">
+                                                <CardHeader>Ingrese los datos!</CardHeader>
+                                                <CardBody>
+                                                    <form>
+                                                        <label>Monto:</label><br/>
+                                                        <input type="number" value={montoDonacion} onChange={handleMonto}/><br/>
+                                                        <label>Mensaje:</label><br/>
+                                                        <input type="text" value={mensajeDonacion} onChange={handleMensaje}/><br/>
+                                                        <Button onClick={enviarDonacion} color="warning" type="submit">Enviar donación</Button>
+                                                    </form>
+                                                </CardBody>
+                                            </Card>
+                                        )}
                                     </div>
                                 </CardBody>
                             </Card>  
