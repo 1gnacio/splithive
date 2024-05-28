@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { Button } from "@nextui-org/react";
 import '../styles/modal.css'
-import '../styles/yellowBtn.css'
+import '../styles/btn.css'
 import '../styles/global.css'
 import Header from '../components/Header';
 import GroupsModal from '../components/GroupsModal';
@@ -13,31 +13,43 @@ import { navigate } from 'astro:transitions/client';
 ---
 
 <Layout title="Welcome to Splithive">
+
     <main>
-        <Header />
-        <CerrarSesion client:only></CerrarSesion>
-        <h1 class="page-title">Lista de Grupos</h1>
 
-        <div id="grupos"></div>
+        <div class="header">
 
-        <button id="crearGrupoBtn" class="yellowBtn">Crear grupo</button>
-        <button id="beesBtn" class="yellowBtn">Bees</button>
+            <!-- <Header /> -->
+            <CerrarSesion client:only></CerrarSesion>
 
-        <div id="modal" class="modal" style="display: none;">
+        </div>
+        
+        <div class="home">
             
-            <div class="modal-content">
+            <img src="../../public/images/myHive.png" style="width:300px;">
+
+            <div id="grupos"></div>
+
+            <div class="btns">
+                <button id="crearGrupoBtn" class="btn">Crear grupo</button>
+                <button id="beesBtn" class="btn">Bees</button>
+            </div>
+
+            <div id="modal" class="modal" style="display: none;">
                 
-                <span class="close" id="closeModal">&times;</span>
+                <div class="modal-content">
+                    
+                    <span class="close" id="closeModal">&times;</span>
 
-                <GroupsModal />
+                    <GroupsModal />
 
+                </div>
             </div>
         </div>
 
         <script>
             
             import { navigate } from "astro:transitions/client";
-import cargarDatos from "../utils/initLogica";
+            import cargarDatos from "../utils/initLogica";
             import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser, getUserByUsername } from "../utils/utilities"
 
             var currentDate = new Date();
@@ -104,12 +116,18 @@ import cargarDatos from "../utils/initLogica";
 
 <style is:global>
 
-    
+    .home{
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px
+    }
+
 
     #grupos {
         display: flex;
         flex-wrap: wrap;
         gap: 20px;
+        margin-top: 50px;
     }
     .grupo-card {
         background-color: honeydew;

@@ -3,7 +3,7 @@ import GroupDetails from '../../components/GroupDetails';
 import RecaudacionDisplay from '../../components/recaudacion';
 import Layout from '../../layouts/Layout.astro';
 import '../../styles/modal.css'
-import '../../styles/yellowBtn.css'
+import '../../styles/btn.css'
 import '../../styles/global.css'
 import CerrarSesion from '../../components/cerrarsesion';
 
@@ -16,7 +16,7 @@ const { id, tipo } = Astro.params;
         {tipo === "gastos" && (<GroupDetails client:only id={id}></GroupDetails>)}
         {tipo === "recaudación" && (<RecaudacionDisplay client:only id={id}></RecaudacionDisplay>)}
 
-        <button id="crearGastoBtn" class="yellowBtn">Crear gasto</button>
+        <button id="crearGastoBtn" class="btn">Crear gasto</button>
 
         <div id="modal" class="modal" style="display: none;">
             <div class="modal-content">

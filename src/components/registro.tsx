@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import registro from "../styles/registro.module.css"
 import { Button, Input } from "@nextui-org/react";
-import {getUsuarios} from "../utils/utilities"
+import {getContactos, getHives, getUsuarios} from "../utils/utilities"
 import { navigate } from "astro/virtual-modules/transitions-router.js";
 
 export default function Registro(){
@@ -44,9 +44,24 @@ export default function Registro(){
                 }
             }
         }
+        var hives = getHives();
+        maximo = 0
+        for (const key in hives){
+            if (usuarios.hasOwnProperty(key)){
+                if (Number(key) > Number(maximo)){
+                    maximo = Number(key);
+                }
+            }
+        }
+        var contactos = getContactos();
         usuarios[maximo+1] = newUser
+        hives[maximo+1] = []
+        contactos[maximo+1] = []
+
         sessionStorage.setItem("usuarios",JSON.stringify(usuarios))
+        sessionStorage.setItem("hives",JSON.stringify(hives))
         sessionStorage.setItem("userID",JSON.stringify(maximo+1))
+        sessionStorage.setItem("contactos",JSON.stringify(contactos))
         navigate("/home")
         
     }
