@@ -1,4 +1,6 @@
 ---
+import { invitados } from "./invitados.astro";
+
 // IDgasto: {infoGasto}
 export var gastos = {
     0: 
@@ -6,7 +8,7 @@ export var gastos = {
             nombre: "Pizza en Kentucky",
             deudores: [2, 4, 6, 7],
             payer: 1,
-            monto: 25000,
+            monto: 30000,
             fecha: 20240519,
             reparto: {
                 1: 5000,
@@ -14,6 +16,9 @@ export var gastos = {
                 4: 5000,
                 6: 5000,
                 7: 5000
+            },
+            invitados: {
+                0: 50000
             }
         },
     1: {

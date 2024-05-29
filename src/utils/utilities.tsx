@@ -31,6 +31,10 @@ export const getDonaciones =() =>{
     return JSON.parse(sessionStorage.getItem("donaciones"))
 }
 
+export const getInvitados =() =>{
+    return JSON.parse(sessionStorage.getItem("invitados"))
+}
+
 export const getUserByUsername = (username) => {
     const usuarios = getUsuarios();
     for(const id in usuarios) {

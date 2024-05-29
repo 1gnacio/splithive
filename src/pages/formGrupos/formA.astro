@@ -1,53 +1,26 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input} from '@nextui-org/react';
-import '../../styles/global.css'
-import '../../styles/formGroups.css'
-
-import ImageContainer from '../../components/groupsForms/ImageContainer'
+import FormularioDivisionDeGastos from "../../components/formularioDivisionDeGastos"
 ---
 
 <Layout title="New Group">
   <main>
-    <Card className='p-4'>
-        <form id="crearGrupoFormulario">
-            <ImageContainer rightImageSrc='/public/images/gastos.png'/>
-                        
-            <div class="form-group flex-row">
-                <div class="form-group-item item-nombre-grupo">
-                    <label for="nombreGrupo">Nombre del grupo:</label>
-                    <input type="text" id="nombreGrupo" name="nombreGrupo" class="input-field">
-                </div>
-                <div class="form-group-item">
-                    <p>Visibilidad Publica</p>
-                    <div class="checkbox-wrapper-7">
-                        <input class="tgl tgl-ios" id="grupoPublico" type="checkbox"/>
-                        <label class="tgl-btn" for="grupoPublico">
-                    </div>
-                </div>
-            </div>
 
-            <div id="containerIntegrante1" class="form-group">
-                <label for="nombreIntegrante1">Integrantes:</label>
+    <div class="form-group flex-row">
+        <div class="form-group-item item-nombre-grupo">
+            <label for="nombreGrupo">Nombre del grupo:</label>
+            <input type="text" id="nombreGrupo" name="nombreGrupo" class="input-field">
+        </div>
+        <div class="form-group-item">
+            <p>Visibilidad Publica</p>
+            <div class="checkbox-wrapper-7">
+                <input class="tgl tgl-ios" id="grupoPublico" type="checkbox"/>
+                <label class="tgl-btn" for="grupoPublico">
             </div>
+        </div>
+    </div>
 
-            <div id="integrantesContainer"></div>
-
-            <div class="form-group">
-                <button type="button" id="agregarIntegranteBtn">+</button>
-            </div>
-            
-            <div class="searchContainer">
-                <input style="width: 75%;" type="text" id="searchUsername" name="searchUsername" placeholder="Ingresar nombre de usuario" class="input-field">
-                <button id="executeSearch" class="submitBtn" type="button">Agregar</button>    
-            </div>
-
-            <div style="margin-top: 60px;">
-                <button class="submitBtn" type="submit">Crear</button>
-                <button class="cancelarBtn" id="cerrarFormBtn" type="button">Cancelar</button>
-            </div>
-        </form>
-    </Card>
+    <FormularioDivisionDeGastos client:only></FormularioDivisionDeGastos>
 
     <script>
         import { contactos } from '../../../public/contactos.astro';
