@@ -53,7 +53,7 @@ const { id, tipo } = Astro.params;
 
         <p id="gruopId" style="display: none;">{id}</p>
         <script>
-            import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../../utils/utilities"
+            import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser, getInvitados } from "../../utils/utilities"
 
             var currentDate = new Date();
 
@@ -65,6 +65,7 @@ const { id, tipo } = Astro.params;
             var grupos = getGrupos();
             var currentUser = getCurrentUser();
             var usuarios = getUsuarios();
+            var invitados = getInvitados();
 
             var modal = document.getElementById('modal');
             var btnAbrirModal = document.getElementById('crearGastoBtn');
@@ -104,6 +105,26 @@ const { id, tipo } = Astro.params;
                     optionElement.textContent = usuarios[integrante].nombre;
                     dropdown.appendChild(optionElement)
                 });
+
+                var grupo = grupos[+document.getElementById('gruopId').innerText];
+
+                if (grupo.invitados) {
+                    grupo.invitados.forEach(function(integrante, i) {
+                    var checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = 'invitado' + integrante;
+                    checkbox.name = 'invitado' + integrante;
+                    var label = document.createElement('label');
+                    label.htmlFor = 'invitado' + integrante;
+                    label.textContent = invitados[integrante].nombre + " (invitado)";
+                    label.classList.add("label-invitado")
+                    var container = document.createElement('div');
+                    container.classList.add("deudor-checkbox");
+                    container.appendChild(checkbox);
+                    container.appendChild(label);
+                    deudores.appendChild(container);
+                });
+                }
             };
 
             spanCerrar.onclick = function() {
@@ -145,6 +166,7 @@ const { id, tipo } = Astro.params;
                 var monto = +document.getElementById('montoGasto').value;
                 var quienPago = document.getElementById("quienPago").value;
                 var deudores = [];
+                var invitadosDeudores = []
                 var id = +document.getElementById('gruopId').innerText;
                 
                 grupos[id].integrantes.forEach(function(integrante) {
@@ -152,12 +174,27 @@ const { id, tipo } = Astro.params;
                         deudores.push(integrante);
                     }
                 });
+
+                if (grupos[id].invitados) {
+                    grupos[id].invitados.forEach(function(integrante) {
+                        if (document.getElementById('invitado' + integrante).checked) {
+                            invitadosDeudores.push(integrante);
+                        }
+                    });
+                }
+
                 var total = monto;
                 monto = Math.round((monto / deudores.length) * 100) / 100;
                 var repartos = {};
+                var invitadosReparto = {};
                 deudores.forEach(deudor => {
                     repartos[deudor] = monto
                 })
+                if (grupos[id].invitados) {
+                    invitadosDeudores.forEach(deudor => {
+                        invitadosReparto[deudor] = monto
+                    })
+                }
                 var currentDate = new Date();
 
                 // Getting the current date components
@@ -167,6 +204,9 @@ const { id, tipo } = Astro.params;
                 var fechaActual =(day < 10 ? "0" + day : day)+"-"+(month < 10 ? "0" + month : month) + "-" + year;
                 var nuevoGasto = { nombre: nombreGasto, monto: total,fecha:fechaActual,payer: quienPago, deudores: deudores, reparto: repartos };
 
+                if (grupos[id].invitados) {
+                    nuevoGasto.invitados = invitadosReparto
+                }
                 
                 var gastos = getGastos()
                 var mapa_gastos = new Map();
@@ -250,6 +290,10 @@ const { id, tipo } = Astro.params;
     .deudor-checkbox {
         display: inline-block;
         margin-right: 10px; /* Adjust as needed */
+    }
+
+    .label-invitado {
+        color: green;
     }
 
     #agregarDeudorBtn {

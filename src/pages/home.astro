@@ -66,7 +66,7 @@ import cargarDatos from "../utils/initLogica";
                     grupoElemento.innerHTML = '<h2>' + grupo.nombre + '</h2><p>Tipo: ' + grupo.tipo;
                     
                     if (grupo.tipo === "gastos") {
-                        var cantidadIntegrantes = grupo.integrantes.length;
+                        var cantidadIntegrantes = grupo.integrantes.length + (grupo.invitados?.length ?? 0);
                         grupoElemento.innerHTML += '</h2><p>Cantidad de integrantes: ' + cantidadIntegrantes + '</p>';
                     }
 

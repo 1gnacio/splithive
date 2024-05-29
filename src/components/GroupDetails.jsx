@@ -1,14 +1,14 @@
-import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input} from '@nextui-org/react';
+import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input, Badge} from '@nextui-org/react';
 import calcularDeudas from '../utils/logicaNegocio';
 import calcularSaldos from '../utils/calcularSaldos';
 import MapListbox from './mapListBox';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { getUsuarios, getGrupos, getGastos, getSaldos } from "../utils/utilities"
+import { getUsuarios, getGrupos, getGastos, getSaldos, getInvitados } from "../utils/utilities"
 
 
 export default function GroupDetails(props) {
-    let [id,setId] = useState(props.id);
+    let [id,setId] = useState(props.id.split('-')[0]);
     let [grupos, setGrupos] = useState(getGrupos());
     let [usuarios, setUsuarios] = useState(getUsuarios())
     let [grupo, setGrupo] = useState(grupos[id]);
@@ -21,6 +21,21 @@ export default function GroupDetails(props) {
     const [editingMember, setEditingMember] = useState(null);
     const [newMemberName, setNewMemberName] = useState(null);
     var currentDate = new Date();
+    const [invitados, setInvitados] = useState(getInvitados())
+    const [deudaInvitados, setDeudaInvitados] = useState(grupo.gastos
+        .filter(x => gastos[x].invitados)
+        .map(x => gastos[x].invitados)
+        .reduce((acc, e) => {
+            Object.keys(e).forEach(k => {
+                if (acc[k]) {
+                    acc[k] -= e[k]
+                } else {
+                    acc[k] = e[k] * -1
+                }
+            });
+            
+            return acc;
+    }, {}))
 
     // Getting the current date components
     var year = currentDate.getFullYear();
@@ -88,7 +103,7 @@ export default function GroupDetails(props) {
         var index = 0;
         var names = ""
         var deudor;
-        console.log(gastos[id])
+        //console.log(gastos[id])
         for (deudor in gastos[id].deudores){
             if (index == 0){
                 names += " " + usuarios[gastos[id].deudores[deudor]].nombre
@@ -99,6 +114,16 @@ export default function GroupDetails(props) {
             }
         }
         return names;
+    }
+
+    function imprimirInvitadosDeudores() {
+        let nombres = ""
+
+        if (gastos[id].invitados) {
+            nombres = Object.keys(gastos[id].invitados).map(x => invitados[x].nombre).reduce((acc, e) => acc + ", " + e)
+        }
+
+        return nombres;
     }
 
     return <div className="p-5">
@@ -150,6 +175,17 @@ export default function GroupDetails(props) {
                                         </CardBody>
                                     </Card>
                                 ))}
+                                {grupo.invitados?.map(x => {
+                                    const invitado = invitados[x]
+                                    return <Card key={x} className='w-50 gap gap-2' col style={{marginBottom: "10px"}}>
+                                        <CardBody>
+                                            <Badge color='primary' content="Invitado" className='p-1 mt-2'>
+                                                <span>{invitado.nombre}</span>
+                                            </Badge>
+                                            <p style={{color: deudaInvitados[x] < 0 ? 'red' : 'green'}}>Saldo: {deudaInvitados[x] ?? 0}</p>
+                                        </CardBody>
+                                    </Card>
+                                })}
                             </Tab>
                             <Tab key="gastos" title="Gastos">
                                 {grupo.gastos.map((id, index) =>
@@ -182,6 +218,7 @@ export default function GroupDetails(props) {
                                             <p>Fecha: {gastos[id].fecha}</p>
                                             {editMode[index] ? <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> : <p style={{color: 'red'}}>Deuda: {gastos[id].reparto[gastos[id].deudores.at(0)]} c/u</p>}
                                             <p>Deudores: {gastos[id].deudores.length > 0 && imprimirNombres(gastos,usuarios,id)}</p>
+                                            {gastos[id].invitados && <p>Invitados deudores: {imprimirInvitadosDeudores()}</p>}
                                         </CardBody>
                                     </Card>
                                     )}
