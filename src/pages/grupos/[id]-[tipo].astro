@@ -169,7 +169,6 @@ const { id, tipo } = Astro.params;
 
                 
                 var gastos = getGastos()
-                var mapa_gastos = new Map();
                 var maximo = 0;
                 for (const key in gastos){
                     if (gastos.hasOwnProperty(key)){
@@ -178,7 +177,6 @@ const { id, tipo } = Astro.params;
                         }
                     }
                 }
-                const highestValue = Math.max(...mapa_gastos.keys());
                 gastos[maximo+1] = nuevoGasto
                 var grupo = grupos[id]
                 grupo.gastos.push(maximo+1)
