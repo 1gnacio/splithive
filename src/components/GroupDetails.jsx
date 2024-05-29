@@ -33,6 +33,19 @@ export default function GroupDetails(props) {
 
     const switchFormGasto = () => setfFormGasto(!formGasto);
 
+    let [deudores, setDeudores] = useState({});
+
+    const handleCheckboxChange = (event) => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+
+        deudores[value] = true;
+
+        console.log(value);
+
+        setDeudores(deudores);
+    }
+
     calcularSaldos(id, grupo.gastos, gastos)
     let [metaSaldos, setMetaSaldos] = useState(getSaldos())
     let [deudas, setDeudas] = useState(calcularDeudas(metaSaldos[id], grupo.integrantes))
@@ -93,7 +106,7 @@ export default function GroupDetails(props) {
         var index = 0;
         var names = ""
         var deudor;
-        console.log(gastos[id])
+        // console.log(gastos[id])
         for (deudor in gastos[id].deudores){
             if (index == 0){
                 names += " " + usuarios[gastos[id].deudores[deudor]].nombre
@@ -108,7 +121,57 @@ export default function GroupDetails(props) {
 
     const crearGasto = (e) => {
         e.preventDefault();
-        console.log({nombre: nombreGasto, monto: montoGasto});
+
+        /* var deudoresArray = [];
+
+        for (const id in deudores) {
+            deudoresArray.push(id);
+        } */
+
+        /* var deudores = [];
+        for (const integrante in grupo.integrantes) {
+            if (formData["deudor" + integrante].checked) {
+                deudores.push(integrante);
+            }
+        }
+
+        var fecha = new Date();
+
+        var anio = fecha.getFullYear();
+        var mes = fecha.getMonth() + 1;
+        var dia = fecha.getDate();
+
+        var fechaString = dia + '/' + mes + '/' + anio;
+
+        var repartos = {};
+        var reparto = Math.round((montoGasto / deudores.length) * 100) / 100;
+        deudores.forEach(deudor => {
+            repartos[deudor] = reparto
+        })
+
+        var nuevoGasto = {nombre: nombreGasto, deudores: deudores, payer: formData["quienPago"], monto: Number(montoGasto), fecha: fechaString, reparto: repartos};
+
+        var maxID = 0
+        for (const id in gastos) {
+            if (gastos.hasOwnProperty(id)) {
+                if (Number(id) > Number(maxID)) {
+                    maxID = Number(id)
+                }
+            }
+        }
+
+        gastos[maxID + 1] = nuevoGasto;
+
+        grupos[id].gastos.push(maxID + 1);
+
+        sessionStorage.setItem("gastos", JSON.stringify(gastos));
+
+        sessionStorage.setItem("grupos", JSON.stringify(grupos)); */
+
+
+    
+        console.log(deudoresArray);
+        // window.location.reload();
     }
 
     return <div className="p-5">
@@ -140,7 +203,7 @@ export default function GroupDetails(props) {
                                     <Card className="crearGasto">
                                         <CardHeader>Ingrese los datos!</CardHeader>
                                         <CardBody>
-                                            <form>
+                                            <form id="formGasto">
                                                 <label>Nombre del gasto:</label><br/>
                                                 <input type="text" value={nombreGasto} onChange={handleNombre}/><br/>
                                                 <label>Monto:</label><br/>
@@ -156,14 +219,14 @@ export default function GroupDetails(props) {
                                                         <ul>
                                                             <li key={id}>
                                                                 <label content={usuarios[id].nombre}>
-                                                                    <input type="checkbox" id="deudor"></input>
+                                                                    <input type="checkbox" id={"deudor" + id} onChange={handleCheckboxChange} checked={deudores.id}></input>
                                                                     {usuarios[id].nombre}
                                                                 </label>
                                                             </li>
                                                         </ul>
                                                     )
                                                 })}
-                                                <Button onClick={() => crearGasto} color="warning" type="submit">Crear Gasto</Button>
+                                                <Button onClick={crearGasto} color="warning" type="submit">Crear Gasto</Button>
                                             </form>
                                         </CardBody>
                                     </Card>
