@@ -4,7 +4,7 @@ import calcularSaldos from '../utils/calcularSaldos';
 import MapListbox from './mapListBox';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { getUsuarios, getGrupos, getGastos, getSaldos, getInvitados } from "../utils/utilities"
+import { getUsuarios, getGrupos, getGastos, getSaldos, getInvitados, getCurrentUser } from "../utils/utilities"
 
 
 export default function GroupDetails(props) {
@@ -21,6 +21,7 @@ export default function GroupDetails(props) {
     const [editingMember, setEditingMember] = useState(null);
     const [newMemberName, setNewMemberName] = useState(null);
     var currentDate = new Date();
+    const [usuarioActual, setUsuarioActual] = useState(getCurrentUser())
     const [invitados, setInvitados] = useState(getInvitados())
     const [deudaInvitados, setDeudaInvitados] = useState(grupo.gastos
         .filter(x => gastos[x].invitados)
@@ -74,7 +75,7 @@ export default function GroupDetails(props) {
     };
 
     const saveEdit = (type) => (event) => {
-        let nuevosGrupos = [...grupos];
+        let nuevosGrupos = {...grupos};
     
         if (type === "group") {
             nuevosGrupos[id].nombre = newGroupName;
@@ -99,24 +100,11 @@ export default function GroupDetails(props) {
         window.location.reload();
     };
 
-    function imprimirNombres(gastos, usuarios,id){
-        var index = 0;
-        var names = ""
-        var deudor;
-        //console.log(gastos[id])
-        for (deudor in gastos[id].deudores){
-            if (index == 0){
-                names += " " + usuarios[gastos[id].deudores[deudor]].nombre
-                index++;
-            }
-            else{
-                names += ", " + usuarios[gastos[id].deudores[deudor]].nombre
-            }
-        }
-        return names;
+    function imprimirNombres(id){
+        return gastos[id].deudores.filter(x => x != gastos[id].payer).map(x => usuarios[x].nombre).reduce((acc, e) => acc + ", " + e);
     }
 
-    function imprimirInvitadosDeudores() {
+    function imprimirInvitadosDeudores(id) {
         let nombres = ""
 
         if (gastos[id].invitados) {
@@ -188,37 +176,43 @@ export default function GroupDetails(props) {
                                 })}
                             </Tab>
                             <Tab key="gastos" title="Gastos">
-                                {grupo.gastos.map((id, index) =>
-                                
-                                    
+                                {grupo.gastos.map((gastoId, index) =>
                                     <Card className='p-4'>
                                         <CardBody>
                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                                {editMode[index] ? <Input value={newName} onValueChange={setNewName} className='max-w-[220px]' label="Nombre"></Input> : <b>{gastos[id].nombre}</b>}
+                                                {editMode[index] ? <Input value={newName} onValueChange={setNewName} className='max-w-[220px]' label="Nombre"></Input> : <b>{gastos[gastoId].nombre}</b>}
                                                 <Button color='primary' onClick={() => {
                                                     if(editMode[index]) {
-                                                        const gruposSerializados = JSON.stringify(grupos);
-                                                        const itemSerializado = JSON.stringify(gastos[id]);
-                                                        const copiaItem = { ...gastos[id] };
-                                                        copiaItem.nombre = newName;
-                                                        copiaItem.deuda = nuevaDeuda;
-                                                        const nuevoItemSerializado = JSON.stringify(copiaItem);
-                                                        const nuevosGruposSerializados = gruposSerializados.replace(itemSerializado, nuevoItemSerializado);
-                                                        window.sessionStorage.setItem('grupos', nuevosGruposSerializados);
-                                                        setGrupos(JSON.parse(nuevosGruposSerializados));
-                                                        setGrupo(JSON.parse(nuevosGruposSerializados)[id]);
+                                                        const gastosSerializados = JSON.stringify(gastos);
+                                                        const itemSerializado = JSON.stringify(gastos[gastoId]);
+                                                        let totalDeudores = Object.keys(gastos[gastoId].reparto).length - 1;
+                                                        Object.keys(gastos[gastoId].reparto).forEach(e => {
+                                                            gastos[gastoId].reparto[e] = nuevaDeuda
+                                                        })
+                                                        if (gastos[gastoId].invitados) {
+                                                            totalDeudores += Object.keys(gastos[gastoId].invitados).length;
+                                                            Object.keys(gastos[gastoId].invitados).forEach(e => {
+                                                                gastos[gastoId].invitados[e] = nuevaDeuda
+                                                            })
+                                                        }
+                                                        gastos[gastoId].nombre = newName;
+                                                        gastos[gastoId].monto = totalDeudores * nuevaDeuda;
+                                                        const nuevoItemSerializado = JSON.stringify(gastos[gastoId]);
+                                                        const nuevosGastosSerializados = gastosSerializados.replace(itemSerializado, nuevoItemSerializado);
+                                                        window.sessionStorage.setItem('gastos', nuevosGastosSerializados);
+                                                        setGastos(JSON.parse(nuevosGastosSerializados));
                                                     }
-                                                    setNewName(gastos[id].nombre);
-                                                    setNuevaDeuda(gastos[id].deuda);
+                                                    setNewName(gastos[gastoId].nombre);
+                                                    setNuevaDeuda(gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length)));
                                                     setEditMode(editMode.map((x, i) => i != index ? x : !x));
                                                 }}>{editMode[index] ? "Guardar" : "Editar"}</Button>
                                             </div>
-                                            <p>Quien pagó: {usuarios[gastos[id].payer].nombre}</p>
-                                            <p>Monto Total: {gastos[id].monto}</p>
-                                            <p>Fecha: {gastos[id].fecha}</p>
-                                            {editMode[index] ? <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> : <p style={{color: 'red'}}>Deuda: {gastos[id].reparto[gastos[id].deudores.at(0)]} c/u</p>}
-                                            <p>Deudores: {gastos[id].deudores.length > 0 && imprimirNombres(gastos,usuarios,id)}</p>
-                                            {gastos[id].invitados && <p>Invitados deudores: {imprimirInvitadosDeudores()}</p>}
+                                            <p>Quien pagó: {usuarios[gastos[gastoId].payer].nombre}</p>
+                                            <p>Monto Total: {gastos[gastoId].monto}</p>
+                                            <p>Fecha: {gastos[gastoId].fecha}</p>
+                                            {editMode[index] ? <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> : <p style={{color: 'red'}}>Deuda: {gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length))} c/u</p>}
+                                            <p>Deudores: {gastos[gastoId].deudores.length > 0 && imprimirNombres(gastoId)}</p>
+                                            {gastos[gastoId].invitados && <p>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
                                         </CardBody>
                                     </Card>
                                     )}

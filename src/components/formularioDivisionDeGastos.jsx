@@ -16,6 +16,7 @@ export default function FormularioDivisionDeGastos() {
     const [invitados, setInvitados] = useState([])
     const [invitadosTodos, setInvitadosTodos] = useState(getInvitados())
     const [nombreInvitado, setNombreInvitado] = useState("");
+    const [esPublico, setEsPublico] = useState(false)
 
     useEffect(() => {
         document.getElementById('agregarIntegranteBtn').addEventListener('click', function() {
@@ -53,11 +54,7 @@ export default function FormularioDivisionDeGastos() {
             }
         });
 
-        var userContactsMap = {};
-        userContacts.forEach(id => {
-            var nombre = usuarios[id]?.nombre || `Usuario ${id}`;
-            userContactsMap[nombre] = id;
-        });
+        
     }, [])
 
     function crearGrupo(event) {
@@ -79,6 +76,11 @@ export default function FormularioDivisionDeGastos() {
         for (var i = 2; i <= integrantesContainer.children.length + 1; i++) {
             console.log(`nombreIntegrante${i}`)
             var nombreIntegrante = document.getElementById(`nombreIntegrante${i}`).value;
+            var userContactsMap = {};
+            userContacts.forEach(id => {
+                var nombre = usuarios[id]?.nombre || `Usuario ${id}`;
+                userContactsMap[nombre] = id;
+            });
             var id_integrante = userContactsMap[nombreIntegrante]; 
             if (id_integrante != null) {
                 integrantes.push(Number(id_integrante));
@@ -92,7 +94,13 @@ export default function FormularioDivisionDeGastos() {
             }
         }
 
-        var nuevoGrupo = { nombre: nombreGrupo, integrantes: integrantes, tipo: "gastos", gastos: [] };
+        var nuevoGrupo = { 
+            nombre: nombreGrupo, 
+            integrantes: integrantes, 
+            tipo: "gastos", 
+            gastos: [], 
+            publico: esPublico
+        };
 
         if (invitados.length > 0) {
             const count = Object.keys(invitadosTodos).length
@@ -149,10 +157,19 @@ export default function FormularioDivisionDeGastos() {
         
         <ImageContainer rightImageSrc='/public/images/gastos.png'/>
                     
-        <div className="form-group">
-            <label htmlFor="nombreGrupo">Nombre del grupo:</label>
-            <input type="text" id="nombreGrupo" name="nombreGrupo" className="input-field" />
-        </div>
+        <div className="form-group flex-row">
+                <div className="form-group-item item-nombre-grupo">
+                    <label htmlFor="nombreGrupo">Nombre del grupo:</label>
+                    <input type="text" id="nombreGrupo" name="nombreGrupo" className="input-field" />
+                </div>
+                <div className="form-group-item">
+                    <p>Visibilidad Publica</p>
+                    <div className="checkbox-wrapper-7">
+                        <input value={esPublico} onChange={e => setEsPublico(e.target.value)} className="tgl tgl-ios" id="grupoPublico" type="checkbox"/>
+                        <label className="tgl-btn" htmlFor="grupoPublico" />
+                    </div>
+                </div>
+            </div>
 
         <div id="containerIntegrante1" className="form-group">
             <label htmlFor="nombreIntegrante1">Integrantes:</label>
@@ -182,7 +199,6 @@ export default function FormularioDivisionDeGastos() {
                         const nuevoInvitados = [ ...invitados ];
                         nuevoInvitados.push({ nombre: nombreInvitado });
                         setInvitados(nuevoInvitados)
-                        console.log(nuevoInvitados);
                     }
                 }}>Agregar</Button>} label="Nombre del invitado" value={nombreInvitado} onValueChange={setNombreInvitado} color='warning' />
                 
