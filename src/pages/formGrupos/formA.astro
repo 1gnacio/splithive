@@ -9,17 +9,22 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
 
 <Layout title="New Group">
   <main>
-
     <Card className='p-4'>
-
         <form id="crearGrupoFormulario">
-
-            
             <ImageContainer rightImageSrc='/public/images/gastos.png'/>
                         
-            <div class="form-group">
-                <label for="nombreGrupo">Nombre del grupo:</label>
-                <input type="text" id="nombreGrupo" name="nombreGrupo" class="input-field">
+            <div class="form-group flex-row">
+                <div class="form-group-item item-nombre-grupo">
+                    <label for="nombreGrupo">Nombre del grupo:</label>
+                    <input type="text" id="nombreGrupo" name="nombreGrupo" class="input-field">
+                </div>
+                <div class="form-group-item">
+                    <p>Visibilidad Publica</p>
+                    <div class="checkbox-wrapper-7">
+                        <input class="tgl tgl-ios" id="grupoPublico" type="checkbox"/>
+                        <label class="tgl-btn" for="grupoPublico">
+                    </div>
+                </div>
             </div>
 
             <div id="containerIntegrante1" class="form-group">
@@ -45,7 +50,6 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
     </Card>
 
     <script>
-
         import { contactos } from '../../../public/contactos.astro';
         import { usuarios } from "../../../public/usuarios.astro";
         import { getHives, getUserByUsername, getUsuarios, getGrupos, getCurrentUser } from "../../utils/utilities"
@@ -96,6 +100,17 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
             }
         });
 
+        var esPublico = false;
+        const grupoPublico = document.getElementById('grupoPublico');
+        grupoPublico.addEventListener('change', function() {
+            if (grupoPublico.checked) {
+                esPublico = true;
+            } else {
+                esPublico = false;
+            }
+            console.log(esPublico);
+        });
+
         var userContactsMap = {};
         userContacts.forEach(id => {
             var nombre = usuarios[id]?.nombre || `Usuario ${id}`;
@@ -133,7 +148,13 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
                 }
             }
 
-            var nuevoGrupo = { nombre: nombreGrupo, integrantes: integrantes, tipo: "gastos", gastos: [] };
+            var nuevoGrupo = { 
+                nombre: nombreGrupo, 
+                integrantes: integrantes, 
+                tipo: "gastos", 
+                gastos: [],
+                publico: esPublico
+            };
 
             grupos[maximo+1] = nuevoGrupo;
             sessionStorage.setItem('grupos', JSON.stringify(grupos));

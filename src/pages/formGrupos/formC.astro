@@ -9,13 +9,21 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
 <Layout title="Nueva Rec">
   <main>
     <Card className='p-4'>
-
         <form id="crearRecFormulario">
             <ImageContainer rightImageSrc='/public/images/recaudacion.png'/>
-                        
-            <div class="form-group">
-                <label for="nombreRec">Nombre de la recaudación:</label>
-                <input type="text" id="nombreRec" name="nombreRec" class="input-field">
+                     
+            <div class="form-group flex-row">
+                <div class="form-group-item item-nombre-grupo">
+                    <label for="nombreRec">Nombre de la recaudación:</label>
+                    <input type="text" id="nombreRec" name="nombreRec" class="input-field">
+                </div>
+                <div class="form-group-item">
+                    <p>Visibilidad Publica</p>
+                    <div class="checkbox-wrapper-7">
+                        <input class="tgl tgl-ios" id="grupoPublico" type="checkbox"/>
+                        <label class="tgl-btn" for="grupoPublico">
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
@@ -33,6 +41,17 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
     <script>
         import { getGrupos, getHives, getCurrentUser } from "../../utils/utilities"
 
+        var esPublico = false;
+        const grupoPublico = document.getElementById('grupoPublico');
+        grupoPublico.addEventListener('change', function() {
+            if (grupoPublico.checked) {
+                esPublico = true;
+            } else {
+                esPublico = false;
+            }
+            console.log(esPublico);
+        });
+        
         document.getElementById('crearRecFormulario').addEventListener('submit', function(event) {
             event.preventDefault();
             var nombreRec = document.getElementById('nombreRec').value;
@@ -49,7 +68,13 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
                 document.getElementById('crearRecFormulario').reset();
                 return;
             }
-            var nuevaRec = { nombre: nombreRec, tipo: "recaudación", objetivo: objetivo, donaciones: []};
+            var nuevaRec = {
+                nombre: nombreRec, 
+                tipo: "recaudación", 
+                objetivo: objetivo, 
+                donaciones: [],
+                publico: esPublico
+            };
 
             var currentUserID = getCurrentUser();
 
