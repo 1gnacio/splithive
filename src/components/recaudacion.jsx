@@ -2,6 +2,8 @@ import React from 'react';
 import { useState } from 'react';
 import { getGrupos, getDonaciones, getUsuarios, getCurrentUser } from "../utils/utilities"
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Progress} from '@nextui-org/react';
+import recaudacion from "../styles/recaudacion.module.css"
+import button from "../styles/button.module.css"
 
 export default function RecaudacionDisplay(props) {
     let [id,setId] = useState(props.id);
@@ -88,16 +90,16 @@ export default function RecaudacionDisplay(props) {
                                         <p style={{color: "gold"}}>Vamos {suma} pesos! Faltan {grupo.objetivo - suma} para cumplir nuestro objetivo!</p>
                                     )}
                                     <div>
-                                        <Button color="warning" onClick={() => {switchFormDonacion()}}>Donar!</Button>
+                                        <Button className={button.crearGastoBtn} color="warning" onClick={() => {switchFormDonacion()}}>Donar!</Button>
                                         {formDonacion && (
                                             <Card className="donacionPopup" id="crearDonacion">
                                                 <CardHeader>Ingrese los datos!</CardHeader>
                                                 <CardBody>
                                                     <form>
                                                         <label>Monto:</label><br/>
-                                                        <input type="number" value={montoDonacion} onChange={handleMonto}/><br/>
+                                                        <input className={recaudacion.formInputStyle} type="number" value={montoDonacion} onChange={handleMonto}/><br/>
                                                         <label>Mensaje:</label><br/>
-                                                        <input type="text" value={mensajeDonacion} onChange={handleMensaje}/><br/>
+                                                        <input className={recaudacion.formInputStyle} type="text" value={mensajeDonacion} onChange={handleMensaje}/><br/>
                                                         <Button onClick={enviarDonacion} color="warning" type="submit">Enviar donación</Button>
                                                     </form>
                                                 </CardBody>
