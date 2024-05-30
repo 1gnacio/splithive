@@ -5,6 +5,7 @@ import MapListbox from './mapListBox';
 import React from 'react';
 import { useState } from 'react';
 import { getUsuarios, getGrupos, getGastos, getSaldos, getCurrentUser } from "../utils/utilities"
+import button from "../styles/button.module.css"
 
 
 export default function GroupDetails(props) {
@@ -32,19 +33,6 @@ export default function GroupDetails(props) {
     const [formGasto, setfFormGasto] = useState(false);
 
     const switchFormGasto = () => setfFormGasto(!formGasto);
-
-    let [deudores, setDeudores] = useState({});
-
-    const handleCheckboxChange = (event) => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-
-        deudores[value] = true;
-
-        console.log(value);
-
-        setDeudores(deudores);
-    }
 
     calcularSaldos(id, grupo.gastos, gastos)
     let [metaSaldos, setMetaSaldos] = useState(getSaldos())
@@ -122,18 +110,13 @@ export default function GroupDetails(props) {
     const crearGasto = (e) => {
         e.preventDefault();
 
-        /* var deudoresArray = [];
-
-        for (const id in deudores) {
-            deudoresArray.push(id);
-        } */
-
-        /* var deudores = [];
-        for (const integrante in grupo.integrantes) {
-            if (formData["deudor" + integrante].checked) {
+        var deudores = [];
+   
+        grupo.integrantes.forEach(function(integrante) {
+            if (document.getElementById('deudor' + integrante).checked) {
                 deudores.push(integrante);
             }
-        }
+        });
 
         var fecha = new Date();
 
@@ -144,12 +127,12 @@ export default function GroupDetails(props) {
         var fechaString = dia + '/' + mes + '/' + anio;
 
         var repartos = {};
-        var reparto = Math.round((montoGasto / deudores.length) * 100) / 100;
+        var reparto = Math.round((montoGasto / (deudores.length + 1)) * 100) / 100;
         deudores.forEach(deudor => {
             repartos[deudor] = reparto
         })
 
-        var nuevoGasto = {nombre: nombreGasto, deudores: deudores, payer: formData["quienPago"], monto: Number(montoGasto), fecha: fechaString, reparto: repartos};
+        var nuevoGasto = {nombre: nombreGasto, deudores: deudores, payer: Number(document.getElementById('quienPago').value), monto: Number(montoGasto), fecha: fechaString, reparto: repartos};
 
         var maxID = 0
         for (const id in gastos) {
@@ -166,12 +149,9 @@ export default function GroupDetails(props) {
 
         sessionStorage.setItem("gastos", JSON.stringify(gastos));
 
-        sessionStorage.setItem("grupos", JSON.stringify(grupos)); */
-
-
+        sessionStorage.setItem("grupos", JSON.stringify(grupos));
     
-        console.log(deudoresArray);
-        // window.location.reload();
+        window.location.reload();
     }
 
     return <div className="p-5">
@@ -198,7 +178,7 @@ export default function GroupDetails(props) {
                     <CardBody>
                         <Tabs aria-label="Options">
                             <Tab key="integrantes" title="Integrantes">
-                                <Button color="warning" onClick={() => switchFormGasto()}>Nuevo gasto</Button>
+                                <Button className={button.crearGastoBtn} color="warning" onClick={() => switchFormGasto()}>Nuevo gasto</Button>
                                 {formGasto && (
                                     <Card className="crearGasto">
                                         <CardHeader>Ingrese los datos!</CardHeader>
@@ -219,7 +199,7 @@ export default function GroupDetails(props) {
                                                         <ul>
                                                             <li key={id}>
                                                                 <label content={usuarios[id].nombre}>
-                                                                    <input type="checkbox" id={"deudor" + id} onChange={handleCheckboxChange} checked={deudores.id}></input>
+                                                                    <input type="checkbox" id={"deudor" + id}></input>
                                                                     {usuarios[id].nombre}
                                                                 </label>
                                                             </li>
