@@ -173,15 +173,15 @@ export default function FormularioDivisionDeGastos() {
         <div id="containerIntegrante1" className="form-group">
             <label htmlFor="nombreIntegrante1">Integrantes:</label>
             <div className="searchContainer">
-                <Input endContent={<Button id="executeSearch" color='warning'>Agregar</Button>} id="searchUsername" name="searchUsername" label="Ingresar nombre de usuario" color='warning' />
+                <Input endContent={<Button id="executeSearch" color='warning'>Agregar</Button>} id="searchUsername" name="searchUsername" label="Nombre de usuario fuera de mi colmena" color='warning' />
             </div>
         </div>
 
-        <div>
+        <div className="form-group">
             <Input disabled color='warning' id="nombreIntegrante1" name="nombreIntegrante1" value={usuarios[currentUser].nombre + " (Yo)"}></Input>
         </div>
 
-        <div id="integrantesContainer">
+        <div id="integrantesContainer" className="form-group">
         </div>
 
         <div className="form-group">
@@ -210,7 +210,7 @@ export default function FormularioDivisionDeGastos() {
             })}
         </div>
 
-        <div style={{marginTop: "60px"}}>
+        <div style={{margin: "20px"}} >
             <Button className="submitBtn font-semibold fs-5" type="submit">Crear</Button>
             <Button as={Link} className="cancelarBtn font-semibold fs-5" href='/home'>Cancelar</Button>
         </div>
