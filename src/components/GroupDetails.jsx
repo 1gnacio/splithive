@@ -5,6 +5,7 @@ import MapListbox from './mapListBox';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { getUsuarios, getGrupos, getGastos, getSaldos, getInvitados, getCurrentUser } from "../utils/utilities"
+import button from "../styles/button.module.css"
 
 
 export default function GroupDetails(props) {
@@ -20,8 +21,6 @@ export default function GroupDetails(props) {
     const [newGroupName, setNewGroupName] = useState(grupo.nombre);
     const [editingMember, setEditingMember] = useState(null);
     const [newMemberName, setNewMemberName] = useState(null);
-    var currentDate = new Date();
-    const [usuarioActual, setUsuarioActual] = useState(getCurrentUser())
     const [invitados, setInvitados] = useState(getInvitados())
     const [deudaInvitados, setDeudaInvitados] = useState(grupo.gastos
         .filter(x => gastos[x].invitados)
@@ -38,11 +37,17 @@ export default function GroupDetails(props) {
             return acc;
     }, {}))
 
-    // Getting the current date components
-    var year = currentDate.getFullYear();
-    var month = currentDate.getMonth() + 1; // Months are zero-based, so January is 0
-    var day = currentDate.getDate();
-    var fechaActual =(day < 10 ? "0" + day : day) + "-"+(month < 10 ? "0" + month : month) + "-" + year;
+    const [nombreGasto, setNombreGasto] = useState('');
+
+    const handleNombre = (e) => setNombreGasto(e.target.value);
+
+    const [montoGasto, setMontoGasto] = useState(0);
+
+    const handleMonto = (e) => setMontoGasto(e.target.value);
+
+    const [formGasto, setfFormGasto] = useState(false);
+
+    const switchFormGasto = () => setfFormGasto(!formGasto);
 
     calcularSaldos(id, grupo.gastos, gastos)
     let [metaSaldos, setMetaSaldos] = useState(getSaldos())
@@ -114,6 +119,53 @@ export default function GroupDetails(props) {
         return nombres;
     }
 
+    const crearGasto = (e) => {
+        e.preventDefault();
+
+        var deudores = [];
+   
+        grupo.integrantes.forEach(function(integrante) {
+            if (document.getElementById('deudor' + integrante).checked) {
+                deudores.push(integrante);
+            }
+        });
+
+        var fecha = new Date();
+
+        var anio = fecha.getFullYear();
+        var mes = fecha.getMonth() + 1;
+        var dia = fecha.getDate();
+
+        var fechaString = dia + '/' + mes + '/' + anio;
+
+        var repartos = {};
+        var reparto = Math.round((montoGasto / (deudores.length + 1)) * 100) / 100;
+        deudores.forEach(deudor => {
+            repartos[deudor] = reparto
+        })
+
+        var nuevoGasto = {nombre: nombreGasto, deudores: deudores, payer: Number(document.getElementById('quienPago').value), monto: Number(montoGasto), fecha: fechaString, reparto: repartos};
+
+        var maxID = 0
+        for (const id in gastos) {
+            if (gastos.hasOwnProperty(id)) {
+                if (Number(id) > Number(maxID)) {
+                    maxID = Number(id)
+                }
+            }
+        }
+
+        gastos[maxID + 1] = nuevoGasto;
+
+        grupos[id].gastos.push(maxID + 1);
+
+        sessionStorage.setItem("gastos", JSON.stringify(gastos));
+
+        sessionStorage.setItem("grupos", JSON.stringify(grupos));
+    
+        window.location.reload();
+    }
+
     return <div className="p-5">
                 <Card className='p-4'>
                     <CardHeader>
@@ -138,6 +190,39 @@ export default function GroupDetails(props) {
                     <CardBody>
                         <Tabs aria-label="Options">
                             <Tab key="integrantes" title="Integrantes">
+                                <Button className={button.crearGastoBtn} color="warning" onClick={() => switchFormGasto()}>Nuevo gasto</Button>
+                                {formGasto && (
+                                    <Card className="crearGasto">
+                                        <CardHeader>Ingrese los datos!</CardHeader>
+                                        <CardBody>
+                                            <form id="formGasto">
+                                                <label>Nombre del gasto:</label><br/>
+                                                <input type="text" value={nombreGasto} onChange={handleNombre}/><br/>
+                                                <label>Monto:</label><br/>
+                                                <input type="number" value={montoGasto} onChange={handleMonto}/><br/>
+                                                <label htmlFor="dropdown">Quién pagó:</label><br/>
+                                                <select id="quienPago">
+                                                {grupo.integrantes.map((id, index) => {
+                                                    return <option value={id}>{usuarios[id].nombre}</option>
+                                                })}
+                                                </select>
+                                                {grupo.integrantes.map((id, index) => {
+                                                    return (
+                                                        <ul>
+                                                            <li key={id}>
+                                                                <label content={usuarios[id].nombre}>
+                                                                    <input type="checkbox" id={"deudor" + id}></input>
+                                                                    {usuarios[id].nombre}
+                                                                </label>
+                                                            </li>
+                                                        </ul>
+                                                    )
+                                                })}
+                                                <Button onClick={crearGasto} color="warning" type="submit">Crear Gasto</Button>
+                                            </form>
+                                        </CardBody>
+                                    </Card>
+                                )}
                                 {Object.entries(deudas).map(([nombre, deuda]) =>
                                 (
                                     <Card key={nombre} className='w-50 gap gap-2' style={{marginBottom: "10px"}}>
@@ -215,7 +300,7 @@ export default function GroupDetails(props) {
                                             {gastos[gastoId].invitados && <p>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
                                         </CardBody>
                                     </Card>
-                                    )}
+                                )}
                             </Tab>
                             <Tab key="saldos" title="Saldos">
                                 <MapListbox id_grupo = {id}></MapListbox>
@@ -239,5 +324,4 @@ export default function GroupDetails(props) {
                     </CardFooter>
                 </Card>
             </div>
-        
 }
