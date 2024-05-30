@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { getGrupos, getDonaciones, getUsuarios, getCurrentUser } from "../utils/utilities"
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Progress} from '@nextui-org/react';
-import recaudacion from "../styles/recaudacion.module.css"
+import recaudacion from "../styles/form.module.css"
 import button from "../styles/button.module.css"
 
 export default function RecaudacionDisplay(props) {

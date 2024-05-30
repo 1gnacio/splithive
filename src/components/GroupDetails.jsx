@@ -5,6 +5,7 @@ import MapListbox from './mapListBox';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { getUsuarios, getGrupos, getGastos, getSaldos, getInvitados, getCurrentUser } from "../utils/utilities"
+import inputStyle from "../styles/form.module.css"
 import button from "../styles/button.module.css"
 
 
@@ -197,9 +198,9 @@ export default function GroupDetails(props) {
                                         <CardBody>
                                             <form id="formGasto">
                                                 <label>Nombre del gasto:</label><br/>
-                                                <input type="text" value={nombreGasto} onChange={handleNombre}/><br/>
+                                                <input className={inputStyle.formInputStyle} type="text" value={nombreGasto} onChange={handleNombre}/><br/>
                                                 <label>Monto:</label><br/>
-                                                <input type="number" value={montoGasto} onChange={handleMonto}/><br/>
+                                                <input className={inputStyle.formInputStyle} type="number" value={montoGasto} onChange={handleMonto}/><br/>
                                                 <label htmlFor="dropdown">Quién pagó:</label><br/>
                                                 <select id="quienPago">
                                                 {grupo.integrantes.map((id, index) => {
@@ -295,7 +296,9 @@ export default function GroupDetails(props) {
                                             <p>Quien pagó: {usuarios[gastos[gastoId].payer].nombre}</p>
                                             <p>Monto Total: {gastos[gastoId].monto}</p>
                                             <p>Fecha: {gastos[gastoId].fecha}</p>
-                                            {editMode[index] ? <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> : <p style={{color: 'red'}}>Deuda: {gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length))} c/u</p>}
+                                            {editMode[index] ?
+                                                <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> :
+                                                <p style={{color: 'red'}}>Deuda: {gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length))} c/u</p>}
                                             <p>Deudores: {gastos[gastoId].deudores.length > 0 && imprimirNombres(gastoId)}</p>
                                             {gastos[gastoId].invitados && <p>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
                                         </CardBody>
