@@ -5,6 +5,7 @@ import MapListbox from './mapListBox';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { getUsuarios, getGrupos, getGastos, getSaldos, getInvitados, getCurrentUser } from "../utils/utilities"
+import inputStyle from "../styles/form.module.css"
 import button from "../styles/button.module.css"
 
 
@@ -167,9 +168,9 @@ export default function GroupDetails(props) {
     }
 
     return <div className="p-5">
-                <Card className='p-4'>
+                <Card className='p-4' style={{background: "black"}}>
                     <CardHeader>
-                        <h4 className="font-bold text-large">
+                        <h4 className="font-bold text-large" style={{color: "gold"}}>
                             {editingGroup ? (
                                 <input
                                     type="text"
@@ -180,15 +181,15 @@ export default function GroupDetails(props) {
                             ) : (
                                 <>
                                     {grupo.nombre}
-                                    <button name="edit" onClick={startEditingGroup}>
+                                    <Button style={{display: 'inline-flex', width: 'auto', paddingRight: '0px', paddingLeft: '0px', height: '17px'}} color="warning" name="edit" onClick={startEditingGroup}>
                                         <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
-                                    </button>
+                                    </Button>
                                 </>
                             )}
                         </h4>
                     </CardHeader>
                     <CardBody>
-                        <Tabs aria-label="Options">
+                        <Tabs aria-label="Options" color="warning">
                             <Tab key="integrantes" title="Integrantes">
                                 <Button className={button.crearGastoBtn} color="warning" onClick={() => switchFormGasto()}>Nuevo gasto</Button>
                                 {formGasto && (
@@ -197,9 +198,9 @@ export default function GroupDetails(props) {
                                         <CardBody>
                                             <form id="formGasto">
                                                 <label>Nombre del gasto:</label><br/>
-                                                <input type="text" value={nombreGasto} onChange={handleNombre}/><br/>
+                                                <input className={inputStyle.formInputStyle} type="text" value={nombreGasto} onChange={handleNombre}/><br/>
                                                 <label>Monto:</label><br/>
-                                                <input type="number" value={montoGasto} onChange={handleMonto}/><br/>
+                                                <input className={inputStyle.formInputStyle} type="number" value={montoGasto} onChange={handleMonto}/><br/>
                                                 <label htmlFor="dropdown">Quién pagó:</label><br/>
                                                 <select id="quienPago">
                                                 {grupo.integrantes.map((id, index) => {
@@ -225,7 +226,7 @@ export default function GroupDetails(props) {
                                 )}
                                 {Object.entries(deudas).map(([nombre, deuda]) =>
                                 (
-                                    <Card key={nombre} className='w-50 gap gap-2' style={{marginBottom: "10px"}}>
+                                    <Card key={nombre} className='w-50 gap gap-2' style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                         <CardBody>
                                             <div>
                                                 {editingMember === nombre ? (
@@ -237,10 +238,10 @@ export default function GroupDetails(props) {
                                                     />
                                                 ) : (
                                                     <>
-                                                        <span>{usuarios[nombre].nombre}</span>
-                                                        <button onClick={() => startEditingMemberName(nombre)}>
+                                                        <span style={{color: "gold"}}>{usuarios[nombre].nombre}</span>
+                                                        <Button mode="outlined" style={{width: '15px', height: '20px'}} color="warning" onClick={() => startEditingMemberName(nombre)}>
                                                             <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
-                                                        </button>
+                                                        </Button>
                                                     </>
                                                 )}
                                             </div>
@@ -250,10 +251,10 @@ export default function GroupDetails(props) {
                                 ))}
                                 {grupo.invitados?.map(x => {
                                     const invitado = invitados[x]
-                                    return <Card key={x} className='w-50 gap gap-2' col style={{marginBottom: "10px"}}>
+                                    return <Card key={x} className='w-50 gap gap-2' col style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                         <CardBody>
-                                            <Badge color='primary' content="Invitado" className='p-1 mt-2'>
-                                                <span>{invitado.nombre}</span>
+                                            <Badge color='warning' content="Invitado" className='p-1 mt-2'>
+                                                <span style={{color: "gold"}}>{invitado.nombre}</span>
                                             </Badge>
                                             <p style={{color: deudaInvitados[x] < 0 ? 'red' : 'green'}}>Saldo: {deudaInvitados[x] ?? 0}</p>
                                         </CardBody>
@@ -262,11 +263,11 @@ export default function GroupDetails(props) {
                             </Tab>
                             <Tab key="gastos" title="Gastos">
                                 {grupo.gastos.map((gastoId, index) =>
-                                    <Card className='p-4'>
+                                    <Card className='p-4' style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                         <CardBody>
                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                                {editMode[index] ? <Input value={newName} onValueChange={setNewName} className='max-w-[220px]' label="Nombre"></Input> : <b>{gastos[gastoId].nombre}</b>}
-                                                <Button color='primary' onClick={() => {
+                                                {editMode[index] ? <Input value={newName} onValueChange={setNewName} className='max-w-[220px]' label="Nombre"></Input> : <b style={{color: "gold"}}>{gastos[gastoId].nombre}</b>}
+                                                <Button color='warning' onClick={() => {
                                                     if(editMode[index]) {
                                                         const gastosSerializados = JSON.stringify(gastos);
                                                         const itemSerializado = JSON.stringify(gastos[gastoId]);
@@ -292,12 +293,12 @@ export default function GroupDetails(props) {
                                                     setEditMode(editMode.map((x, i) => i != index ? x : !x));
                                                 }}>{editMode[index] ? "Guardar" : "Editar"}</Button>
                                             </div>
-                                            <p>Quien pagó: {usuarios[gastos[gastoId].payer].nombre}</p>
-                                            <p>Monto Total: {gastos[gastoId].monto}</p>
-                                            <p>Fecha: {gastos[gastoId].fecha}</p>
+                                            <p style={{color: "gold"}}>Quien pagó: {usuarios[gastos[gastoId].payer].nombre}</p>
+                                            <p style={{color: "gold"}}>Monto Total: {gastos[gastoId].monto}</p>
+                                            <p style={{color: "gold"}}>Fecha: {gastos[gastoId].fecha}</p>
                                             {editMode[index] ? <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> : <p style={{color: 'red'}}>Deuda: {gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length))} c/u</p>}
-                                            <p>Deudores: {gastos[gastoId].deudores.length > 0 && imprimirNombres(gastoId)}</p>
-                                            {gastos[gastoId].invitados && <p>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
+                                            <p style={{color: "gold"}}>Deudores: {gastos[gastoId].deudores.length > 0 && imprimirNombres(gastoId)}</p>
+                                            {gastos[gastoId].invitados && <p style={{color: "gold"}}>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
                                         </CardBody>
                                     </Card>
                                 )}
@@ -318,7 +319,7 @@ export default function GroupDetails(props) {
                                 Guardar
                             </Button>
                         )}
-                        <Button href='/home' as={Link} color="primary" showAnchorIcon variant="solid">
+                        <Button href='/home' as={Link} color="warning" showAnchorIcon variant="solid">
                             Volver
                         </Button>
                     </CardFooter>
