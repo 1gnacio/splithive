@@ -193,15 +193,15 @@ export default function GroupDetails(props) {
                             <Tab key="integrantes" title="Integrantes">
                                 <Button className={button.crearGastoBtn} color="warning" onClick={() => switchFormGasto()}>Nuevo gasto</Button>
                                 {formGasto && (
-                                    <Card className="crearGasto">
-                                        <CardHeader>Ingrese los datos!</CardHeader>
+                                    <Card className="crearGasto" style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
+                                        <CardHeader style={{color: 'gold'}}>Ingrese los datos!</CardHeader>
                                         <CardBody>
                                             <form id="formGasto">
-                                                <label>Nombre del gasto:</label><br/>
+                                                <label style={{color: 'gold'}}>Nombre del gasto:</label><br/>
                                                 <input className={inputStyle.formInputStyle} type="text" value={nombreGasto} onChange={handleNombre}/><br/>
-                                                <label>Monto:</label><br/>
+                                                <label style={{color: 'gold'}}>Monto:</label><br/>
                                                 <input className={inputStyle.formInputStyle} type="number" value={montoGasto} onChange={handleMonto}/><br/>
-                                                <label htmlFor="dropdown">Quién pagó:</label><br/>
+                                                <label style={{color: 'gold'}} htmlFor="dropdown">Quién pagó:</label><br/>
                                                 <select id="quienPago">
                                                 {grupo.integrantes.map((id, index) => {
                                                     return <option value={id}>{usuarios[id].nombre}</option>
@@ -211,7 +211,7 @@ export default function GroupDetails(props) {
                                                     return (
                                                         <ul>
                                                             <li key={id}>
-                                                                <label content={usuarios[id].nombre}>
+                                                                <label style={{color: 'gold'}} content={usuarios[id].nombre}>
                                                                     <input type="checkbox" id={"deudor" + id}></input>
                                                                     {usuarios[id].nombre}
                                                                 </label>
