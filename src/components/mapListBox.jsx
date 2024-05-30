@@ -16,7 +16,7 @@ export function MapListbox(props) {
                 return (
                     <div key={deudor}>
                         {Object.entries(deudas).map(([acreedor, monto]) => {
-                            if (monto != 0) {
+                            if (monto != 0 && acreedor != deudor) {
                                 return (
                                     <ul>
                                         <li key={deudor}>
