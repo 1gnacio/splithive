@@ -37,8 +37,10 @@ export function calcularDeudasAtravesDeGrupos(grupos,current_deudor, currentUser
     grupos_enComun.forEach(idGrupo =>{
         console.log("Se chequea el grupo de id  " + idGrupo)
         var grupo = grupos[idGrupo]
+        if (grupo.tipo !="gastos"){
+            return;
+        }
         grupo.gastos.forEach(idGasto =>{
-            console.log("Gaston con id " + idGasto)
             var gasto = gastos[idGasto]
             if (gasto.payer == currentUser){
                 deuda_acumulada += gasto.reparto[current_deudor]

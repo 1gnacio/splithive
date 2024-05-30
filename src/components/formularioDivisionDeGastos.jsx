@@ -20,32 +20,36 @@ export default function FormularioDivisionDeGastos() {
 
     useEffect(() => {
         document.getElementById('agregarIntegranteBtn').addEventListener('click', function() {
-            var integrantesContainer = document.getElementById('integrantesContainer');
             var contadorIntegrantes = integrantesContainer.children.length + 2;
             var nuevoCampoIntegrante = document.createElement('div');
-            var contactosDisponibles = userContactsNames.filter(name => {
+            var contactosDisponibles = userContacts.filter(name => {
                 // Comprobar si el contacto ya ha sido seleccionado
-                return ![...integrantesContainer.querySelectorAll('select')].some(select => select.value === name);
+                var val= ![...integrantesContainer.querySelectorAll('select')].some(select => {
+                    console.log(select.selectedIndex)
+                    return select[select.selectedIndex].value == name
+                });
+                return val
             });
-
+            
             nuevoCampoIntegrante.innerHTML = `
-            <select id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" className="custom-select">
-                <option value="">Selecciona un integrante</option>
-                ${contactosDisponibles.map(name => `<option value="${name}">${name}</option>`).join('')}
+            <select id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select">
+                <option value="" label="Selecciona un integrante">Selecciona un integrante</option>
+                ${contactosDisponibles.map(id => `<option value="${id}">${usuarios[id].nombre}</option>`).join('')}
             </select>`;
             integrantesContainer.appendChild(nuevoCampoIntegrante);
         });
 
         document.getElementById('executeSearch').addEventListener('click', function() {
             const username = document.getElementById('searchUsername').value;
+            console.log(username);
             const user = getUserByUsername(username);
             console.log("User: ", user);
             if (user) {
                 var contadorIntegrantes = integrantesContainer.children.length + 2;
                 var nuevoCampoIntegrante = document.createElement('div');
                 nuevoCampoIntegrante.innerHTML = `
-                    <select disabled id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" className="custom-select added-user">
-                        <option selected value="${user.usuario}">${user.usuario}</option>
+                    <select disabled id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select added-user">
+                        <option selected value="${user.id}">${user.usuario}</option>
                     </select>`;
                 integrantesContainer.appendChild(nuevoCampoIntegrante);
                 document.getElementById('searchUsername').value = "";
@@ -59,40 +63,35 @@ export default function FormularioDivisionDeGastos() {
 
     function crearGrupo(event) {
         event.preventDefault(); 
-        var integrantesContainer = document.getElementById('integrantesContainer');
-        var nombreGrupo = document.getElementById('nombreGrupo').value;
-        var integrantes = [];
-        integrantes.push(currentUser)
-        var maximo = 0;
-        for (const key in grupos){
-            if (grupos.hasOwnProperty(key)){
-                if (Number(key) > Number(maximo)){
-                    maximo = Number(key);
+            var nombreGrupo = document.getElementById('nombreGrupo').value;
+            var integrantes = [];
+            integrantes.push(currentUser)
+            var maximo = 0;
+            for (const key in grupos){
+                if (grupos.hasOwnProperty(key)){
+                    if (Number(key) > Number(maximo)){
+                        maximo = Number(key);
+                    }
                 }
             }
-        }
-        
-        hive_userActual[currentUser].push(maximo+1)
-        for (var i = 2; i <= integrantesContainer.children.length + 1; i++) {
-            console.log(`nombreIntegrante${i}`)
-            var nombreIntegrante = document.getElementById(`nombreIntegrante${i}`).value;
-            var userContactsMap = {};
-            userContacts.forEach(id => {
-                var nombre = usuarios[id]?.nombre || `Usuario ${id}`;
-                userContactsMap[nombre] = id;
-            });
-            var id_integrante = userContactsMap[nombreIntegrante]; 
-            if (id_integrante != null) {
-                integrantes.push(Number(id_integrante));
-                hive_userActual[id_integrante].push(maximo+1);
-            } 
-            // Agrego no contacto al grupo
-            else {
-                let user = getUserByUsername(nombreIntegrante);
-                integrantes.push(Number(user.id));
-                hive_userActual[user.id].push(maximo+1);
+            
+            hive_userActual[currentUser].push(maximo+1)
+            for (var i = 2; i <= integrantesContainer.children.length + 1; i++) {
+                var id = document.getElementById(`nombreIntegrante${i}`).value;
+                var nombre = userContacts[id]; 
+                if (id in userContacts) {
+                    integrantes.push(Number(id));
+                    hive_userActual[id].push(maximo+1);
+                } 
+                // Agrego no contacto al grupo
+                else {
+                    let user = getUserByUsername(nombre);
+                    console.log(id)
+                    integrantes.push(Number(id));
+                    hive_userActual[id].push(maximo+1);
+                }
             }
-        }
+
 
         var nuevoGrupo = { 
             nombre: nombreGrupo, 

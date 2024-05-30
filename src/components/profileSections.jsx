@@ -198,10 +198,10 @@ export default function ProfileSections() {
                         const color = x.monto < 0 ? 'red' : 'green';
                         let deudaText = <></>;
                         if (x.monto < 0){
-                            deudaText = <>Debo en total: <span style={{color: color}}>${x.monto * -1}</span></>
+                            deudaText = <>Debo en total: <span style={{color: color}}>${(x.monto * -1).toFixed(2)}</span></>
                         }
                         else if (x.monto > 0){
-                            deudaText = <>Me debe en total: <span style={{color: color}}>${x.monto}</span></>
+                            deudaText = <>Me debe en total: <span style={{color: color}}>${x.monto.toFixed(2)}</span></>
                         }
                         return <div key={index} href={`/${usuarios[x.usuario].nombre}`} className="contact-card">
                             <p>Nombre: {usuarios[x.usuario].nombre}</p>
@@ -294,6 +294,7 @@ export default function ProfileSections() {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 1rem;
         margin-top: 2rem;
+        overflow:wrap;
     }
 
     .contact-card {
