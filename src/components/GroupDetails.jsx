@@ -169,6 +169,7 @@ export default function GroupDetails(props) {
 
     return <div className="p-5">
                 <Card className='p-4'>
+
                     <CardHeader>
                         <h4 className="font-bold text-large">
                             {editingGroup ? (
@@ -188,6 +189,7 @@ export default function GroupDetails(props) {
                             )}
                         </h4>
                     </CardHeader>
+
                     <CardBody>
                         <Tabs aria-label="Options">
                             <Tab key="integrantes" title="Integrantes">
@@ -207,6 +209,8 @@ export default function GroupDetails(props) {
                                                     return <option value={id}>{usuarios[id].nombre}</option>
                                                 })}
                                                 </select>
+                                                <br/>
+                                                <label htmlFor="dropdown">Quienes participaron:</label>
                                                 {grupo.integrantes.map((id, index) => {
                                                     return (
                                                         <ul>
@@ -253,7 +257,7 @@ export default function GroupDetails(props) {
                                     const invitado = invitados[x]
                                     return <Card key={x} className='w-50 gap gap-2' col style={{marginBottom: "10px"}}>
                                         <CardBody>
-                                            <Badge color='primary' content="Invitado" className='p-1 mt-2'>
+                                            <Badge color='default' content="Invitado" className='p-1 mt-2'>
                                                 <span>{invitado.nombre}</span>
                                             </Badge>
                                             <p style={{color: deudaInvitados[x] < 0 ? 'red' : 'green'}}>Saldo: {deudaInvitados[x] ?? 0}</p>
@@ -261,13 +265,14 @@ export default function GroupDetails(props) {
                                     </Card>
                                 })}
                             </Tab>
+                            
                             <Tab key="gastos" title="Gastos">
                                 {grupo.gastos.map((gastoId, index) =>
                                     <Card className='p-4'>
                                         <CardBody>
                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                                 {editMode[index] ? <Input value={newName} onValueChange={setNewName} className='max-w-[220px]' label="Nombre"></Input> : <b>{gastos[gastoId].nombre}</b>}
-                                                <Button color='primary' onClick={() => {
+                                                <Button color="warning" onClick={() => {
                                                     if(editMode[index]) {
                                                         const gastosSerializados = JSON.stringify(gastos);
                                                         const itemSerializado = JSON.stringify(gastos[gastoId]);
@@ -310,6 +315,7 @@ export default function GroupDetails(props) {
                             </Tab>
                         </Tabs>
                     </CardBody>
+
                     <CardFooter>
                         {editingGroup && (
                             <Button onClick={saveEdit("group")} color="primary">
@@ -321,7 +327,7 @@ export default function GroupDetails(props) {
                                 Guardar
                             </Button>
                         )}
-                        <Button href='/home' as={Link} color="primary" showAnchorIcon variant="solid">
+                        <Button href='/home' as={Link} color="warning" showAnchorIcon variant="solid">
                             Volver
                         </Button>
                     </CardFooter>
