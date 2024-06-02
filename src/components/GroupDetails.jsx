@@ -85,6 +85,7 @@ export default function GroupDetails(props) {
     const [deudores, setDeudores] = useState([]);
     const handleNuevoDeudor = (id) => {
         document.getElementById("errorGasto").style.display = "none";
+        document.getElementById("crearGastoBtn").disabled = false;
         let deudores_ = []
         if (deudores.includes(id)) {
             deudores_ = deudores.filter(x => x != id)
@@ -106,6 +107,7 @@ export default function GroupDetails(props) {
 
     const handlePorcentaje = (e, id) => {
         document.getElementById("errorGasto").style.display = "none";
+        document.getElementById("crearGastoBtn").disabled = false;
 
         let total = 0;
         let sinP = [];
@@ -122,6 +124,7 @@ export default function GroupDetails(props) {
             document.getElementById("errorGasto").style.color = "red";
             document.getElementById("errorGasto").style.fontWeight = "bold";
             document.getElementById("errorGasto").style.fontSize = "14px";
+            document.getElementById("crearGastoBtn").disabled = true;
             return;
         }
         else if (sinP.length == 0 && total != 100) {
@@ -130,6 +133,7 @@ export default function GroupDetails(props) {
             document.getElementById("errorGasto").style.color = "red";
             document.getElementById("errorGasto").style.fontWeight = "bold";
             document.getElementById("errorGasto").style.fontSize = "14px";
+            document.getElementById("crearGastoBtn").disabled = true;
             return;
         }
 
@@ -320,7 +324,7 @@ export default function GroupDetails(props) {
                                                         </ul>
                                                     )
                                                 })}
-                                                <Button onClick={crearGasto} color="warning" type="submit">Crear Gasto</Button> <p id="errorGasto"></p>
+                                                <Button id="crearGastoBtn" onClick={crearGasto} color="warning" type="submit">Crear Gasto</Button> <p id="errorGasto"></p>
                                             </form>
                                         </CardBody>
                                     </Card>
