@@ -31,3 +31,10 @@ label, h2, input {
 html {
     overflow-y: scroll;
 }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px; /* Ajusta el padding según sea necesario */
+}
