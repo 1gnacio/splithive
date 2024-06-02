@@ -207,11 +207,26 @@ export default function GroupDetails(props) {
 
         var fechaString = dia + '/' + mes + '/' + anio;
 
+        var porcentajes = {};
+        grupo.integrantes.forEach(function(integrante) {
+            porcentajes[integrante] = Number(document.getElementById('porcentaje' + integrante).value) == "" ? Number(document.getElementById('porcentaje' + integrante).placeholder) : Number(document.getElementById('porcentaje' + integrante).value);
+        });
+
         var repartos = {};
-        var reparto = Math.round((montoGasto / (deudores.length + 1)) * 100) / 100;
-        deudores.forEach(deudor => {
-            repartos[deudor] = reparto
+        // var reparto = Math.round((montoGasto / (deudores.length + 1)) * 100) / 100;
+        // deudores.forEach(deudor => {
+        //     repartos[deudor] = reparto
+        // })
+
+        grupo.integrantes.forEach(integrante => {
+            if (deudores.includes(integrante)) {
+                repartos[integrante] = Math.round((montoGasto * porcentajes[integrante] / 100) * 100) / 100;
+            } else {
+                repartos[integrante] = 0;
+            }
         })
+        
+        console.log(repartos);
 
         var nuevoGasto = {nombre: nombreGasto, deudores: deudores, payer: Number(document.getElementById('quienPago').value), monto: Number(montoGasto), fecha: fechaString, reparto: repartos};
 
@@ -232,7 +247,7 @@ export default function GroupDetails(props) {
 
         sessionStorage.setItem("grupos", JSON.stringify(grupos));
     
-        window.location.reload();
+        //window.location.reload();
     }
 
     return <div className="p-5">
