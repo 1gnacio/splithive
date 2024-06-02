@@ -1,18 +1,39 @@
 import { Tab, Tabs, useDisclosure, Modal, ModalBody, ModalContent, Button, ModalHeader, ModalFooter, Input, Link, Accordion, AccordionItem } from "@nextui-org/react"
 import { calcularDeudasAtravesDeGrupos } from '../utils/logicaNegocio';
-import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
+import { getContactos, getApodos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
 import { useEffect, useState } from "react";
 import { contactos } from "../../public/contactos.astro";
 
 export default function ProfileSections() {
     const [currentUser, setCurrentUser] = useState(getCurrentUser());
     const [contactos, setContactos] = useState(getContactos()[currentUser]);
+    const [apodos, setApodos] = useState(getApodos()[currentUser]);
     const [usuarios, setUsuarios] = useState(getUsuarios());
     const [grupos, setGrupos] = useState(getGrupos());
     const [gastos, setGastos] = useState(getGastos());
+    const [editingContact, setEditingContact] = useState(false);
+    const [editingContactId, setEditingContactId] = useState(0);
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const [otrasAbejas, setOtrasAbejas] = useState([]);
     const [deudaContactos, setDeudaContactos] = useState([]);
+
+    const startEditingContact = (usuario) => {
+        setEditingContact(true);
+        setEditingContactId(usuario);
+    }
+
+    const stopEditingContact = () => {
+        setEditingContact(false);
+    };
+
+    const handleContactEdit = (e) => {
+        var _apodos = {...apodos};
+        _apodos[editingContactId] = e.target.value;
+        var _contactos = JSON.parse(sessionStorage.getItem('contactos'));
+        _contactos[currentUser] = _apodos;
+        sessionStorage.setItem('contactos', JSON.stringify(_contactos));
+        setApodos(_apodos);
+    };
 
     useEffect(() => {
         const contactosDeudores = Object.values(gastos)
@@ -157,7 +178,7 @@ export default function ProfileSections() {
                 }
             }
             if (!existe) {
-                alert('El usuario no existe');
+                alert('El usuario no existe. Desea invitarlo? (funcionalidad no implementada)');
                 return;
             }
             var esContacto = false;
@@ -182,6 +203,13 @@ export default function ProfileSections() {
             onClose();
     };
 
+    function getApodo(usuario) {
+        if (!apodos || !apodos.hasOwnProperty(usuario) || apodos[usuario] == "") {
+            return usuarios[usuario].nombre
+        }
+        return apodos[usuario]
+    }
+
     return <><Tabs>
     <Tab key="contactos" title="Contactos">
         <div className="container">
@@ -204,7 +232,30 @@ export default function ProfileSections() {
                             deudaText = <>Me debe en total: <span style={{color: color}}>${x.monto}</span></>
                         }
                         return <div key={index} href={`/${usuarios[x.usuario].nombre}`} className="contact-card">
-                            <p>Nombre: {usuarios[x.usuario].nombre}</p>
+                            {/* <p>{getApodo(x.usuario)}
+                                    <button name="edit" onClick={"startEditingContact"}>
+                                        <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
+                                    </button>
+                            </p> */}
+                            {
+                                editingContact && editingContactId == x.usuario ? (
+                                    <p><input
+                                        type="text"
+                                        value={getApodo(x.usuario)}
+                                        onChange={handleContactEdit}
+                                        autoFocus/>
+                                        <button name="edit" onClick={stopEditingContact}>
+                                        <img style={{width: '15px', marginLeft: '15px'}} src="/public//images/check.png" alt="save" />
+                                        </button>
+                                    </p>
+                                ) : (
+                                    <p>{getApodo(x.usuario)}
+                                        <button name="edit" onClick={() => startEditingContact(x.usuario)}>
+                                        <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
+                                        </button>
+                                    </p>
+                                )
+                            }
                             <p>{deudaText}</p>
                             <Accordion>
                                 <AccordionItem key="1" aria-label="Detalle" title="Detalle">

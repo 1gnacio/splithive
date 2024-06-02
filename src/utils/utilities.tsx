@@ -1,4 +1,14 @@
 export const getContactos =() =>{
+    const json = JSON.parse(sessionStorage.getItem("contactos"))
+    const contactos = {};
+    for (const key in json) {
+        if (json.hasOwnProperty(key)) {
+            contactos[key] = Object.keys(json[key]).map(Number);
+        }
+    }
+    return contactos;
+}
+export const getApodos =() =>{
     return JSON.parse(sessionStorage.getItem("contactos"))
 }
 
