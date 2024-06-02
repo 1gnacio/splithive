@@ -398,11 +398,19 @@ export default function GroupDetails(props) {
                                             <p>Quien pagó: {usuarios[gastos[gastoId].payer].nombre}</p>
                                             <p>Monto Total: {gastos[gastoId].monto}</p>
                                             <p>Fecha: {gastos[gastoId].fecha}</p>
-                                            {editMode[index] ?
+                                            
+                                            { Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && (editMode[index] ?
                                                 <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> :
-                                                <p style={{color: 'red'}}>Deuda: {gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length))} c/u</p>}
-                                            <p>Deudores: {gastos[gastoId].deudores.length > 0 && imprimirNombres(gastoId)}</p>
-                                            {gastos[gastoId].invitados && <p>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
+                                                <p style={{color: 'red'}}>Deuda: {gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length))} c/u</p>)}
+                                            
+                                            {Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && <p>Deudores: {gastos[gastoId].deudores.length > 0 && imprimirNombres(gastoId)}</p>}
+                                            {gastos[gastoId].invitados && Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && <p>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
+                                        
+                                            {Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) || <p>Deuda: {Object.entries(gastos[gastoId].reparto).map(([key, value]) => {
+                                                if (value != 0) {
+                                                    return <p style={{marginLeft:"10px"}}>{getApodo(key)}: ${value}</p>
+                                                }
+                                            })}</p>}
                                         </CardBody>
                                     </Card>
                                 )}
