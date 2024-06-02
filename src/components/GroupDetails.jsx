@@ -100,7 +100,7 @@ export default function GroupDetails(props) {
         })
         deudores_.forEach(function(deudor) {
             document.getElementById('porcentaje' + deudor).disabled = false;
-            document.getElementById('porcentaje' + deudor).placeholder = 100 / deudores_.length;
+            document.getElementById('porcentaje' + deudor).placeholder = Math.round((100 / deudores_.length) * 100) / 100;
         })
     }
 
@@ -303,13 +303,18 @@ export default function GroupDetails(props) {
                                                                     {getApodo(id)}
                                                                 </label>
                                                                 <p style={{marginRight: "400px"}}>
-                                                                    <input type="number" 
+                                                                    <Input type="number" 
+                                                                    endContent={<p style={{fontSize: '14px'}}>%</p>} 
+                                                                    className='max-w-[220px]'
                                                                     disabled 
                                                                     id={"porcentaje" + id} 
                                                                     placeholder="0" 
                                                                     onChange={handlePorcentaje}
-                                                                    style={{ width: "50px", textAlign: "right", marginRight: "0px" }}>
-                                                                        </input> "%"
+                                                                    style={{ width: "100px", textAlign: "right", marginRight: "0px",
+                                                                    MozAppearance: "textfield",
+                                                                    WebkitAppearance: "none",
+                                                                    appearance: "textfield"}}>
+                                                                        </Input>
                                                                 </p>
                                                             </li>
                                                         </ul>
