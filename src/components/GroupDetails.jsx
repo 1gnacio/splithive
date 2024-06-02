@@ -82,6 +82,65 @@ export default function GroupDetails(props) {
         setNewMemberName(null);
     };
 
+    const [deudores, setDeudores] = useState([]);
+    const handleNuevoDeudor = (id) => {
+        document.getElementById("errorGasto").style.display = "none";
+        let deudores_ = []
+        if (deudores.includes(id)) {
+            deudores_ = deudores.filter(x => x != id)
+        } else {
+            deudores_ = [...deudores, id]
+        }
+        setDeudores(deudores_)
+
+        grupo.integrantes.forEach(function(integrante) {
+            document.getElementById('porcentaje' + integrante).value = "";
+            document.getElementById('porcentaje' + integrante).placeholder = 0;
+            document.getElementById('porcentaje' + integrante).disabled = true;
+        })
+        deudores_.forEach(function(deudor) {
+            document.getElementById('porcentaje' + deudor).disabled = false;
+            document.getElementById('porcentaje' + deudor).placeholder = 100 / deudores_.length;
+        })
+    }
+
+    const handlePorcentaje = (e, id) => {
+        document.getElementById("errorGasto").style.display = "none";
+
+        let total = 0;
+        let sinP = [];
+        grupo.integrantes.forEach(function(integrante) {
+            total += Number(document.getElementById('porcentaje' + integrante).value);
+            if (document.getElementById('deudor' + integrante).checked && document.getElementById('porcentaje' + integrante).value == "") {
+                sinP.push(integrante);
+            }
+        })
+
+        if (total > 100) {
+            document.getElementById("errorGasto").style.display = "block";
+            document.getElementById("errorGasto").innerHTML = "La suma de los porcentajes no puede superar el 100%.";
+            document.getElementById("errorGasto").style.color = "red";
+            document.getElementById("errorGasto").style.fontWeight = "bold";
+            document.getElementById("errorGasto").style.fontSize = "14px";
+            return;
+        }
+        else if (sinP.length == 0 && total != 100) {
+            document.getElementById("errorGasto").style.display = "block";
+            document.getElementById("errorGasto").innerHTML = "La suma de los porcentajes debe ser igual a 100%.";
+            document.getElementById("errorGasto").style.color = "red";
+            document.getElementById("errorGasto").style.fontWeight = "bold";
+            document.getElementById("errorGasto").style.fontSize = "14px";
+            return;
+        }
+
+        let porcentaje = (100 - total) / sinP.length;
+        sinP.forEach(function(integrante) {
+            document.getElementById('porcentaje' + integrante).placeholder = porcentaje;
+        })
+    }
+
+        
+
     const saveEdit = (type) => (event) => {
         let nuevosGrupos = {...grupos};
     
@@ -109,14 +168,9 @@ export default function GroupDetails(props) {
     };
 
     function getApodo(usuario) {
-        console.log("!!!!")
-        console.log(apodos);
-        console.log(usuario);
         if (!apodos || !apodos.hasOwnProperty(usuario) || apodos[usuario] == "") {
-            console.log(usuarios[usuario].nombre);
             return usuarios[usuario].nombre
         }
-        console.log(apodos[usuario]);
         return apodos[usuario]
     }
 
@@ -228,16 +282,25 @@ export default function GroupDetails(props) {
                                                 {grupo.integrantes.map((id, index) => {
                                                     return (
                                                         <ul>
-                                                            <li key={id}>
-                                                                <label content={getApodo(id)}>
-                                                                    <input type="checkbox" id={"deudor" + id}></input>
+                                                            <li key={id} style={{ display: "flex", alignItems: "center" }}>
+                                                                <label content={getApodo(id)} style={{ flexGrow: 1 }}>
+                                                                    <input type="checkbox" id={"deudor" + id} onClick={() => handleNuevoDeudor(id)}></input>
                                                                     {getApodo(id)}
                                                                 </label>
+                                                                <p style={{marginRight: "400px"}}>
+                                                                    <input type="number" 
+                                                                    disabled 
+                                                                    id={"porcentaje" + id} 
+                                                                    placeholder="0" 
+                                                                    onChange={handlePorcentaje}
+                                                                    style={{ width: "50px", textAlign: "right", marginRight: "0px" }}>
+                                                                        </input> "%"
+                                                                </p>
                                                             </li>
                                                         </ul>
                                                     )
                                                 })}
-                                                <Button onClick={crearGasto} color="warning" type="submit">Crear Gasto</Button>
+                                                <Button onClick={crearGasto} color="warning" type="submit">Crear Gasto</Button> <p id="errorGasto"></p>
                                             </form>
                                         </CardBody>
                                     </Card>
