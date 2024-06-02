@@ -4,15 +4,17 @@ import calcularSaldos from '../utils/calcularSaldos';
 import MapListbox from './mapListBox';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { getUsuarios, getGrupos, getGastos, getSaldos, getInvitados, getCurrentUser } from "../utils/utilities"
+import { getUsuarios, getGrupos, getGastos, getSaldos, getApodos, getInvitados, getCurrentUser } from "../utils/utilities"
 import inputStyle from "../styles/form.module.css"
 import button from "../styles/button.module.css"
 
 
 export default function GroupDetails(props) {
+    const [currentUser, setCurrentUser] = useState(getCurrentUser());
     let [id,setId] = useState(props.id.split('-')[0]);
     let [grupos, setGrupos] = useState(getGrupos());
-    let [usuarios, setUsuarios] = useState(getUsuarios())
+    let [usuarios, setUsuarios] = useState(getUsuarios());
+    const [apodos, setApodos] = useState(getApodos()[currentUser]);
     let [grupo, setGrupo] = useState(grupos[id]);
     let [editMode, setEditMode] = useState(grupo.gastos.map(x => false));
     let [newName, setNewName] = useState("");
@@ -106,8 +108,20 @@ export default function GroupDetails(props) {
         window.location.reload();
     };
 
+    function getApodo(usuario) {
+        console.log("!!!!")
+        console.log(apodos);
+        console.log(usuario);
+        if (!apodos || !apodos.hasOwnProperty(usuario) || apodos[usuario] == "") {
+            console.log(usuarios[usuario].nombre);
+            return usuarios[usuario].nombre
+        }
+        console.log(apodos[usuario]);
+        return apodos[usuario]
+    }
+
     function imprimirNombres(id){
-        return gastos[id].deudores.filter(x => x != gastos[id].payer).map(x => usuarios[x].nombre).reduce((acc, e) => acc + ", " + e);
+        return gastos[id].deudores.filter(x => x != gastos[id].payer).map(x => getApodo(x)).reduce((acc, e) => acc + ", " + e);
     }
 
     function imprimirInvitadosDeudores(id) {
@@ -206,7 +220,7 @@ export default function GroupDetails(props) {
                                                 <label htmlFor="dropdown">Quién pagó:</label><br/>
                                                 <select id="quienPago">
                                                 {grupo.integrantes.map((id, index) => {
-                                                    return <option value={id}>{usuarios[id].nombre}</option>
+                                                    return <option value={id}>{getApodo(id)}</option>
                                                 })}
                                                 </select>
                                                 <br/>
@@ -215,9 +229,9 @@ export default function GroupDetails(props) {
                                                     return (
                                                         <ul>
                                                             <li key={id}>
-                                                                <label content={usuarios[id].nombre}>
+                                                                <label content={getApodo(id)}>
                                                                     <input type="checkbox" id={"deudor" + id}></input>
-                                                                    {usuarios[id].nombre}
+                                                                    {getApodo(id)}
                                                                 </label>
                                                             </li>
                                                         </ul>
@@ -242,7 +256,7 @@ export default function GroupDetails(props) {
                                                     />
                                                 ) : (
                                                     <>
-                                                        <span>{usuarios[nombre].nombre}</span>
+                                                        <span>{getApodo(nombre)}</span>
                                                         <button onClick={() => startEditingMemberName(nombre)}>
                                                             <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
                                                         </button>
