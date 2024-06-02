@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { contactos } from '../../public/contactos.astro';
 import { Button, Card, Input, Link, Select, SelectItem,  } from '@nextui-org/react';
-import { getHives, getUserByUsername, getUsuarios, getGrupos, getCurrentUser, getInvitados } from "../utils/utilities"
+import { getContactos, getApodos, getInvitados, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
 import ImageContainer from '../components/groupsForms/ImageContainer'
 import '../styles/global.css'
 import '../styles/formGroups.css'
@@ -11,7 +11,7 @@ export default function FormularioDivisionDeGastos() {
     const [grupos, setGrupos] = useState(getGrupos());
     const [usuarios, setUsuarios] = useState(getUsuarios());
     const [hive_userActual, setHive_userActual] = useState(getHives());
-    const [userContacts, setUserContacts] = useState(contactos[currentUser] || [])
+    const [userContacts, setUserContacts] = useState(getContactos()[currentUser] || [])
     const [userContactsNames, setUserContactsNames] = useState(userContacts.map(id => usuarios[id]?.nombre || `Usuario ${id}`));
     const [invitados, setInvitados] = useState([])
     const [invitadosTodos, setInvitadosTodos] = useState(getInvitados())
