@@ -13,6 +13,7 @@ export default function FormularioDivisionDeGastos() {
     const [hive_userActual, setHive_userActual] = useState(getHives());
     const [userContacts, setUserContacts] = useState(getContactos()[currentUser] || [])
     const [userContactsNames, setUserContactsNames] = useState(userContacts.map(id => usuarios[id]?.nombre || `Usuario ${id}`));
+    const [apodos, setApodos] = useState(getApodos()[currentUser]);
     const [invitados, setInvitados] = useState([])
     const [invitadosTodos, setInvitadosTodos] = useState(getInvitados())
     const [nombreInvitado, setNombreInvitado] = useState("");
@@ -34,7 +35,7 @@ export default function FormularioDivisionDeGastos() {
             nuevoCampoIntegrante.innerHTML = `
             <select id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select">
                 <option value="" label="Selecciona un integrante">Selecciona un integrante</option>
-                ${contactosDisponibles.map(id => `<option value="${id}">${usuarios[id].nombre}</option>`).join('')}
+                ${contactosDisponibles.map(id => `<option value="${id}">${getApodo(id)}</option>`).join('')}
             </select>`;
             integrantesContainer.appendChild(nuevoCampoIntegrante);
         });
@@ -60,6 +61,13 @@ export default function FormularioDivisionDeGastos() {
 
         
     }, [])
+
+    function getApodo(id) {
+        if (!apodos || !apodos.hasOwnProperty(id) || apodos[id] == "") {
+            return usuarios[id].nombre
+        }
+        return apodos[id]
+    }
 
     function crearGrupo(event) {
         event.preventDefault(); 
