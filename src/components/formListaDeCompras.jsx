@@ -3,7 +3,7 @@ import { Button, Card, Input, Link, Select, SelectItem,  } from '@nextui-org/rea
 import '../styles/global.css'
 import '../styles/formGroups.css'
 
-export default function FormListaDeCompras() {
+export default function FormListaDeCompras(props) {
     return (
         <Card className='p-4'>
             <form id="crearShopListForm">
