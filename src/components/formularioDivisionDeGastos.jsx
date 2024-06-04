@@ -17,7 +17,6 @@ export default function FormularioDivisionDeGastos() {
     const [invitados, setInvitados] = useState([])
     const [invitadosTodos, setInvitadosTodos] = useState(getInvitados())
     const [nombreInvitado, setNombreInvitado] = useState("");
-    const [esPublico, setEsPublico] = useState(false)
 
     useEffect(() => {
         document.getElementById('agregarIntegranteBtn').addEventListener('click', function() {
@@ -106,7 +105,7 @@ export default function FormularioDivisionDeGastos() {
             integrantes: integrantes, 
             tipo: "gastos", 
             gastos: [], 
-            publico: esPublico
+            publico: false
         };
 
         if (invitados.length > 0) {
@@ -165,18 +164,11 @@ export default function FormularioDivisionDeGastos() {
         <ImageContainer rightImageSrc='/public/images/gastos.png'/>
                     
         <div className="form-group flex-row">
-                <div className="form-group-item item-nombre-grupo">
-                    <label htmlFor="nombreGrupo">Nombre del grupo:</label>
-                    <input type="text" id="nombreGrupo" name="nombreGrupo" className="input-field" />
-                </div>
-                <div className="form-group-item">
-                    <p>Visibilidad Publica</p>
-                    <div className="checkbox-wrapper-7">
-                        <input value={esPublico} onChange={e => setEsPublico(e.target.value)} className="tgl tgl-ios" id="grupoPublico" type="checkbox"/>
-                        <label className="tgl-btn" htmlFor="grupoPublico" />
-                    </div>
-                </div>
+            <div className="form-group-item item-nombre-grupo">
+                <label htmlFor="nombreGrupo">Nombre del grupo:</label>
+                <input type="text" id="nombreGrupo" name="nombreGrupo" className="input-field" />
             </div>
+        </div>
 
         <div id="containerIntegrante1" className="form-group">
             <label htmlFor="nombreIntegrante1">Integrantes:</label>

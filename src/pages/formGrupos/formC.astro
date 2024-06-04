@@ -67,17 +67,17 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
                 document.getElementById('crearRecFormulario').reset();
                 return;
             }
+            var currentUserID = getCurrentUser();
+            var grupos = getGrupos();
+
             var nuevaRec = {
                 nombre: nombreRec, 
                 tipo: "recaudación", 
                 objetivo: objetivo, 
                 donaciones: [],
+                integrantes: [parseInt(currentUserID)],
                 publico: esPublico
             };
-
-            var currentUserID = getCurrentUser();
-
-            var grupos = getGrupos();
 
             var maxID = 0;
             for (const id in grupos) {

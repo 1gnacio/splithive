@@ -1,130 +1,88 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Button } from "@nextui-org/react";
 import '../styles/modal.css'
 import '../styles/btn.css'
 import '../styles/global.css'
-import Header from '../components/Header';
-import GroupsModal from '../components/GroupsModal';
 import CerrarSesion from "../components/cerrarsesion"
-import { navigate } from 'astro:transitions/client';
 import NightBtn from '../components/nightBtn';
 
 
 ---
 
 <Layout title="Welcome to Splithive">
-
     <main>
-
         <div class="header">
-
             <!-- <Header /> -->
             <NightBtn></NightBtn>
             <CerrarSesion client:only></CerrarSesion>
-
         </div>
         
         <div class="home">
-            
-            <img src="../../public/images/myHive.png" style="width:300px;">
-
+            <input type="text">
             <div id="grupos"></div>
-
             <div class="btns">
-                <button id="crearGrupoBtn" class="btn">Crear grupo</button>
-                <button id="beesBtn" class="btn">Bees</button>
-                <a href="/publico">
-                    <button class="btn">Unirme a grupo</button>
+                <a href="/home">
+                    <button class="btn">Volver</button>
                 </a>
-            </div>
-
-            <div id="modal" class="modal" style="display: none;">
-                
-                <div class="modal-content">
-                    
-                    <span class="close" id="closeModal">&times;</span>
-
-                    <GroupsModal />
-
-                </div>
             </div>
         </div>
 
         <script>
-            
             import { navigate } from "astro:transitions/client";
-            import cargarDatos from "../utils/initLogica";
-            import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser, getUserByUsername } from "../utils/utilities"
+            import { getCurrentUser, getGruposPublicosForUser, agregarIntegrante } from "../utils/utilities"
 
-            var currentDate = new Date();
             var currentUser = getCurrentUser();
             if (!currentUser){
-                console.log("asdasd")
                 navigate("/")
             } 
-            
-
-            var grupos = getGrupos();
-            var hive_userActual = getHives();
-
+            var gruposPublicos = getGruposPublicosForUser(currentUser);
+            console.log(gruposPublicos);
 
             function actualizarListaGrupos() {
-                hive_userActual = getHives()
                 var contenedorGrupos = document.getElementById('grupos');
                 contenedorGrupos.innerHTML = ''; 
 
-                hive_userActual[currentUser].forEach(i => {
-                    var grupo = grupos[i];
-                    var grupoElemento = document.createElement('div');
+                for(let id in gruposPublicos) {
+                    var grupo = gruposPublicos[id];
+                    var grupoElemento = document.createElement('div');                    
+                    grupoElemento.innerHTML = `
+                        <h2>${grupo.nombre}</h2>
+                        <p>Tipo: ${grupo.tipo}</p>
+                        <a href="grupos/${id}-${grupo.tipo}">
+                            <button class="btn-grupo">Ver</button>
+                        </a>
+                        <button class="btn-grupo unirse-btn" data-id="${id}">Unirse</button>
+                    `;
 
-                    grupoElemento.innerHTML = '<h2>' + grupo.nombre + '</h2><p>Tipo: ' + grupo.tipo;
-                    
                     if (grupo.tipo === "gastos") {
                         var cantidadIntegrantes = grupo.integrantes.length + (grupo.invitados?.length ?? 0);
-
                         grupoElemento.innerHTML += '</h2><p>Cantidad de integrantes: ' + cantidadIntegrantes + '</p>';
                     }
 
-                    var enlaceDetalle = document.createElement('a');
-                    enlaceDetalle.classList.add('grupo-card');
-                    enlaceDetalle.href = 'grupos/' + (i) + '-' + grupo.tipo;
-                    
-                    enlaceDetalle.appendChild(grupoElemento);
-                    contenedorGrupos.appendChild(enlaceDetalle);
+                    grupoElemento.classList.add('grupo-card');
+                    contenedorGrupos.appendChild(grupoElemento);
+                };
+                document.querySelectorAll('.unirse-btn').forEach(button => {
+                    button.addEventListener('click', handleUnirseClick);
                 });
             }
 
-            var modal = document.getElementById('modal');
-            var btnAbrirModal = document.getElementById('crearGrupoBtn');
-            var spanCerrar = document.getElementById('closeModal');
-
-            btnAbrirModal.onclick = function() {
-                modal.style.display = 'block';
-            };
-
-            spanCerrar.onclick = function() {
-                modal.style.display = 'none';
-                document.getElementById('integrantesContainer').innerHTML = '';
-            };
-
-            document.getElementById('beesBtn').addEventListener('click', function() {
-                window.location.href = 'bees/bees'; 
-            });
+            function handleUnirseClick(event) {
+                var grupoId = event.target.getAttribute('data-id');
+                console.log(`Unirse al grupo con ID: ${grupoId}`);
+                agregarIntegrante(currentUser, grupoId);
+                window.location.href = '/publico';
+            }
 
             actualizarListaGrupos();
-
         </script>
     </main>
 </Layout>
 
 <style is:global>
-
     .home{
         margin-top: 10px
     }
-
-
     #grupos {
         display: flex;
         flex-wrap: wrap;
@@ -152,9 +110,6 @@ import NightBtn from '../components/nightBtn';
         margin: 0;
         color: grey;
     }
-
-
-
 	.instructions {
 		margin-bottom: 2rem;
 		border: 1px solid rgba(var(--accent-light), 25%);
@@ -180,8 +135,6 @@ import NightBtn from '../components/nightBtn';
 		gap: 2rem;
 		padding: 0;
 	}
-    
-    
     .img-logo {
         position: absolute;
         top: 0;
@@ -193,5 +146,20 @@ import NightBtn from '../components/nightBtn';
         text-align: center;
         color: burlywood;
         font-size: 3rem; /* Ajusta el tamaño de la fuente según tus necesidades */
+    }
+    .btn-grupo {
+        background-color: #ffffff; 
+        color: rgb(0, 0, 0); 
+        font-size: 20px;
+        padding: 5px 15px; 
+        margin-top: 10px;
+        margin-right: 10px;
+        border-radius: 6px;
+        border-color: #000000;
+        border-width: 3px;
+        transition: all .3s ease-in-out;
+    }
+    .btn-grupo:hover {
+        background-color: #a2a2a2; 
     }
 </style>

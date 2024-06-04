@@ -7,4 +7,9 @@
     border-radius: 6px;
     border-color: #000000;
     border-width: 3px;
+    transition: all .3s ease-in-out;
+}
+
+.btn:hover {
+    background-color: #a2a2a2; 
 }

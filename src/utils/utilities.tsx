@@ -1,3 +1,5 @@
+import { user } from "@nextui-org/react";
+
 export const getContactos =() =>{
     const json = JSON.parse(sessionStorage.getItem("contactos"))
     const contactos = {};
@@ -8,20 +10,33 @@ export const getContactos =() =>{
     }
     return contactos;
 }
-export const getApodos =() =>{
+export const getApodos = () => {
     return JSON.parse(sessionStorage.getItem("contactos"))
 }
 
-export const getHives =() =>{
+export const getHives = () => {
     return JSON.parse(sessionStorage.getItem("hives"))
 }
 
-export const getUsuarios =() =>{
+export const getUsuarios = () => {
     return JSON.parse(sessionStorage.getItem("usuarios"))
 }
 
-export const getGrupos =() =>{
-    return JSON.parse(sessionStorage.getItem("grupos"))
+export const getGrupos = () => {
+    return JSON.parse(sessionStorage.getItem("grupos"));
+}
+
+export const getGruposPublicosForUser = (userId) => {
+    var grupos = getGrupos();
+    var gruposPublicos = {};
+    for(const id in grupos) {
+        var incluyeUsuario = (grupos[id].integrantes).includes(parseInt(userId));
+        var esPublico = grupos[id].publico === true;
+        if(esPublico && !incluyeUsuario) {
+            gruposPublicos[id] = grupos[id];
+        }
+    }
+    return gruposPublicos;
 }
 
 export const getGastos =() =>{
@@ -56,4 +71,13 @@ export const getUserByUsername = (username) => {
         }
     }
     return null;
+}
+
+export const agregarIntegrante = (userId, grupoId) => {
+    let grupos = getGrupos();
+    grupos[parseInt(grupoId)].integrantes.push(parseInt(userId));
+    sessionStorage.setItem("grupos", JSON.stringify(grupos));
+    let hives = getHives();
+    hives[parseInt(userId)].push(parseInt(grupoId));
+    sessionStorage.setItem("hives", JSON.stringify(hives));
 }
