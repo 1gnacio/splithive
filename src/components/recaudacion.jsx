@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { getGrupos, getDonaciones, getUsuarios, getCurrentUser } from "../utils/utilities"
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Progress} from '@nextui-org/react';
-import recaudacion from "../styles/form.module.css"
+import inputStyle from "../styles/form.module.css"
 import button from "../styles/button.module.css"
 
 export default function RecaudacionDisplay(props) {
@@ -92,15 +92,15 @@ export default function RecaudacionDisplay(props) {
                                     <div>
                                         <Button className={button.crearGastoBtn} color="warning" onClick={() => {switchFormDonacion()}}>Donar!</Button>
                                         {formDonacion && (
-                                            <Card className="donacionPopup" id="crearDonacion">
-                                                <CardHeader>Ingrese los datos!</CardHeader>
+                                            <Card style={{background: "black", borderWidth: "2px", borderColor: "gold"}} className="donacionPopup" id="crearDonacion">
+                                                <CardHeader style={{color: 'gold'}}>Ingrese los datos!</CardHeader>
                                                 <CardBody>
                                                     <form>
-                                                        <label>Monto:</label><br/>
-                                                        <input className={recaudacion.formInputStyle} type="number" value={montoDonacion} onChange={handleMonto}/><br/>
-                                                        <label>Mensaje:</label><br/>
-                                                        <input className={recaudacion.formInputStyle} type="text" value={mensajeDonacion} onChange={handleMensaje}/><br/>
-                                                        <Button onClick={enviarDonacion} color="warning" type="submit">Enviar donación</Button>
+                                                        <label style={{color: 'gold'}}>Monto:</label><br/>
+                                                        <input className={inputStyle.formInputStyle} type="number" value={montoDonacion} onChange={handleMonto}/><br/>
+                                                        <label style={{color: 'gold'}}>Mensaje:</label><br/>
+                                                        <input className={inputStyle.formInputStyle} type="text" value={mensajeDonacion} onChange={handleMensaje}/><br/>
+                                                        <Button style={{marginTop: '10px'}} onClick={enviarDonacion} color="warning" type="submit">Enviar donación</Button>
                                                     </form>
                                                 </CardBody>
                                             </Card>
@@ -114,7 +114,7 @@ export default function RecaudacionDisplay(props) {
                                 <p style={{color:"gold"}}>No se han recibido donaciones aún.</p>
                             ) : (
                                 grupo.donaciones.map((id, index) =>
-                                    <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold"}}>
+                                    <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                         <CardBody>
                                             <p style={{color: "gold"}}>Donante: {usuarios[donaciones[id].donante].nombre}</p>
                                             <p style={{color: "gold"}}>Monto: {donaciones[id].monto}</p>
