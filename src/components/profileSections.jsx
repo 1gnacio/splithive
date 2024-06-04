@@ -1,18 +1,39 @@
-import { Tab, Tabs, useDisclosure, Modal, ModalBody, ModalContent, Button, ModalHeader, ModalFooter, Input, Link, Accordion, AccordionItem } from "@nextui-org/react"
+import { Tab, Tabs, useDisclosure, Modal, ModalBody, Card, CardBody, CardFooter, ModalContent, Button, ModalHeader, ModalFooter, Input, Link, Accordion, AccordionItem } from "@nextui-org/react"
 import { calcularDeudasAtravesDeGrupos } from '../utils/logicaNegocio';
-import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
+import { getContactos, getApodos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
 import { useEffect, useState } from "react";
 import { contactos } from "../../public/contactos.astro";
 
 export default function ProfileSections() {
     const [currentUser, setCurrentUser] = useState(getCurrentUser());
     const [contactos, setContactos] = useState(getContactos()[currentUser]);
+    const [apodos, setApodos] = useState(getApodos()[currentUser]);
     const [usuarios, setUsuarios] = useState(getUsuarios());
     const [grupos, setGrupos] = useState(getGrupos());
     const [gastos, setGastos] = useState(getGastos());
+    const [editingContact, setEditingContact] = useState(false);
+    const [editingContactId, setEditingContactId] = useState(0);
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const [otrasAbejas, setOtrasAbejas] = useState([]);
     const [deudaContactos, setDeudaContactos] = useState([]);
+
+    const startEditingContact = (usuario) => {
+        setEditingContact(true);
+        setEditingContactId(usuario);
+    }
+
+    const stopEditingContact = () => {
+        setEditingContact(false);
+    };
+
+    const handleContactEdit = (e) => {
+        var _apodos = {...apodos};
+        _apodos[editingContactId] = e.target.value;
+        var _contactos = JSON.parse(sessionStorage.getItem('contactos'));
+        _contactos[currentUser] = _apodos;
+        sessionStorage.setItem('contactos', JSON.stringify(_contactos));
+        setApodos(_apodos);
+    };
 
     useEffect(() => {
         const contactosDeudores = Object.values(gastos)
@@ -157,7 +178,7 @@ export default function ProfileSections() {
                 }
             }
             if (!existe) {
-                alert('El usuario no existe');
+                alert('El usuario no existe. Desea invitarlo? (funcionalidad no implementada)');
                 return;
             }
             var esContacto = false;
@@ -182,17 +203,25 @@ export default function ProfileSections() {
             onClose();
     };
 
+    function getApodo(usuario) {
+        if (!apodos || !apodos.hasOwnProperty(usuario) || apodos[usuario] == "") {
+            return usuarios[usuario].nombre
+        }
+        return apodos[usuario]
+    }
+
     return <><Tabs>
-    <Tab key="contactos" title="Contactos">
+    <Tab key="contactos" title="Mis Bees">
         <div className="container">
+
             <div style={{display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "60%",
-                marginBottom: "1em"}}>
-                <h1 className="text-gradient">Bees</h1> 
-                <Button onPress={onOpen}>Nueva abeja</Button>
+                marginBottom: "3px"}}>
+                <Button color="warning" onPress={onOpen}>Nueva abeja</Button>
             </div>
+
             <div className="contact-list">
                 {deudaContactos && deudaContactos.map((x, index) => {
                         const color = x.monto < 0 ? 'red' : 'green';
@@ -203,8 +232,31 @@ export default function ProfileSections() {
                         else if (x.monto > 0){
                             deudaText = <>Me debe en total: <span style={{color: color}}>${x.monto.toFixed(2)}</span></>
                         }
-                        return <div key={index} href={`/${usuarios[x.usuario].nombre}`} className="contact-card">
-                            <p>Nombre: {usuarios[x.usuario].nombre}</p>
+                        return <Card key={index} href={`/${usuarios[x.usuario].nombre}`} className="contact-card">
+                            {/* <p>{getApodo(x.usuario)}
+                                    <button name="edit" onClick={"startEditingContact"}>
+                                        <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
+                                    </button>
+                            </p> */}
+                            {
+                                editingContact && editingContactId == x.usuario ? (
+                                    <p><input
+                                        type="text"
+                                        value={getApodo(x.usuario)}
+                                        onChange={handleContactEdit}
+                                        autoFocus/>
+                                        <button name="edit" onClick={stopEditingContact}>
+                                        <img style={{width: '15px', marginLeft: '15px'}} src="/public//images/check.png" alt="save" />
+                                        </button>
+                                    </p>
+                                ) : (
+                                    <p>{getApodo(x.usuario)}
+                                        <button name="edit" onClick={() => startEditingContact(x.usuario)}>
+                                        <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
+                                        </button>
+                                    </p>
+                                )
+                            }
                             <p>{deudaText}</p>
                             <Accordion>
                                 <AccordionItem key="1" aria-label="Detalle" title="Detalle">
@@ -213,12 +265,20 @@ export default function ProfileSections() {
                                 })}
                                 </AccordionItem>
                             </Accordion>
-                        </div>
+                        </Card>
                 })}
             </div>
-            <Button className="mt-4" href='/home' as={Link} color="primary" showAnchorIcon variant="solid">
+
+            <div style={{display: "flex",
+                justifyContent: "space-between",
+                width: "60%",
+                marginBottom: "3px",
+                marginTop: "3px"}}>
+                <Button className="mt-4" href='/home' as={Link} color="default" showAnchorIcon variant="solid">
                 Volver
-            </Button>
+                </Button>
+            </div>
+
         </div>
         <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
             <ModalContent>
@@ -241,15 +301,9 @@ export default function ProfileSections() {
             </ModalContent>
       </Modal>
     </Tab>
-    <Tab key="otros" title="Otras abejas">
+    <Tab key="otros" title="Otras Bees">
         <div className="container">
-            <div style={{display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "60%",
-                marginBottom: "1em"}}>
-                <h1 className="text-gradient">Otras abejas</h1>
-            </div>
+
             <div className="contact-list">
                 {otrasAbejas && otrasAbejas.map((x, index) => {
                         const color = x.monto < 0 ? 'red' : 'green';
@@ -273,9 +327,16 @@ export default function ProfileSections() {
                         </div>
                 })}
             </div>
-            <Button className="mt-4" href='/home' as={Link} color="primary" showAnchorIcon variant="solid">
+
+            <div style={{display: "flex",
+                justifyContent: "space-between",
+                width: "60%",
+                marginBottom: "1rem"}}>
+                <Button className="mt-4" href='/home' as={Link} color="default" showAnchorIcon variant="solid">
                 Volver
-            </Button>
+                </Button>
+            </div>
+            
         </div>
     </Tab>
 </Tabs>
@@ -284,9 +345,6 @@ export default function ProfileSections() {
     .container {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
     }
 
     .contact-list {
@@ -332,15 +390,6 @@ export default function ProfileSections() {
         max-width: 500px;
     }
 
-    .text-gradient {
-        font-size: 4rem;
-        font-weight: 700;
-        line-height: 1;
-        text-align: center;
-        background-image: linear-gradient(to right, #f12711, #f5af19);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
 `}
 </style></>
 }

@@ -4,15 +4,17 @@ import calcularSaldos from '../utils/calcularSaldos';
 import MapListbox from './mapListBox';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { getUsuarios, getGrupos, getGastos, getSaldos, getInvitados, getCurrentUser } from "../utils/utilities"
+import { getUsuarios, getGrupos, getGastos, getSaldos, getApodos, getInvitados, getCurrentUser } from "../utils/utilities"
 import inputStyle from "../styles/form.module.css"
 import button from "../styles/button.module.css"
 
 
 export default function GroupDetails(props) {
+    const [currentUser, setCurrentUser] = useState(getCurrentUser());
     let [id,setId] = useState(props.id.split('-')[0]);
     let [grupos, setGrupos] = useState(getGrupos());
-    let [usuarios, setUsuarios] = useState(getUsuarios())
+    let [usuarios, setUsuarios] = useState(getUsuarios());
+    const [apodos, setApodos] = useState(getApodos()[currentUser]);
     let [grupo, setGrupo] = useState(grupos[id]);
     let [editMode, setEditMode] = useState(grupo.gastos.map(x => false));
     let [newName, setNewName] = useState("");
@@ -80,6 +82,69 @@ export default function GroupDetails(props) {
         setNewMemberName(null);
     };
 
+    const [deudores, setDeudores] = useState([]);
+    const handleNuevoDeudor = (id) => {
+        document.getElementById("errorGasto").style.display = "none";
+        document.getElementById("crearGastoBtn").disabled = false;
+        let deudores_ = []
+        if (deudores.includes(id)) {
+            deudores_ = deudores.filter(x => x != id)
+        } else {
+            deudores_ = [...deudores, id]
+        }
+        setDeudores(deudores_)
+
+        grupo.integrantes.forEach(function(integrante) {
+            document.getElementById('porcentaje' + integrante).value = "";
+            document.getElementById('porcentaje' + integrante).placeholder = 0;
+            document.getElementById('porcentaje' + integrante).disabled = true;
+        })
+        deudores_.forEach(function(deudor) {
+            document.getElementById('porcentaje' + deudor).disabled = false;
+            document.getElementById('porcentaje' + deudor).placeholder = Math.round((100 / deudores_.length) * 100) / 100;
+        })
+    }
+
+    const handlePorcentaje = (e, id) => {
+        document.getElementById("errorGasto").style.display = "none";
+        document.getElementById("crearGastoBtn").disabled = false;
+
+        let total = 0;
+        let sinP = [];
+        grupo.integrantes.forEach(function(integrante) {
+            total += Number(document.getElementById('porcentaje' + integrante).value);
+            if (document.getElementById('deudor' + integrante).checked && document.getElementById('porcentaje' + integrante).value == "") {
+                sinP.push(integrante);
+            }
+        })
+
+        if (total > 100) {
+            document.getElementById("errorGasto").style.display = "block";
+            document.getElementById("errorGasto").innerHTML = "La suma de los porcentajes no puede superar el 100%.";
+            document.getElementById("errorGasto").style.color = "red";
+            document.getElementById("errorGasto").style.fontWeight = "bold";
+            document.getElementById("errorGasto").style.fontSize = "14px";
+            document.getElementById("crearGastoBtn").disabled = true;
+            return;
+        }
+        else if (sinP.length == 0 && total != 100) {
+            document.getElementById("errorGasto").style.display = "block";
+            document.getElementById("errorGasto").innerHTML = "La suma de los porcentajes debe ser igual a 100%.";
+            document.getElementById("errorGasto").style.color = "red";
+            document.getElementById("errorGasto").style.fontWeight = "bold";
+            document.getElementById("errorGasto").style.fontSize = "14px";
+            document.getElementById("crearGastoBtn").disabled = true;
+            return;
+        }
+
+        let porcentaje = (100 - total) / sinP.length;
+        sinP.forEach(function(integrante) {
+            document.getElementById('porcentaje' + integrante).placeholder = porcentaje;
+        })
+    }
+
+        
+
     const saveEdit = (type) => (event) => {
         let nuevosGrupos = {...grupos};
     
@@ -106,8 +171,15 @@ export default function GroupDetails(props) {
         window.location.reload();
     };
 
+    function getApodo(usuario) {
+        if (!apodos || !apodos.hasOwnProperty(usuario) || apodos[usuario] == "") {
+            return usuarios[usuario].nombre
+        }
+        return apodos[usuario]
+    }
+
     function imprimirNombres(id){
-        return gastos[id].deudores.filter(x => x != gastos[id].payer).map(x => usuarios[x].nombre).reduce((acc, e) => acc + ", " + e);
+        return gastos[id].deudores.filter(x => x != gastos[id].payer).map(x => getApodo(x)).reduce((acc, e) => acc + ", " + e);
     }
 
     function imprimirInvitadosDeudores(id) {
@@ -139,11 +211,26 @@ export default function GroupDetails(props) {
 
         var fechaString = dia + '/' + mes + '/' + anio;
 
+        var porcentajes = {};
+        grupo.integrantes.forEach(function(integrante) {
+            porcentajes[integrante] = Number(document.getElementById('porcentaje' + integrante).value) == "" ? Number(document.getElementById('porcentaje' + integrante).placeholder) : Number(document.getElementById('porcentaje' + integrante).value);
+        });
+
         var repartos = {};
-        var reparto = Math.round((montoGasto / (deudores.length + 1)) * 100) / 100;
-        deudores.forEach(deudor => {
-            repartos[deudor] = reparto
+        // var reparto = Math.round((montoGasto / (deudores.length + 1)) * 100) / 100;
+        // deudores.forEach(deudor => {
+        //     repartos[deudor] = reparto
+        // })
+
+        grupo.integrantes.forEach(integrante => {
+            if (deudores.includes(integrante)) {
+                repartos[integrante] = Math.round((montoGasto * porcentajes[integrante] / 100) * 100) / 100;
+            } else {
+                repartos[integrante] = 0;
+            }
         })
+        
+        console.log(repartos);
 
         var nuevoGasto = {nombre: nombreGasto, deudores: deudores, payer: Number(document.getElementById('quienPago').value), monto: Number(montoGasto), fecha: fechaString, reparto: repartos};
 
@@ -164,7 +251,7 @@ export default function GroupDetails(props) {
 
         sessionStorage.setItem("grupos", JSON.stringify(grupos));
     
-        window.location.reload();
+        //window.location.reload();
     }
 
     return <div className="p-5">
@@ -188,6 +275,7 @@ export default function GroupDetails(props) {
                             )}
                         </h4>
                     </CardHeader>
+
                     <CardBody>
                         <Tabs aria-label="Options" color="warning">
                             <Tab key="integrantes" title="Integrantes">
@@ -204,22 +292,38 @@ export default function GroupDetails(props) {
                                                 <label style={{color: 'gold'}} htmlFor="dropdown">Quién pagó:</label><br/>
                                                 <select id="quienPago">
                                                 {grupo.integrantes.map((id, index) => {
-                                                    return <option value={id}>{usuarios[id].nombre}</option>
+                                                    return <option value={id}>{getApodo(id)}</option>
                                                 })}
                                                 </select>
+                                                <br/>
+                                                <label htmlFor="dropdown">Quienes participaron:</label>
                                                 {grupo.integrantes.map((id, index) => {
                                                     return (
                                                         <ul>
-                                                            <li key={id}>
-                                                                <label style={{color: 'gold'}} content={usuarios[id].nombre}>
-                                                                    <input type="checkbox" id={"deudor" + id}></input>
-                                                                    {usuarios[id].nombre}
+                                                            <li key={id} style={{ display: "flex", alignItems: "center" }}>
+                                                                <label content={getApodo(id)} style={{color: 'gold', flexGrow: 1}}>
+                                                                    <input type="checkbox" id={"deudor" + id} onClick={() => handleNuevoDeudor(id)}></input>
+                                                                    {getApodo(id)}
                                                                 </label>
+                                                                <p style={{marginRight: "400px"}}>
+                                                                    <Input type="number" 
+                                                                    endContent={<p style={{fontSize: '14px'}}>%</p>} 
+                                                                    className='max-w-[220px]'
+                                                                    disabled 
+                                                                    id={"porcentaje" + id} 
+                                                                    placeholder="0" 
+                                                                    onChange={handlePorcentaje}
+                                                                    style={{ width: "100px", textAlign: "right", marginRight: "0px",
+                                                                    MozAppearance: "textfield",
+                                                                    WebkitAppearance: "none",
+                                                                    appearance: "textfield"}}>
+                                                                        </Input>
+                                                                </p>
                                                             </li>
                                                         </ul>
                                                     )
                                                 })}
-                                                <Button onClick={crearGasto} color="warning" type="submit">Crear Gasto</Button>
+                                                <Button id="crearGastoBtn" onClick={crearGasto} color="warning" type="submit">Crear Gasto</Button> <p id="errorGasto"></p>
                                             </form>
                                         </CardBody>
                                     </Card>
@@ -238,7 +342,7 @@ export default function GroupDetails(props) {
                                                     />
                                                 ) : (
                                                     <>
-                                                        <span style={{color: "gold"}}>{usuarios[nombre].nombre}</span>
+                                                        <span style={{color: "gold"}}>{getApodo(nombre)}</span>
                                                         <button onClick={() => startEditingMemberName(nombre)}>
                                                             <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
                                                         </button>
@@ -261,6 +365,7 @@ export default function GroupDetails(props) {
                                     </Card>
                                 })}
                             </Tab>
+                            
                             <Tab key="gastos" title="Gastos">
                                 {grupo.gastos.map((gastoId, index) =>
                                     <Card className='p-4' style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
@@ -296,9 +401,19 @@ export default function GroupDetails(props) {
                                             <p style={{color: "gold"}}>Quien pagó: {usuarios[gastos[gastoId].payer].nombre}</p>
                                             <p style={{color: "gold"}}>Monto Total: {gastos[gastoId].monto}</p>
                                             <p style={{color: "gold"}}>Fecha: {gastos[gastoId].fecha}</p>
-                                            {editMode[index] ? <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> : <p style={{color: 'red'}}>Deuda: {gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length))} c/u</p>}
-                                            <p style={{color: "gold"}}>Deudores: {gastos[gastoId].deudores.length > 0 && imprimirNombres(gastoId)}</p>
-                                            {gastos[gastoId].invitados && <p style={{color: "gold"}}>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
+                                            
+                                            { Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && (editMode[index] ?
+                                                <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> :
+                                                <p style={{color: 'red'}}>Deuda: {gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length))} c/u</p>)}
+                                            
+                                            {Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && <p style={{color: "gold"}}>Deudores: {gastos[gastoId].deudores.length > 0 && imprimirNombres(gastoId)}</p>}
+                                            {gastos[gastoId].invitados && Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && <p style={{color: "gold"}}>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
+                                        
+                                            {Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) || <p>Deuda: {Object.entries(gastos[gastoId].reparto).map(([key, value]) => {
+                                                if (value != 0) {
+                                                    return <p style={{marginLeft:"10px", color: "gold"}}>{getApodo(key)}: ${value}</p>
+                                                }
+                                            })}</p>}
                                         </CardBody>
                                     </Card>
                                 )}
@@ -308,6 +423,7 @@ export default function GroupDetails(props) {
                             </Tab>
                         </Tabs>
                     </CardBody>
+
                     <CardFooter>
                         {editingGroup && (
                             <Button onClick={saveEdit("group")} color="primary">

@@ -6,11 +6,21 @@ import '../../styles/global.css'
 import '../../styles/modal.css'
 import CerrarSesion from '../../components/cerrarsesion';
 import ProfileSections from "../../components/profileSections";
+
+import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input} from '@nextui-org/react';
 ---
 
 <Layout title="Welcome to Splithive">
     <main>
         <CerrarSesion client:only></CerrarSesion>
-        <ProfileSections client:only></ProfileSections>
+
+        <Card className='p-4'>
+
+            <ProfileSections client:only></ProfileSections>
+            
+        </Card>
+
+
+        
     </main>
 </Layout>

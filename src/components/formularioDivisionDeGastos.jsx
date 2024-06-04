@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { contactos } from '../../public/contactos.astro';
 import { Button, Card, Input, Link, Select, SelectItem,  } from '@nextui-org/react';
-import { getHives, getUserByUsername, getUsuarios, getGrupos, getCurrentUser, getInvitados } from "../utils/utilities"
+import { getContactos, getApodos, getInvitados, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
 import ImageContainer from '../components/groupsForms/ImageContainer'
 import '../styles/global.css'
 import '../styles/formGroups.css'
@@ -11,8 +11,9 @@ export default function FormularioDivisionDeGastos() {
     const [grupos, setGrupos] = useState(getGrupos());
     const [usuarios, setUsuarios] = useState(getUsuarios());
     const [hive_userActual, setHive_userActual] = useState(getHives());
-    const [userContacts, setUserContacts] = useState(contactos[currentUser] || [])
+    const [userContacts, setUserContacts] = useState(getContactos()[currentUser] || [])
     const [userContactsNames, setUserContactsNames] = useState(userContacts.map(id => usuarios[id]?.nombre || `Usuario ${id}`));
+    const [apodos, setApodos] = useState(getApodos()[currentUser]);
     const [invitados, setInvitados] = useState([])
     const [invitadosTodos, setInvitadosTodos] = useState(getInvitados())
     const [nombreInvitado, setNombreInvitado] = useState("");
@@ -34,7 +35,7 @@ export default function FormularioDivisionDeGastos() {
             nuevoCampoIntegrante.innerHTML = `
             <select id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select">
                 <option value="" label="Selecciona un integrante">Selecciona un integrante</option>
-                ${contactosDisponibles.map(id => `<option value="${id}">${usuarios[id].nombre}</option>`).join('')}
+                ${contactosDisponibles.map(id => `<option value="${id}">${getApodo(id)}</option>`).join('')}
             </select>`;
             integrantesContainer.appendChild(nuevoCampoIntegrante);
         });
@@ -60,6 +61,13 @@ export default function FormularioDivisionDeGastos() {
 
         
     }, [])
+
+    function getApodo(id) {
+        if (!apodos || !apodos.hasOwnProperty(id) || apodos[id] == "") {
+            return usuarios[id].nombre
+        }
+        return apodos[id]
+    }
 
     function crearGrupo(event) {
         event.preventDefault(); 
@@ -173,15 +181,15 @@ export default function FormularioDivisionDeGastos() {
         <div id="containerIntegrante1" className="form-group">
             <label htmlFor="nombreIntegrante1">Integrantes:</label>
             <div className="searchContainer">
-                <Input endContent={<Button id="executeSearch" color='warning'>Agregar</Button>} id="searchUsername" name="searchUsername" label="Ingresar nombre de usuario" color='warning' />
+                <Input endContent={<Button id="executeSearch" color='warning'>Agregar</Button>} id="searchUsername" name="searchUsername" label="Nombre de usuario fuera de mi colmena" color='warning' />
             </div>
         </div>
 
-        <div>
+        <div className="form-group">
             <Input disabled color='warning' id="nombreIntegrante1" name="nombreIntegrante1" value={usuarios[currentUser].nombre + " (Yo)"}></Input>
         </div>
 
-        <div id="integrantesContainer">
+        <div id="integrantesContainer" className="form-group">
         </div>
 
         <div className="form-group">
@@ -210,7 +218,7 @@ export default function FormularioDivisionDeGastos() {
             })}
         </div>
 
-        <div style={{marginTop: "60px"}}>
+        <div style={{margin: "20px"}} >
             <Button className="submitBtn font-semibold fs-5" type="submit">Crear</Button>
             <Button as={Link} className="cancelarBtn font-semibold fs-5" href='/home'>Cancelar</Button>
         </div>
