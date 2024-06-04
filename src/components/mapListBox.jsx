@@ -20,11 +20,11 @@ export function MapListbox(props) {
                                 return (
                                     <ul>
                                         <li key={deudor}>
-                                        <Card style={{display: "flex", justifyContent: "center", marginBottom: "10px"}}>
-                                            <CardBody>
+                                        <Card style={{background: "black", borderWidth: "2px", borderColor: "gold", display: "flex", justifyContent: "center", marginBottom: "10px"}}>
+                                            <CardBody style={{color: "gold"}}>
                                                 {usuarios[deudor].nombre} le debe {monto} a {usuarios[acreedor].nombre}
                                                 <div>
-                                                    <Button style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => {saldar(props.id_grupo, deudor, acreedor), window.location.reload()}}>Saldar</Button>
+                                                    <Button color="warning" style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => {saldar(props.id_grupo, deudor, acreedor), window.location.reload()}}>Saldar</Button>
                                                 </div>
                                             </CardBody>
                                         </Card>
