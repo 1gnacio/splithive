@@ -181,9 +181,9 @@ export default function GroupDetails(props) {
                             ) : (
                                 <>
                                     {grupo.nombre}
-                                    <Button style={{display: 'inline-flex', width: 'auto', paddingRight: '0px', paddingLeft: '0px', height: '17px'}} color="warning" name="edit" onClick={startEditingGroup}>
+                                    <button name="edit" onClick={startEditingGroup}> 
                                         <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
-                                    </Button>
+                                    </button>
                                 </>
                             )}
                         </h4>
@@ -239,9 +239,9 @@ export default function GroupDetails(props) {
                                                 ) : (
                                                     <>
                                                         <span style={{color: "gold"}}>{usuarios[nombre].nombre}</span>
-                                                        <Button mode="outlined" style={{width: '15px', height: '20px'}} color="warning" onClick={() => startEditingMemberName(nombre)}>
+                                                        <button onClick={() => startEditingMemberName(nombre)}>
                                                             <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
-                                                        </Button>
+                                                        </button>
                                                     </>
                                                 )}
                                             </div>
