@@ -80,7 +80,7 @@ export default function ShopListDisplay(props) {
                                 <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                     <CardBody>
                                         <p style={{color: "gold"}}>{usuarios[id].nombre}</p>
-                                        <p style={{color: "gold"}}>Saldo: {saldo}</p>
+                                        <p style={{color: "gold"}}>Saldo: {saldo}$</p>
                                     </CardBody>
                                 </Card>
                             )}
