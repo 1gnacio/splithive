@@ -1,13 +1,30 @@
 import React from 'react';
 import { useState } from 'react';
-import { getGrupos, getDonaciones, getUsuarios, getCurrentUser } from "../utils/utilities"
-import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Progress} from '@nextui-org/react';
+import { getGrupos, getUsuarios } from "../utils/utilities"
+import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link} from '@nextui-org/react';
+import inputStyle from "../styles/form.module.css"
 
 export default function ShopListDisplay(props) {
     let [id,setId] = useState(props.id);
     let [grupos, setGrupos] = useState(getGrupos());
     let [grupo, setGrupo] = useState(grupos[id]);
     let [usuarios, setUsuarios] = useState(getUsuarios());
+
+    const [nuevoItem, setNuevoItem] = useState(false);
+
+    const switchNuevoItem = () => setNuevoItem(!nuevoItem);
+
+    const [nombreNuevoItem, setNombreNuevoItem] = useState('');
+
+    const handleNuevoItem = (event) => {
+        setNombreNuevoItem(event.target.value);
+    }
+
+    const agregarArticulo = () => {
+        grupo.articulos.push(nombreNuevoItem);
+        sessionStorage.setItem("grupos", JSON.stringify(grupos));
+        window.location.reload();
+    }
 
     return (
         <div className="p-5">
@@ -20,7 +37,14 @@ export default function ShopListDisplay(props) {
                 <CardBody>
                     <Tabs aria-label="Options" color="warning" radius="full">
                         <Tab key="articulos" title="Artículos">
-                            <Button color="warning" style={{marginBottom: '12px'}}>Nuevo artículo</Button>
+                            <Button color="warning" style={{marginBottom: '12px'}} onClick={() => switchNuevoItem()}>Nuevo artículo</Button>
+                            {nuevoItem && (
+                                <p>
+                                    <label style={{color: 'gold'}}>Nombre:</label>
+                                    <input style={{marginLeft: '10px', marginBottom: '12px'}} className={inputStyle.formInputStyle} type="text" value={nombreNuevoItem} onChange={handleNuevoItem}/>
+                                    <Button style={{marginLeft: '10px'}} color="warning" onClick={() => agregarArticulo()}>Agregar</Button>
+                                </p>
+                            )}
                             {grupo.articulos.length === 0 ? (
                                 <p style={{color:"gold"}}>No se han agregado artículos aún.</p>
                             ) : (
