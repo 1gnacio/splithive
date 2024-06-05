@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import registro from "../styles/registro.module.css"
 import { Button, Input } from "@nextui-org/react";
-import {getContactos, getHives, getUsuarios} from "../utils/utilities"
+import {getContactos, getGastos, getGrupos, getHives, getUsuarios} from "../utils/utilities"
 import { navigate } from "astro/virtual-modules/transitions-router.js";
+import cargarDatos from "../utils/initLogica";
+import { relacionarUsuarioInvitado } from "../utils/logicaNegocio";
 
-export default function Registro(){
+export default function Registro({ grupo, invitado }){
     
     let [username,setUsername] = useState(null)
     let [okUsername,setOkUsername] = useState(false)
@@ -17,7 +19,10 @@ export default function Registro(){
 
     let [nombreUser,setNombre] = useState(null)
     let [okNombre, setOkNombre] = useState(false)
-
+    
+    useEffect(() => {
+        cargarDatos();
+    }, [])
 
     function handleSubmit(){
         var userCorrect = handleUsername();
@@ -62,6 +67,9 @@ export default function Registro(){
         sessionStorage.setItem("hives",JSON.stringify(hives))
         sessionStorage.setItem("userID",JSON.stringify(maximo+1))
         sessionStorage.setItem("contactos",JSON.stringify(contactos))
+
+        relacionarUsuarioInvitado(maximo+1, grupo, invitado);
+
         navigate("/home")
         
     }

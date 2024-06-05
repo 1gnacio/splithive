@@ -1,5 +1,5 @@
 import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter, Button, Link} from '@nextui-org/react';
-import { getGastos, getHives } from "../utils/utilities"
+import { getGastos, getGrupos, getHives } from "../utils/utilities"
 
 export default function calcularDeudas(saldos, integrantes){
     if (!saldos) return {}
@@ -53,6 +53,37 @@ export function calcularDeudasAtravesDeGrupos(grupos,current_deudor, currentUser
     })
     console.log("Deuda acumulada es "+ deuda_acumulada)
     return deuda_acumulada;
+}
+
+export function relacionarUsuarioInvitado(usuario, grupo, invitado) {
+    if (grupo) {
+        const nuevoGrupos = getGrupos();
+        const gastos = getGastos();
+        const hives = getHives();
+        nuevoGrupos[grupo].integrantes.push(usuario);
+        hives[usuario].push(grupo)
+
+        if (invitado) {
+            const gastosGrupo = nuevoGrupos[grupo].gastos;
+
+            if (nuevoGrupos[grupo].invitados) {
+                nuevoGrupos[grupo].invitados = nuevoGrupos[grupo].invitados.filter(x => x != invitado)
+            }
+
+            gastosGrupo.forEach(e => {
+                if (gastos[e].invitados && gastos[e].invitados[invitado]) {
+                    const deuda = gastos[e].invitados[invitado]
+                    gastos[e].reparto[usuario] = deuda
+                    gastos[e].deudores.push(usuario)
+                    delete gastos[e].invitados[`${invitado}`]
+                }
+            });
+        }
+
+        sessionStorage.setItem("grupos", JSON.stringify(nuevoGrupos))
+        sessionStorage.setItem("hives", JSON.stringify(hives))
+        sessionStorage.setItem("gastos", JSON.stringify(gastos))
+    }
 }
 
         

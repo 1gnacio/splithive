@@ -2,10 +2,13 @@
 import Registro from "../components/registro"
 import Layout from "../layouts/Layout.astro"
 import global from "../styles/global.css"
+
+const grupo = Astro.url.searchParams.get('grupo');
+const invitado = Astro.url.searchParams.get('invitado');
 ---
 <Layout>
     <main>
-        <Registro client:only></Registro>
+        <Registro client:only grupo={grupo} invitado={invitado}></Registro>
     </main>
 </Layout>
 
