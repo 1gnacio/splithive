@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { getGrupos, getDonaciones, getUsuarios, getCurrentUser } from "../utils/utilities"
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Progress} from '@nextui-org/react';
 import inputStyle from "../styles/form.module.css"
-import button from "../styles/button.module.css"
 
 export default function RecaudacionDisplay(props) {
     let [id,setId] = useState(props.id);
@@ -103,7 +102,7 @@ export default function RecaudacionDisplay(props) {
                                         <p style={{color: "gold"}}>Vamos {suma} pesos! Faltan {grupo.objetivo - suma} para cumplir nuestro objetivo!</p>
                                     )}
                                     <div>
-                                        <Button className={button.crearGastoBtn} color="warning" onClick={() => {switchFormDonacion()}}>Donar!</Button>
+                                        <Button style={{marginBottom: '12px'}} color="warning" onClick={() => {switchFormDonacion()}}>Donar!</Button>
                                         {formDonacion && (
                                             <Card style={{background: "black", borderWidth: "2px", borderColor: "gold"}} className="donacionPopup" id="crearDonacion">
                                                 <CardHeader style={{color: 'gold'}}>Ingrese los datos!</CardHeader>

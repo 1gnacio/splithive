@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { contactos } from '../../public/contactos.astro';
 import { Button, Card, Input, Link, Select, SelectItem,  } from '@nextui-org/react';
-import { getContactos, getApodos, getInvitados, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
+import { getContactos, getApodos, getInvitados, getUsuarios, getGrupos, getUserByUsername, getHives, getCurrentUser } from "../utils/utilities"
 import ImageContainer from '../components/groupsForms/ImageContainer'
 import '../styles/global.css'
 import '../styles/formGroups.css'

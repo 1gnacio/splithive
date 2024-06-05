@@ -6,7 +6,6 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { getUsuarios, getGrupos, getGastos, getSaldos, getApodos, getInvitados, getCurrentUser } from "../utils/utilities"
 import inputStyle from "../styles/form.module.css"
-import button from "../styles/button.module.css"
 
 
 export default function GroupDetails(props) {
@@ -279,7 +278,7 @@ export default function GroupDetails(props) {
                     <CardBody>
                         <Tabs aria-label="Options" color="warning">
                             <Tab key="integrantes" title="Integrantes">
-                                <Button className={button.crearGastoBtn} color="warning" onClick={() => switchFormGasto()}>Nuevo gasto</Button>
+                                <Button color="warning" style={{marginBottom: '12px'}} onClick={() => switchFormGasto()}>Nuevo gasto</Button>
                                 {formGasto && (
                                     <Card className="crearGasto" style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                         <CardHeader style={{color: 'gold'}}>Ingrese los datos!</CardHeader>
