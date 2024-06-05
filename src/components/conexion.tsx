@@ -17,8 +17,8 @@ export default function Conexion(){
           
         </div>
         <div className={index.helpbees} onClick={() => navigate("/publico")}>
-          <Image width= {100}src = "/public/images/bee.png"/>
-          <div className={index.helpbeesText}>Help a bee!</div>
+          <Image className={index.image}width= {100}src = "/public/images/bee.png"/>
+          <div className={index.helpbeesText}>HELP A BEE!</div>
         </div>
         
 

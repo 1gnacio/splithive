@@ -15,9 +15,9 @@
     display: flex;
     flex-direction: row;
     border-color: black;
-    border-radius: 5px;
-    border-width: 1px;
-    background-image: url('/images/fondo.jpg');
+    border-radius: 10px;
+    border-width: 5px;
+    background-color: white;
 }
 
 .helpbees:hover{
@@ -25,7 +25,9 @@
 }
 
 .helpbeesText{
-    margin-top: 30px;
+    margin-top: 35px;
     padding-right: 10px;
+    font-weight: bold;
+    font-family: 'Patrick Hand', cursive;
     color: black;
 }
