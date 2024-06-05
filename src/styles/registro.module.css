@@ -10,7 +10,7 @@
     display: flex;
     justify-content: center;
     gap: 10px;
-    min-width: 50px;
+    min-width: 70px;
 }
 
 .username_info{
@@ -23,7 +23,8 @@
 .password_bar{
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 18px;
+    width: 280px;
 }
 
 .password_info{

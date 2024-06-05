@@ -1,0 +1,31 @@
+.button {
+    display: block;
+    width: 275px; /* Adjust the width as needed */
+    height: auto; /* Maintain aspect ratio */
+    margin-top: 15%;
+}
+
+.conexion{
+    display: flex;
+    gap: 80px;
+    padding-bottom: 10px;
+  }
+
+.helpbees{
+    display: flex;
+    flex-direction: row;
+    border-color: black;
+    border-radius: 5px;
+    border-width: 1px;
+    background-image: url('/images/fondo.jpg');
+}
+
+.helpbees:hover{
+    cursor: pointer;
+}
+
+.helpbeesText{
+    margin-top: 30px;
+    padding-right: 10px;
+    color: black;
+}

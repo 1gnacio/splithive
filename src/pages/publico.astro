@@ -35,10 +35,10 @@ import NightBtn from '../components/nightBtn';
             import { getCurrentUser, getGruposPublicosForUser, agregarIntegrante } from "../utils/utilities"
 
             var currentUser = getCurrentUser();
-            if (!currentUser){
-                navigate("/")
-            } 
-            var gruposPublicos = getGruposPublicosForUser(currentUser);
+            var gruposPublicos;
+            gruposPublicos = getGruposPublicosForUser(currentUser);
+
+            
 
             function actualizarListaGrupos() {
                 var contenedorGrupos = document.getElementById('grupos');
@@ -53,8 +53,11 @@ import NightBtn from '../components/nightBtn';
                         <a href="grupos/${id}-${grupo.tipo}">
                             <button class="btn-grupo">Ver</button>
                         </a>
-                        <button class="btn-grupo unirse-btn" data-id="${id}">Unirse</button>
                     `;
+
+                    if (currentUser){
+                        grupoElemento.innerHTML+= `<button class="btn-grupo unirse-btn" data-id="${id}">Unirse</button>`
+                    }
 
                     if (grupo.tipo === "gastos") {
                         var cantidadIntegrantes = grupo.integrantes.length + (grupo.invitados?.length ?? 0);
@@ -213,6 +216,12 @@ import NightBtn from '../components/nightBtn';
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease-in-out;
         cursor: pointer;
+    }
+
+    .btn-unirse:disabled{
+    border: 1px solid #000000;
+    background-color: #000000;
+    color: #000000;
     }
 
     .btn-unirse:hover {

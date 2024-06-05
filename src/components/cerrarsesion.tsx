@@ -15,8 +15,8 @@ export default function CerrarSesion(){
         navigate("/")
     };
     return(
-
-        <div className="flex items-center gap-4" style={{display: "flex", justifyContent: "flex-end", marginTop: "20px", marginBottom: "20px"}}>
+        <>
+        {currentUser && <div className="flex items-center gap-4" style={{display: "flex", justifyContent: "flex-end", marginTop: "20px", marginBottom: "20px"}}>
             <Dropdown placement="bottom-end">
             <DropdownTrigger>
                 <Avatar
@@ -37,16 +37,8 @@ export default function CerrarSesion(){
                 </DropdownItem>
             </DropdownMenu>
             </Dropdown>
-      </div>
+      </div>}
+      </>
 
-
-
-
-        // <div className={session.cerrar}>
-        //     <div>Estoy como: {usuarios[currentUser].nombre}</div>
-        //     <Button className={session.button} onClick={(e => cerrar())}>
-        //         <div className={session.text}>Cerrar Sesion</div>
-        //     </Button>
-        // </div>
     )
 }

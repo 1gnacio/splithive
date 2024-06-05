@@ -46,7 +46,7 @@ export default function RecaudacionDisplay(props) {
 
         var fechaString = dia + '/' + mes + '/' + anio
 
-        var nuevaDonacion = {donante: getCurrentUser(), fecha: fechaString, monto: Number(montoDonacion), mensaje: mensajeDonacion}
+        var nuevaDonacion = {donante: getCurrentUser()?getCurrentUser:-1 , fecha: fechaString, monto: Number(montoDonacion), mensaje: mensajeDonacion}
 
         console.log(nuevaDonacion)
 
@@ -116,7 +116,7 @@ export default function RecaudacionDisplay(props) {
                                 grupo.donaciones.map((id, index) =>
                                     <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                         <CardBody>
-                                            <p style={{color: "gold"}}>Donante: {usuarios[donaciones[id].donante].nombre}</p>
+                                            <p style={{color: "gold"}}>Donante: {(donaciones[id].donante != -1)?usuarios[donaciones[id].donante].nombre:"Anonimo"}</p>
                                             <p style={{color: "gold"}}>Monto: {donaciones[id].monto}</p>
                                             <p style={{color: "gold"}}>Fecha: {donaciones[id].fecha}</p>
                                             <p style={{color: "gold"}}>Mensaje: {(donaciones[id].mensaje != '') ? donaciones[id].mensaje : "No se adjuntó mensaje."}</p>
