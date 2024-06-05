@@ -18,7 +18,10 @@ import NightBtn from '../components/nightBtn';
         </div>
         
         <div class="home">
-            <input type="text">
+            <div class="buscador-grupo">
+                <input type="text" id="buscarGrupoInput" placeholder="Ingresa el ID del grupo">
+                <button class="btn-unirse" id="buscarGrupoBtn">Unirse</button>
+            </div>
             <div id="grupos"></div>
             <div class="btns">
                 <a href="/home">
@@ -36,7 +39,6 @@ import NightBtn from '../components/nightBtn';
                 navigate("/")
             } 
             var gruposPublicos = getGruposPublicosForUser(currentUser);
-            console.log(gruposPublicos);
 
             function actualizarListaGrupos() {
                 var contenedorGrupos = document.getElementById('grupos');
@@ -69,10 +71,22 @@ import NightBtn from '../components/nightBtn';
 
             function handleUnirseClick(event) {
                 var grupoId = event.target.getAttribute('data-id');
-                console.log(`Unirse al grupo con ID: ${grupoId}`);
                 agregarIntegrante(currentUser, grupoId);
                 window.location.href = '/publico';
             }
+
+            function handleSearchClick() {
+                var searchInput = document.getElementById('buscarGrupoInput');
+                var grupoId = searchInput.value;
+                if (grupoId) {
+                    agregarIntegrante(currentUser, grupoId);
+                } else {
+                    alert("Por favor ingrese un ID de grupo.");
+                }
+                window.location.href = '/publico';
+            }
+
+            document.getElementById('buscarGrupoBtn').addEventListener('click', handleSearchClick);
 
             actualizarListaGrupos();
         </script>
@@ -161,5 +175,53 @@ import NightBtn from '../components/nightBtn';
     }
     .btn-grupo:hover {
         background-color: #a2a2a2; 
+    }
+    #buscarGrupoInput {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    #buscarGrupoInput:focus {
+        border-color: #007BFF;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+        outline: none;
+    }
+
+    #buscarGrupoInput::placeholder {
+        color: #aaa;
+        font-style: italic;
+    }
+
+    #buscarGrupoInput:hover {
+        border-color: #888;
+    }
+
+    .btn-unirse {
+        background-color: #ffffff;
+        color: rgb(0, 0, 0); 
+        font-size: 20px;
+        padding: 10px 15px; 
+        margin-top: 10px;
+        border-radius: 6px;
+        border: 3px solid #000000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    .btn-unirse:hover {
+        background-color: #a2a2a2;
+    }
+
+    .btn-unirse:focus {
+        outline: none;
+        border-color: #a2a2a2;
+        box-shadow: 0 0 8px rgba(162, 162, 162, 0.25);
     }
 </style>

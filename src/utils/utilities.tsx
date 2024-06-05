@@ -75,9 +75,27 @@ export const getUserByUsername = (username) => {
 
 export const agregarIntegrante = (userId, grupoId) => {
     let grupos = getGrupos();
-    grupos[parseInt(grupoId)].integrantes.push(parseInt(userId));
-    sessionStorage.setItem("grupos", JSON.stringify(grupos));
-    let hives = getHives();
-    hives[parseInt(userId)].push(parseInt(grupoId));
-    sessionStorage.setItem("hives", JSON.stringify(hives));
+    let grupo = grupos[parseInt(grupoId)];
+    if (grupo) {
+        if (grupo.publico) {
+            let integranteId = parseInt(userId);
+            if (!grupo.integrantes.includes(integranteId)) {
+                grupos[parseInt(grupoId)].integrantes.push(integranteId);
+                sessionStorage.setItem("grupos", JSON.stringify(grupos));
+                
+                let hives = getHives();
+                if (!hives[integranteId]) {
+                    hives[integranteId] = [];
+                }
+                hives[integranteId].push(parseInt(grupoId));
+                sessionStorage.setItem("hives", JSON.stringify(hives));
+            } else {
+                alert('El integrante ya está en el grupo');
+            }
+        } else {
+            alert('Este grupo es privado');
+        }
+    } else {
+        alert('Grupo inexistente');
+    }
 }
