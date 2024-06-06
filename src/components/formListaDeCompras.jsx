@@ -105,11 +105,11 @@ export default function FormListaDeCompras(props) {
                 hives[id].push(maxID + 1);
             }
 
-            var items = [];
+            var items = {};
             for (var i = 0; i < itemsContainer.children.length; i++) {
                 var item = document.getElementById(`item${i}`).textContent;
                 var articulo = {nombre: item, comprado: false, costo: 0};
-                items.push(articulo);
+                items[i] = articulo;
             }
 
             var nuevaListaCompras = {nombre: nombreGrupo, tipo: "compras", integrantes: integrantes, articulos: items, publico: false};
