@@ -1,7 +1,14 @@
 import React from 'react';
 import { useState } from 'react';
 import { getGrupos, getUsuarios } from "../utils/utilities"
-import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Badge} from '@nextui-org/react';
+import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, useDisclosure} from '@nextui-org/react';
+import {
+    Modal, 
+    ModalContent, 
+    ModalHeader, 
+    ModalBody, 
+    ModalFooter
+  } from "@nextui-org/modal";
 import inputStyle from "../styles/form.module.css"
 
 export default function ShopListDisplay(props) {
@@ -21,17 +28,55 @@ export default function ShopListDisplay(props) {
     }
 
     const agregarArticulo = () => {
-        grupo.articulos.push({nombre: nombreNuevoItem, comprado: false, costo: 0});
+        var id = obtenerItemID();
+        grupo.articulos[id] = {nombre: nombreNuevoItem, comprado: false, costo: 0};
         sessionStorage.setItem("grupos", JSON.stringify(grupos));
         window.location.reload();
     }
 
+    const {isOpen, onOpen, onClose} = useDisclosure();
+
+    const [costoItem, setCostoItem] = useState(0);
+
+    const handleCostoItem = (event) => {
+        setCostoItem(event.target.value);
+    }
+
+    const [itemIndex, setItemIndex] = useState(0);
+
+    const [nombreItemComprado, setNombreItemComprado] = useState('');
+
+    const handleOpen = (index, nombre) => {
+        setItemIndex(index);
+        setNombreItemComprado(nombre);
+        onOpen();
+    }
+
+    const pagarItem = () => {
+        var itemComprado = {nombre: nombreItemComprado, comprado: true, costo: Number(costoItem)};
+        grupo.articulos[itemIndex] = itemComprado;
+        sessionStorage.setItem("grupos", JSON.stringify(grupos));
+        window.location.reload();
+    }
+
+    function obtenerItemID() {
+        var maxID = 0;
+        for (const id in grupo.articulos) {
+            if (grupo.articulos.hasOwnProperty(id)){
+                if (Number(id) > Number(maxID)){
+                    maxID = Number(id);
+                }
+            }
+        }
+        return maxID + 1;
+    }
+
     function calcularSaldos() {
         var suma = 0;
-        grupo.articulos.forEach(articulo =>{
+        Object.entries(grupo.articulos).map(([id, articulo]) => {
             suma += articulo.costo;
         })
-        return (suma / grupo.integrantes.length);
+        return Number(suma / grupo.integrantes.length);
     }
 
     var saldo = calcularSaldos();
@@ -58,21 +103,39 @@ export default function ShopListDisplay(props) {
                             {grupo.articulos.length === 0 ? (
                                 <p style={{color:"gold"}}>No se han agregado artículos aún.</p>
                             ) : (
-                                grupo.articulos.map((articulo, index) => (
-                                    <Card key={articulo} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
-                                        <CardBody>
-                                            <p style={{color: articulo.comprado ? "#17c964" : "gold"}}>{articulo.nombre}</p>
-                                            {!articulo.comprado && (
-                                                <div>
-                                                    <Button color="warning">Comprar artículo</Button>
-                                                </div>
-                                            )}
-                                            {articulo.comprado && (
-                                                <p style={{color: "gold"}}>Costo: {articulo.costo}$</p>
-                                            )}
-                                        </CardBody>
-                                    </Card>
-                                ))
+                                Object.entries(grupo.articulos).map(([id, articulo]) => {
+                                    return (
+                                        <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
+                                            <CardBody>
+                                                <p style={{color: articulo.comprado ? "#17c964" : "gold"}}>{articulo.nombre}</p>
+                                                {!articulo.comprado && (
+                                                    <div>
+                                                        <Button key={id} color="warning" onPress={() => handleOpen(id, articulo.nombre)}>Comprar artículo</Button>
+                                                        <Modal isOpen={isOpen} onClose={onClose}>
+                                                            <ModalContent>
+                                                                {(onClose) => (
+                                                                    <>
+                                                                        <ModalHeader>Ingrese el costo:</ModalHeader>
+                                                                        <ModalBody>
+                                                                            <input style={{marginLeft: '10px', marginBottom: '12px'}} className={inputStyle.formInputStyle} type="number" value={costoItem} onChange={handleCostoItem}/>
+                                                                        </ModalBody>
+                                                                        <ModalFooter>
+                                                                            <Button color="danger" variant="light" onPress={onClose}>Cerrar</Button>
+                                                                            <Button color="warning" onClick={() => pagarItem()} onPress={onClose}>Pagar</Button>
+                                                                        </ModalFooter>
+                                                                    </>
+                                                                )}
+                                                            </ModalContent>
+                                                        </Modal>
+                                                    </div>
+                                                )}
+                                                {articulo.comprado && (
+                                                    <p style={{color: "gold"}}>Costo: {articulo.costo}$</p>
+                                                )}
+                                            </CardBody>
+                                        </Card>
+                                    )
+                                })
                             )}
                         </Tab>
                         <Tab key="abejas" title="Abejas">
