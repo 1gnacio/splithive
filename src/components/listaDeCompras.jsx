@@ -76,10 +76,10 @@ export default function ShopListDisplay(props) {
         Object.entries(grupo.articulos).map(([id, articulo]) => {
             suma += articulo.costo;
         })
-        return Number(suma / grupo.integrantes.length);
+        return [suma, (suma / grupo.integrantes.length)];
     }
 
-    var saldo = calcularSaldos();
+    var [suma, saldo] = calcularSaldos();
 
     return (
         <div className="p-5">
@@ -100,6 +100,7 @@ export default function ShopListDisplay(props) {
                                     <Button style={{marginLeft: '10px'}} color="warning" onClick={() => agregarArticulo()}>Agregar</Button>
                                 </p>
                             )}
+                            <p style={{marginBottom: '14px', color:"gold"}}>Total: {suma}$</p>
                             {grupo.articulos.length === 0 ? (
                                 <p style={{color:"gold"}}>No se han agregado artículos aún.</p>
                             ) : (
