@@ -1,33 +1,10 @@
 .button {
     display: block;
-    width: 275px; /* Adjust the width as needed */
-    height: auto; /* Maintain aspect ratio */
-    margin-top: 15%;
+    margin-top: 10%;
 }
 
 .conexion{
     display: flex;
-    gap: 80px;
+    gap: 3px;
     padding-bottom: 10px;
   }
-
-.helpbees{
-    display: flex;
-    flex-direction: row;
-    border-color: black;
-    border-radius: 10px;
-    border-width: 5px;
-    background-color: white;
-}
-
-.helpbees:hover{
-    cursor: pointer;
-}
-
-.helpbeesText{
-    margin-top: 35px;
-    padding-right: 10px;
-    font-weight: bold;
-    font-family: 'Patrick Hand', cursive;
-    color: black;
-}
