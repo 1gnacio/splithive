@@ -17,12 +17,13 @@ export default function ShopListDisplay(props) {
     let [grupo, setGrupo] = useState(grupos[id]);
     let [usuarios, setUsuarios] = useState(getUsuarios());
     let [apodos, setApodos] = useState(getApodos()[getCurrentUser()]);
-    let [deudas, setDeudas] = useState({});
 
     function calcularSaldos() {
-        var saldos = {}
+        var saldos = {};
+        var deudas = {};
         grupo.integrantes.forEach((integrante) => {
             saldos[integrante] = 0;
+            deudas[integrante] = {};
         })
         for (const id in grupo.articulos) {
             if (grupo.articulos.hasOwnProperty(id) && grupo.articulos[id].comprado) {
@@ -33,11 +34,12 @@ export default function ShopListDisplay(props) {
                     }
                     else {
                         saldos[integrante] -= reparto;
+                        deudas[integrante][grupo.articulos[id].payer] = reparto;
                     }
                 })
             }
         }
-        return saldos;
+        return [saldos, deudas];
     }
 
     function getApodo(usuario) {
@@ -111,7 +113,9 @@ export default function ShopListDisplay(props) {
 
     var suma = calcularSuma();
 
-    var saldos = calcularSaldos();
+    var [saldos, deudas] = calcularSaldos();
+
+    console.log(deudas);
 
     return (
         <div className="p-5">
@@ -176,11 +180,30 @@ export default function ShopListDisplay(props) {
                                 <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                     <CardBody>
                                         <p style={{color: "gold"}}>{getApodo(id)}</p>
-                                        {console.log(saldos[id])}
                                         <p style={{color: (saldos[id] > 0 ? "#17c964" : 'red')}}>Saldo: {saldos[id]}$</p>
                                     </CardBody>
                                 </Card>
                             )}
+                        </Tab>
+                        <Tab key="saldos" title="Saldos">
+                            {Object.entries(deudas).map(([deudor, acreedores]) => {
+                                return (
+                                    <div key={deudor}>
+                                        {Object.entries(acreedores).map(([acreedor, monto]) => {
+                                            return (
+                                                <Card key={acreedor} style={{background: "black", borderWidth: "2px", borderColor: "gold", display: "flex", justifyContent: "center", marginBottom: "10px"}}>
+                                                    <CardBody style={{color: "gold"}}>
+                                                        {getApodo(deudor)} le debe {monto}$ a {getApodo(acreedor)}.
+                                                        <div>
+                                                            <Button color="warning" style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => console.log(`saldado!`)}>Saldar</Button>
+                                                        </div>
+                                                    </CardBody>
+                                                </Card>
+                                            )
+                                        })}
+                                    </div>
+                                )
+                            })}
                         </Tab>
                     </Tabs>
                 </CardBody>
