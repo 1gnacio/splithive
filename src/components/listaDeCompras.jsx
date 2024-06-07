@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { getGrupos, getUsuarios } from "../utils/utilities"
+import { getGrupos, getUsuarios, getCurrentUser, getApodos } from "../utils/utilities"
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, useDisclosure} from '@nextui-org/react';
 import {
     Modal, 
@@ -16,6 +16,14 @@ export default function ShopListDisplay(props) {
     let [grupos, setGrupos] = useState(getGrupos());
     let [grupo, setGrupo] = useState(grupos[id]);
     let [usuarios, setUsuarios] = useState(getUsuarios());
+    let [apodos, setApodos] = useState(getApodos()[getCurrentUser()]);
+
+    function getApodo(usuario) {
+        if (!apodos || !apodos.hasOwnProperty(usuario) || apodos[usuario] == "") {
+            return usuarios[usuario].nombre
+        }
+        return apodos[usuario]
+    }
 
     const [nuevoItem, setNuevoItem] = useState(false);
 
@@ -53,7 +61,7 @@ export default function ShopListDisplay(props) {
     }
 
     const pagarItem = () => {
-        var itemComprado = {nombre: nombreItemComprado, comprado: true, costo: Number(costoItem)};
+        var itemComprado = {nombre: nombreItemComprado, comprado: true, costo: Number(costoItem), payer: Number(getCurrentUser())};
         grupo.articulos[itemIndex] = itemComprado;
         sessionStorage.setItem("grupos", JSON.stringify(grupos));
         window.location.reload();
@@ -131,7 +139,7 @@ export default function ShopListDisplay(props) {
                                                     </div>
                                                 )}
                                                 {articulo.comprado && (
-                                                    <p style={{color: "gold"}}>Costo: {articulo.costo}$</p>
+                                                    <p style={{color: "gold"}}>Costo: {articulo.costo}$ | Pagado por: {getApodo(articulo.payer)}</p>
                                                 )}
                                             </CardBody>
                                         </Card>
@@ -143,7 +151,7 @@ export default function ShopListDisplay(props) {
                             {grupo.integrantes.map((id, index) =>
                                 <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                     <CardBody>
-                                        <p style={{color: "gold"}}>{usuarios[id].nombre}</p>
+                                        <p style={{color: "gold"}}>{getApodo(id)}</p>
                                         <p style={{color: "gold"}}>Saldo: {saldo}$</p>
                                     </CardBody>
                                 </Card>
