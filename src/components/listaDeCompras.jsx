@@ -17,6 +17,28 @@ export default function ShopListDisplay(props) {
     let [grupo, setGrupo] = useState(grupos[id]);
     let [usuarios, setUsuarios] = useState(getUsuarios());
     let [apodos, setApodos] = useState(getApodos()[getCurrentUser()]);
+    let [deudas, setDeudas] = useState({});
+
+    function calcularSaldos() {
+        var saldos = {}
+        grupo.integrantes.forEach((integrante) => {
+            saldos[integrante] = 0;
+        })
+        for (const id in grupo.articulos) {
+            if (grupo.articulos.hasOwnProperty(id) && grupo.articulos[id].comprado) {
+                var reparto = (grupo.articulos[id].costo / grupo.integrantes.length);
+                grupo.integrantes.forEach((integrante) => {
+                    if (integrante === grupo.articulos[id].payer) {
+                        saldos[integrante] += reparto;
+                    }
+                    else {
+                        saldos[integrante] -= reparto;
+                    }
+                })
+            }
+        }
+        return saldos;
+    }
 
     function getApodo(usuario) {
         if (!apodos || !apodos.hasOwnProperty(usuario) || apodos[usuario] == "") {
@@ -79,15 +101,17 @@ export default function ShopListDisplay(props) {
         return maxID + 1;
     }
 
-    function calcularSaldos() {
+    function calcularSuma() {
         var suma = 0;
         Object.entries(grupo.articulos).map(([id, articulo]) => {
             suma += articulo.costo;
         })
-        return [suma, (suma / grupo.integrantes.length)];
+        return suma;
     }
 
-    var [suma, saldo] = calcularSaldos();
+    var suma = calcularSuma();
+
+    var saldos = calcularSaldos();
 
     return (
         <div className="p-5">
@@ -152,7 +176,8 @@ export default function ShopListDisplay(props) {
                                 <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                     <CardBody>
                                         <p style={{color: "gold"}}>{getApodo(id)}</p>
-                                        <p style={{color: "gold"}}>Saldo: {saldo}$</p>
+                                        {console.log(saldos[id])}
+                                        <p style={{color: (saldos[id] > 0 ? "#17c964" : 'red')}}>Saldo: {saldos[id]}$</p>
                                     </CardBody>
                                 </Card>
                             )}
