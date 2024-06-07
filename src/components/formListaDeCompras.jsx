@@ -108,7 +108,7 @@ export default function FormListaDeCompras(props) {
             var items = {};
             for (var i = 0; i < itemsContainer.children.length; i++) {
                 var item = document.getElementById(`item${i}`).textContent;
-                var articulo = {nombre: item, comprado: false, costo: 0};
+                var articulo = {nombre: item, comprado: false, costo: 0, payer: -1};
                 items[i] = articulo;
             }
 
