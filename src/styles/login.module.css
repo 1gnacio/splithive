@@ -29,3 +29,9 @@
 .bar{
     max-width: max-content;
 }
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    padding-bottom: 200px;
+}

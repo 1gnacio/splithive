@@ -2,7 +2,7 @@
     display: grid;
     justify-content: center;
     align-items: center;
-    padding-top: 15%;
+    padding-top: 25%;
     gap: 10px;
 }
 
@@ -13,8 +13,8 @@
     min-width: 70px;
 }
 
-.username_info{
-    color: yellow;
+.username_info, .password_info{
+    color: black;
     font-size: large;
     padding-top: 7px;
     padding-left: 5px;
@@ -25,13 +25,6 @@
     justify-content: center;
     gap: 18px;
     width: 280px;
-}
-
-.password_info{
-    color: yellow;
-    font-size: large;
-    padding-top: 7px;
-    padding-left: 5px;
 }
 
 .bar{
@@ -46,4 +39,10 @@
 .name_bar{
     max-width: max-content;
     padding-left: 15px;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    padding-bottom: 200px;
 }

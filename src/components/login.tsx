@@ -109,7 +109,11 @@ export default function Login(){
 
             </Input>
         </div>
-        <Button onClick={e => {handleSubmit()}}>Login</Button>
+        <div className={login.buttons}>
+            <Button color="warning" onClick={e => {handleSubmit()}}>Login</Button>
+            <Button onClick={e => navigate("/")}>Cancelar</Button>
+        </div>
+        
     </div> 
     );
 }

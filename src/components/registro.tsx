@@ -178,7 +178,11 @@ export default function Registro(){
                 errorMessage={errorEmailMessage} onChange={(e => {onChaneEmail(e)})} type ="username">
             </Input>    
         </div>
-        <Button onClick={e => {handleSubmit()}}>Registrarse</Button>
+
+        <div className={registro.buttons}>
+            <Button color="warning" onClick={e => {handleSubmit()}}>Sign In</Button>
+            <Button onClick={e => navigate("/")}>Cancelar</Button>
+        </div>
     </div> 
     );
 }
