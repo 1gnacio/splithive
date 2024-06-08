@@ -1,35 +1,20 @@
 .form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
-    margin-top: 10px;
     user-select: none;
-    margin: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
 }
 
-.flex-row {
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.item-nombre-grupo {
-    width: 75%;
-}
-
-.submitBtn {
-    background-color: #FFD93D; 
-    border: 3px; 
-    border-color: black; 
-    border-radius: 5px; 
-    padding: 3px 10px; 
-    color: black;
+.form-group-item {
+    margin-top: 10px;
+    gap: 5px;
 }
 
 .custom-select, .searchUsername, .executeSearch, .input-field, .input-field:focus, .added-user {
     background-color: #ffd83d; 
-    border: 3px; 
-    border-color: black; 
-    border-radius: 5px;
+    border-radius: 9px;
     margin-top: 10px;
     width: 100%;
     padding: 3px;
@@ -46,14 +31,24 @@
 #agregarIntegranteBtn {
     background-color: #ff8400;  
     color: black; 
-    border-radius: 5px; 
+    border-radius: 9px; 
+    width: 100%;
+}
+
+.submitBtn {
+    background-color: #FFD93D; 
+    border: 3px; 
+    border-color: black; 
+    border-radius: 9px; 
+    padding: 3px 10px; 
+    color: black;
 }
 
 .cancelarBtn{
     background-color: lightgray; 
     border: 3px; 
     border-color: black; 
-    border-radius: 5px; 
+    border-radius: 9px; 
     padding: 3px 10px; 
     color: black;
 }
