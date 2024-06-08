@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { contactos } from '../../public/contactos.astro';
-import { Button, Card, Input, Link, Select, SelectItem,  } from '@nextui-org/react';
-import { getContactos, getApodos, getInvitados, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
+import { Button, Card, Input, Link } from '@nextui-org/react';
+import { getGrupos, getHives, getCurrentUser } from "../utils/utilities"
 import ImageContainer from '../components/groupsForms/ImageContainer'
 import '../styles/global.css'
 import '../styles/formGroups.css'
@@ -9,64 +8,89 @@ import '../styles/formGroups.css'
 export default function FormularioDivisionDeGastos() {
     const [currentUser, setCurrentUser] = useState(getCurrentUser());
     const [grupos, setGrupos] = useState(getGrupos());
-    const [usuarios, setUsuarios] = useState(getUsuarios());
+    // const [usuarios, setUsuarios] = useState(getUsuarios());
     const [hive_userActual, setHive_userActual] = useState(getHives());
-    const [userContacts, setUserContacts] = useState(getContactos()[currentUser] || [])
-    const [userContactsNames, setUserContactsNames] = useState(userContacts.map(id => usuarios[id]?.nombre || `Usuario ${id}`));
-    const [apodos, setApodos] = useState(getApodos()[currentUser]);
-    const [invitados, setInvitados] = useState([])
-    const [invitadosTodos, setInvitadosTodos] = useState(getInvitados())
-    const [nombreInvitado, setNombreInvitado] = useState("");
+    // const [userContacts, setUserContacts] = useState(getContactos()[currentUser] || [])
+    // const [userContactsNames, setUserContactsNames] = useState(userContacts.map(id => usuarios[id]?.nombre || `Usuario ${id}`));
+    // const [apodos, setApodos] = useState(getApodos()[currentUser]);
 
     useEffect(() => {
-        // document.getElementById('agregarIntegranteBtn').addEventListener('click', function() {
-        //     var contadorIntegrantes = integrantesContainer.children.length + 2;
-        //     var nuevoCampoIntegrante = document.createElement('div');
-        //     var contactosDisponibles = userContacts.filter(name => {
-        //         // Comprobar si el contacto ya ha sido seleccionado
-        //         var val= ![...integrantesContainer.querySelectorAll('select')].some(select => {
-        //             console.log(select.selectedIndex)
-        //             return select[select.selectedIndex].value == name
-        //         });
-        //         return val
-        //     });
-            
-        //     nuevoCampoIntegrante.innerHTML = `
-        //     <select id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select">
-        //         <option value="" label="Selecciona un integrante">Selecciona un integrante</option>
-        //         ${contactosDisponibles.map(id => `<option value="${id}">${getApodo(id)}</option>`).join('')}
-        //     </select>`;
-        //     integrantesContainer.appendChild(nuevoCampoIntegrante);
-        // });
 
-        // document.getElementById('executeSearch').addEventListener('click', function() {
-        //     const username = document.getElementById('searchUsername').value;
-        //     console.log(username);
-        //     const user = getUserByUsername(username);
-        //     console.log("User: ", user);
-        //     if (user) {
-        //         var contadorIntegrantes = integrantesContainer.children.length + 2;
-        //         var nuevoCampoIntegrante = document.createElement('div');
-        //         nuevoCampoIntegrante.innerHTML = `
-        //             <select disabled id="nombreIntegrante${contadorIntegrantes}" name="nombreIntegrante${contadorIntegrantes}" class="custom-select added-user">
-        //                 <option selected value="${user.id}">${user.usuario}</option>
-        //             </select>`;
-        //         integrantesContainer.appendChild(nuevoCampoIntegrante);
-        //         document.getElementById('searchUsername').value = "";
-        //     } else {
-        //         alert('El usuario no existe');
-        //     }
-        // });
+        document.getElementById("agregarItem").addEventListener("click", function () {
+            const nombreItem = document.getElementById("addItem").value;
+            var contadorItems = itemsContainer.children.length;
+            var campoItem = document.createElement("div");
+            campoItem.innerHTML = `<label id="item${contadorItems}">${nombreItem}</label>`;
+            itemsContainer.appendChild(campoItem);
+        });
+
+        document.getElementById("crearWishListForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const nombreGrupo = document.getElementById("nombreGrupo").value;
+            if (nombreGrupo === "") {
+                alert("Se debe ingresar un nombre.");
+                window.location.href = '/home';
+                document.getElementById('crearWishListForm').reset();
+                return;
+            }
+
+            var hives = getHives();
+
+            var maxID = 0;
+            for (const id in grupos) {
+                if (grupos.hasOwnProperty(id)){
+                    if (Number(id) > Number(maxID)){
+                        maxID = Number(id);
+                    }
+                }
+            }
+
+            var integrantes = [];
+            integrantes.push(currentUser);
+            hives[currentUser].push(maxID + 1);
+
+            // for (var i = 0; i < contactosContainer.children.length; i++) {
+            //     var id = document.getElementById("nombreContacto" + i).value;
+            //     integrantes.push(Number(id));
+            //     hives[id].push(maxID + 1);
+            // }
+
+            // for (var i = 0; i < integrantesContainer.children.length; i++) {
+            //     var id = document.getElementById("nombreIntegrante" + i).value;
+            //     integrantes.push(Number(id));
+            //     hives[id].push(maxID + 1);
+            // }
+
+            var items = {};
+            for (var i = 0; i < itemsContainer.children.length; i++) {
+                var item = document.getElementById(`item${i}`).textContent;
+                var articulo = {nombre: item, comprado: false, costo: 0};
+                items[i] = articulo;
+            }
+
+            var nuevaWishList = {nombre: nombreGrupo, tipo: "WishList", integrantes: integrantes, articulos: items, publico: true};
+
+            grupos[maxID + 1] = nuevaWishList;
+
+            sessionStorage.setItem('grupos', JSON.stringify(grupos));
+
+            sessionStorage.setItem("hives", JSON.stringify(hives));
+
+            window.location.href = '/home';
+
+            document.getElementById('crearShopListForm').reset();
+        });
 
         
     }, [])
 
-    function getApodo(id) {
-        if (!apodos || !apodos.hasOwnProperty(id) || apodos[id] == "") {
-            return usuarios[id].nombre
-        }
-        return apodos[id]
-    }
+    // function getApodo(id) {
+    //     if (!apodos || !apodos.hasOwnProperty(id) || apodos[id] == "") {
+    //         return usuarios[id].nombre
+    //     }
+    //     return apodos[id]
+    // }
 
     function crearGrupo(event) {
         event.preventDefault(); 
@@ -84,43 +108,14 @@ export default function FormularioDivisionDeGastos() {
             
             hive_userActual[currentUser].push(maximo+1)
 
-    //         for (var i = 2; i <= integrantesContainer.children.length + 1; i++) {
-    //             var id = document.getElementById(`nombreIntegrante${i}`).value;
-    //             var nombre = userContacts[id]; 
-    //             if (id in userContacts) {
-    //                 integrantes.push(Number(id));
-    //                 hive_userActual[id].push(maximo+1);
-    //             } 
-    //             // Agrego no contacto al grupo
-    //             else {
-    //                 let user = getUserByUsername(nombre);
-    //                 console.log(id)
-    //                 integrantes.push(Number(id));
-    //                 hive_userActual[id].push(maximo+1);
-    //             }
-    //         }
-
 
         var nuevoGrupo = { 
             nombre: nombreGrupo, 
             integrantes: integrantes, 
-            tipo: "wishList", 
+            tipo: "WishList", 
             gastos: [], 
             publico: true
         };
-
-        // if (invitados.length > 0) {
-        //     const count = Object.keys(invitadosTodos).length
-        //     const nuevoInvitados = {...invitadosTodos};
-
-        //     invitados.forEach((e, index) => {
-        //         nuevoInvitados[count + index] = e
-        //     });
-
-        //     nuevoGrupo.invitados = invitados.map((e, index) => index + count)
-
-        //     sessionStorage.setItem('invitados', JSON.stringify(nuevoInvitados))
-        // }
 
         grupos[maximo+1] = nuevoGrupo;
         sessionStorage.setItem('grupos', JSON.stringify(grupos));
@@ -159,19 +154,80 @@ export default function FormularioDivisionDeGastos() {
 
     return <><Card classNameName='p-4'>
 
-    <form id="crearGrupoFormulario" onSubmit={crearGrupo}>
+    <form id="crearWishListForm" onSubmit={crearGrupo}>
         
         <ImageContainer rightImageSrc='/public/images/wishList.png'/>
-                    
-        <div className="form-group flex-row">
-            <div className="form-group-item item-nombre-grupo">
-                <label htmlFor="nombreGrupo">Nombre de la Wish-List:</label>
-                <input type="text" id="nombreGrupo" name="nombreGrupo" className="input-field" />
-            </div>
+
+        <div className="form-group">
+
+                <label htmlFor="nombreGrupo" className='form-group-item'>Nombre de la Wish-List:</label>
+
+                <Input
+                    className='form-group-item'
+                    classNames={{
+                    label: ["text-black/50 dark:text-white/90"],
+                    input: [
+                        "bg-yellow-300",
+                        "text-black/90 dark:text-white/90"
+                    ],
+                    innerWrapper: "bg-yellow-300",
+                    inputWrapper: [
+                        "shadow-md",
+                        "!bg-yellow-300",
+                        "dark:bg-blue-500/60",
+                        "backdrop-blur-xl",
+                        "backdrop-yellow-300",
+                        "hover:bg-yellow-300",
+                        "dark:hover:bg-default/70",
+                        "group-data-[focus=false]:bg-yellow-200/50",
+                        "dark:group-data-[focus=false]:bg-default/60",
+                        "!cursor-text",
+                    ],
+                    }} type="text" id="nombreGrupo" name="nombreGrupo"
+                />
+
         </div>
 
 
-        <div style={{margin: "20px"}} >
+        <div className="form-group">
+
+                <label htmlFor="nombreGrupo" className='form-group-item'>Items:</label>
+
+                <div className="form-group-item flex">
+
+                    <Input
+                        classNames={{
+                        label: ["text-black/50 dark:text-white/90"],
+                        input: [
+                            "bg-yellow-300",
+                            "text-black/90 dark:text-white/90"
+                        ],
+                        innerWrapper: "bg-yellow-300",
+                        inputWrapper: [
+                            "shadow-md",
+                            "!bg-yellow-300",
+                            "dark:bg-blue-500/60",
+                            "backdrop-blur-xl",
+                            "backdrop-yellow-300",
+                            "hover:bg-yellow-300",
+                            "dark:hover:bg-default/70",
+                            "group-data-[focus=false]:bg-yellow-200/50",
+                            "dark:group-data-[focus=false]:bg-default/60",
+                            "!cursor-text",
+                        ],
+                        }} type="text" id="addItem" name="addItem"
+                    />
+
+                    <Button className="submitBtn" id="agregarItem" >Agregar</Button>
+
+                </div>
+
+                <div id="itemsContainer" className="form-group"></div>
+
+        </div>
+
+
+        <div style={{margin: "20px", display: "flex", gap: "5px"}} >
             <Button className="submitBtn font-semibold fs-5" type="submit">Crear</Button>
             <Button as={Link} className="cancelarBtn font-semibold fs-5" href='/home'>Cancelar</Button>
         </div>
