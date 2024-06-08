@@ -20,7 +20,7 @@ export default function FormularioDivisionDeGastos() {
             const nombreItem = document.getElementById("addItem").value;
             var contadorItems = itemsContainer.children.length;
             var campoItem = document.createElement("div");
-            campoItem.innerHTML = `<label id="item${contadorItems}">${nombreItem}</label>`;
+            campoItem.innerHTML = `<label id="item${contadorItems}"> ● ${nombreItem}</label>`;
             itemsContainer.appendChild(campoItem);
         });
 

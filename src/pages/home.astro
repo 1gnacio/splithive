@@ -32,11 +32,14 @@ import NightBtn from '../components/nightBtn';
             <div id="grupos"></div>
 
             <div class="btns">
+
                 <button id="crearGrupoBtn" class="btn">Crear grupo</button>
-                <button id="beesBtn" class="btn">Bees</button>
+
                 <a href="/publico">
                     <button class="btn">Unirme a grupo</button>
                 </a>
+
+                <button id="beesBtn" class="btn">My Bees</button>
             </div>
 
             <div id="modal" class="modal" style="display: none;">
@@ -121,28 +124,27 @@ import NightBtn from '../components/nightBtn';
 <style is:global>
 
     .home{
-        margin-top: 10px
+        margin-top: 5px
     }
-
 
     #grupos {
         display: flex;
         flex-wrap: wrap;
         gap: 20px;
-        margin-top: 50px;
+        margin-top: 40px;
     }
     .grupo-card {
-        background-color: honeydew;
+        background-color: #FFFFC6;
         border-radius: 8px;
         padding: 20px;
         width: calc(33.33% - 20px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s   ease-in-out;
         text-decoration: none;
         color: inherit;
     }
     .grupo-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-8px);
     }
     .grupo-card h2 {
         margin-top: 0;
