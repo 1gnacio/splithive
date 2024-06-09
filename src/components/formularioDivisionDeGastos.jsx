@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { contactos } from '../../public/contactos.astro';
 import { Button, Card, Input, Link, Select, SelectItem,  } from '@nextui-org/react';
 import { getContactos, getApodos, getInvitados, getUsuarios, getGrupos, getUserByUsername, getHives, getCurrentUser } from "../utils/utilities"
 import ImageContainer from '../components/groupsForms/ImageContainer'
@@ -194,8 +193,6 @@ export default function FormularioDivisionDeGastos() {
 
         </div>
 
-        
-
         <div id="containerIntegrante1" className="form-group">
 
             <label htmlFor="nombreIntegrante1" className="form-group-item">Integrantes:</label>
@@ -304,13 +301,11 @@ export default function FormularioDivisionDeGastos() {
                         setInvitados(nuevoInvitados);
                         setNombreInvitado('');
                     }
-                }}> Agregar </Button>
+                }}>Agregar </Button>
 
             </div>
 
         </div>
-
-        
 
         <div style={{margin: "20px", display: "flex", gap: "5px"}} >
             <Button className="submitBtn font-semibold fs-5" type="submit">Crear</Button>

@@ -21,12 +21,13 @@ export default function CerrarSesion(){
             <DropdownTrigger>
                 <Avatar
                 isBordered
+                color="warning" 
                 as="button"
-                className="transition-transform"
+                className="transition-transform bg-yellow-50 "
                 src="../../../public/images/usuario.png"
                 />
             </DropdownTrigger>
-            <DropdownMenu aria-label="Profile Actions" variant="flat">
+            <DropdownMenu aria-label="Profile Actions" variant="flat" className="bg-yellow-50">
                 <DropdownItem key="profile" className="h-14 gap-2">
                 <p className="font-semibold">{usuarios[currentUser].nombre}</p>
                 <p className="font-semibold">{usuarios[currentUser].mail}</p>

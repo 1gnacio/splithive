@@ -20,12 +20,12 @@
     padding: 3px;
 }
 
-#crearGrupoFormulario {
-    margin-top: 10px;
+#crearGrupoFormulario, #crearWishListForm, #crearShopListForm {
+    margin-top: 2px;
     color: black;
     flex-direction: column;
     display: flex;
-    margin-bottom: 10px; /* Espacio inferior entre los grupos de formulario */
+    margin-bottom: 8px; 
 }
 
 #agregarIntegranteBtn {

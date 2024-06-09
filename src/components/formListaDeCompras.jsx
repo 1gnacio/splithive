@@ -63,7 +63,7 @@ export default function FormListaDeCompras(props) {
             const nombreItem = document.getElementById("addItem").value;
             var contadorItems = itemsContainer.children.length;
             var campoItem = document.createElement("div");
-            campoItem.innerHTML = `<label id="item${contadorItems}">${nombreItem}</label>`;
+            campoItem.innerHTML = `<label id="item${contadorItems}"> ● ${nombreItem}</label>`;
             itemsContainer.appendChild(campoItem);
         });
 
@@ -126,52 +126,149 @@ export default function FormListaDeCompras(props) {
         });
     })
 
-    return (
-        <Card className='p-4'>
+    return <><Card classNameName='p-4'>
             <form id="crearShopListForm">
                 <ImageContainer rightImageSrc='/public/images/listaDeCompras.png'/>
 
-                <div className="form-group flex-row">
+                <div className="form-group">
+
                     <div className="form-group-item item-nombre-grupo">
+                        
                         <label htmlFor="nombreGrupo">Nombre del grupo:</label>
-                        <input type="text" id="nombreGrupo" name="nombreGrupo" className="input-field" />
+
+                        <Input
+                            className='form-group-item'
+                            classNames={{
+                            label: ["text-black/50 dark:text-white/90"],
+                            input: [
+                                "bg-yellow-300",
+                                "text-black/90 dark:text-white/90"
+                            ],
+                            innerWrapper: "bg-yellow-300",
+                            inputWrapper: [
+                                "shadow-md",
+                                "!bg-yellow-300",
+                                "dark:bg-blue-500/60",
+                                "backdrop-blur-xl",
+                                "backdrop-yellow-300",
+                                "hover:bg-yellow-300",
+                                "dark:hover:bg-default/70",
+                                "group-data-[focus=false]:bg-yellow-200/50",
+                                "dark:group-data-[focus=false]:bg-default/60",
+                                "!cursor-text",
+                            ],
+                            }} type="text" id="nombreGrupo" name="nombreGrupo"
+                        />
+
                     </div>
                 </div>
 
                 <div className="form-group">
-                    <label>Integrantes:</label>
-                </div>
+                    <label className="form-group-item">Integrantes:</label>
+                
 
-                <div className="form-group">
-                    <Input disabled color='warning' value={usuarios[currentUser].nombre + " (Yo)"}></Input>
-                </div>
+                    <div className="form-group-item">
 
-                <div className="form-group">
-                    <button type="button" id="agregarIntegranteBtn">+</button>
-                </div>
-
-                <div id="contactosContainer" className="form-group"></div>
-
-                <div className="form-group">
-                    <Input endContent={<Button id="executeSearch" color='warning'>Agregar usuario</Button>} id="searchUsername" name="searchUsername" label="Nombre de usuario fuera de mi colmena" color='warning' />
-                </div>
-
-                <div id="integrantesContainer" className="form-group"></div>
-
-                <div className="form-group">
-                    <label style={{marginBottom: '5px'}}>Artículos:</label>
-                    <div className="searchContainer">
-                        <Input endContent={<Button id="agregarItem" color='warning'>Agregar artículo</Button>} id="addItem" name="addItem" label="Nombre del artículo" color='warning' />
+                        <Input classNames={{
+                                label: ["text-black/50 dark:text-white/90"],
+                                input: [ 
+                                    "bg-yellow-300",
+                                    "text-black/90 dark:text-white/90"
+                                ],
+                                innerWrapper: "bg-yellow-300",
+                                inputWrapper: [
+                                    "shadow-md",
+                                    "!bg-yellow-300",
+                                    "dark:bg-blue-500/60",
+                                    "backdrop-blur-xl",
+                                    "backdrop-yellow-300",
+                                    "hover:bg-yellow-300",
+                                    "dark:hover:bg-default/70",
+                                    "group-data-[focus=false]:bg-yellow-200/50",
+                                    "dark:group-data-[focus=false]:bg-default/60",
+                                    "!cursor-text",
+                                ],
+                                }} disabled color='warning' id="nombreIntegrante1" name="nombreIntegrante1" value={usuarios[currentUser].nombre + " (Yo)"}></Input>
                     </div>
+
+                    <div id="contactosContainer" className="form-group-item">
+                    </div>
+
+                    <div id="integrantesContainer" className="form-group-item"></div>
+
+                    <div className="form-group-item">
+                        <button type="button" id="agregarIntegranteBtn">+</button>
+                    </div>  
+
+                    <div className="form-group-item flex searchContainer">
+
+                        <Input
+                                classNames={{
+                                label: ["text-black/50 dark:text-white/90"],
+                                input: [
+                                    "bg-yellow-300",
+                                    "text-black/90 dark:text-white/90"
+                                ],
+                                innerWrapper: "bg-yellow-300",
+                                inputWrapper: [
+                                    "shadow-md",
+                                    "!bg-yellow-300",
+                                    "dark:bg-blue-500/60",
+                                    "backdrop-blur-xl",
+                                    "backdrop-yellow-300",
+                                    "hover:bg-yellow-300",
+                                    "dark:hover:bg-default/70",
+                                    "group-data-[focus=false]:bg-yellow-200/50",
+                                    "dark:group-data-[focus=false]:bg-default/60",
+                                    "!cursor-text",
+                                ],
+                                }} id="searchUsername" name="searchUsername"placeholder="Nombre de usuario fuera de mi colmena"
+                        />
+
+                        <Button className="submitBtn" id="executeSearch" color="warning" >Agregar</Button>
+
+                    </div>
+
                 </div>
 
-                <div id="itemsContainer" className="form-group"></div>
+                <div className="form-group">
 
-                <div style={{margin: "20px"}}>
+                    <label className="form-group-item" style={{marginBottom: '5px'}}>Artículos:</label>
+
+                    <div className="form-group-item flex searchContainer">
+                        <Input classNames={{
+                                label: ["text-black/50 dark:text-white/90"],
+                                input: [
+                                    "bg-yellow-300",
+                                    "text-black/90 dark:text-white/90"
+                                ],
+                                innerWrapper: "bg-yellow-300",
+                                inputWrapper: [
+                                    "shadow-md",
+                                    "!bg-yellow-300",
+                                    "dark:bg-blue-500/60",
+                                    "backdrop-blur-xl",
+                                    "backdrop-yellow-300",
+                                    "hover:bg-yellow-300",
+                                    "dark:hover:bg-default/70",
+                                    "group-data-[focus=false]:bg-yellow-200/50",
+                                    "dark:group-data-[focus=false]:bg-default/60",
+                                    "!cursor-text",
+                                ],
+                                }} id="addItem" name="addItem" placeholder="Nombre del artículo"/>
+                    
+                        <Button className="submitBtn" id="agregarItem" >Agregar artículo</Button>
+                    </div>
+
+                    <div id="itemsContainer" className="form-group"></div>
+
+                </div>
+
+                <div style={{margin: "20px", display: "flex", gap: "5px"}} >
                     <Button className="submitBtn font-semibold fs-5" type="submit">Crear</Button>
-                    <Button style={{marginLeft: '10px'}} as={Link} className="cancelarBtn font-semibold fs-5" href='/home'>Cancelar</Button>
+                    <Button as={Link} className="cancelarBtn font-semibold fs-5" href='/home'>Cancelar</Button>
                 </div>
+
             </form>
-        </Card>
-    )
+            </Card></>
 }
