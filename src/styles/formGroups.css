@@ -5,6 +5,7 @@
     margin-left: 20px;
     margin-right: 20px;
     margin-top: 10px;
+    
 }
 
 .form-group-item {
@@ -21,11 +22,10 @@
 }
 
 #crearGrupoFormulario, #crearWishListForm, #crearShopListForm {
-    margin-top: 2px;
+    background-color: #FEFCE8; 
     color: black;
     flex-direction: column;
     display: flex;
-    margin-bottom: 8px; 
 }
 
 #agregarIntegranteBtn {
