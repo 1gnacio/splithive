@@ -29,18 +29,18 @@
 }
 
 #agregarIntegranteBtn {
-    background-color: #ff8400;  
+    background-color: #FFBB39;  
     color: black; 
     border-radius: 9px; 
     width: 100%;
 }
 
 .submitBtn {
-    background-color: #FFD93D; 
+    background-color: #FFBB39; 
     border: 3px; 
     border-color: black; 
     border-radius: 9px; 
-    padding: 3px 10px; 
+    padding: 3px 20px; 
     color: black;
 }
 

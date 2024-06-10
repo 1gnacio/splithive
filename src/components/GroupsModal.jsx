@@ -28,9 +28,9 @@ export default function App() {
   ];
 
   return (
-      <div className="gap-2 grid grid-cols-2 sm:grid-cols-2" style={{ margin: "30px"}}>
+      <div className="gap-2 grid grid-cols-2 sm:grid-cols-2" style={{ margin: "30px", background: "#0F0F0F" }}>
           {list.map((item, index) => (
-            <Card href={item.path} as={Link} style={{ margin: "3px"  }} shadow="md" key={index} isPressable className="bg-yellow-50">
+            <Card href={item.path} as={Link} style={{ margin: "3px"}} shadow="md" key={index} isPressable >
 
               <CardBody className="overflow-visible flex justify-center items-center">
                 <img 

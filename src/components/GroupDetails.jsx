@@ -8,6 +8,7 @@ import { getUsuarios, getGrupos, getGastos, getSaldos, getApodos, getInvitados, 
 import inputStyle from "../styles/form.module.css"
 
 
+
 export default function GroupDetails(props) {
     const [currentUser, setCurrentUser] = useState(getCurrentUser());
     let [id,setId] = useState(props.id.split('-')[0]);
@@ -254,7 +255,11 @@ export default function GroupDetails(props) {
     }
 
     return <div className="p-5">
+
+                
+
                 <Card className='p-4' style={{background: "#FEFCE8"}}>
+
                     <CardHeader>
                         <h4 className="font-bold text-large" style={{color: "black"}}>
                             {editingGroup ? (
@@ -276,11 +281,11 @@ export default function GroupDetails(props) {
                     </CardHeader>
 
                     <CardBody>
-                        <Tabs aria-label="Options" color="warning">
+                        <Tabs aria-label="Options" variant="underlined" size="lg">
                             <Tab key="integrantes" title="Integrantes">
-                                <Button color="warning" style={{marginBottom: '12px'}} onClick={() => switchFormGasto()}>Nuevo gasto</Button>
+                                <Button className="submitBtn" style={{marginBottom: '12px'}} onClick={() => switchFormGasto()}>Nuevo gasto</Button>
                                 {formGasto && (
-                                    <Card className="crearGasto" style={{background: "#FEFCE8", borderWidth: "2px", borderColor: "black", marginBottom: "10px"}}>
+                                    <Card className="crearGasto" style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "gold", marginBottom: "10px"}}>
                                         <CardHeader style={{color: 'black'}}>Ingrese los datos!</CardHeader>
                                         <CardBody>
                                             <form id="formGasto">
@@ -322,14 +327,14 @@ export default function GroupDetails(props) {
                                                         </ul>
                                                     )
                                                 })}
-                                                <Button id="crearGastoBtn" onClick={crearGasto} color="warning" type="submit">Crear Gasto</Button> <p id="errorGasto"></p>
+                                                <Button id="crearGastoBtn" onClick={crearGasto} className="submitBtn" type="submit">Crear Gasto</Button> <p id="errorGasto"></p>
                                             </form>
                                         </CardBody>
                                     </Card>
                                 )}
                                 {Object.entries(deudas).map(([nombre, deuda]) =>
                                 (
-                                    <Card key={nombre} className='w-50 gap gap-2' style={{background: "#FEFCE8", borderWidth: "2px", borderColor: "black", marginBottom: "10px"}}>
+                                    <Card key={nombre} className='w-50 gap gap-2' style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", marginBottom: "10px"}}>
                                         <CardBody>
                                             <div>
                                                 {editingMember === nombre ? (
@@ -348,18 +353,22 @@ export default function GroupDetails(props) {
                                                     </>
                                                 )}
                                             </div>
-                                            <p style={{color: deudas[nombre] < 0 ? 'red' : 'green'}}>Saldo: {deuda}</p>
+                                            <p style={{color: deudas[nombre] < 0 ? 'red' : 'green'}}>Saldo: ${deuda}</p>
                                         </CardBody>
                                     </Card>
                                 ))}
                                 {grupo.invitados?.map(x => {
                                     const invitado = invitados[x]
-                                    return <Card key={x} className='w-50 gap gap-2' col style={{background: "#FEFCE8", borderWidth: "2px", borderColor: "black", marginBottom: "10px"}}>
+                                    return <Card key={x} className='w-50 gap gap-2' col 
+                                        style={{
+                                            background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39",  
+                                            marginBottom: "10px",
+                                            shadow: "black"}}>
                                         <CardBody>
                                             <Badge color='warning' content="Invitado" className='p-1 mt-2'>
                                                 <span style={{color: "black"}}>{invitado.nombre}</span>
                                             </Badge>
-                                            <p style={{color: deudaInvitados[x] < 0 ? 'red' : 'green'}}>Saldo: {deudaInvitados[x] ?? 0}</p>
+                                            <p style={{color: deudaInvitados[x] < 0 ? 'red' : 'green'}}>Saldo: ${deudaInvitados[x] ?? 0}</p>
                                         </CardBody>
                                     </Card>
                                 })}
@@ -367,11 +376,11 @@ export default function GroupDetails(props) {
                             
                             <Tab key="gastos" title="Gastos">
                                 {grupo.gastos.map((gastoId, index) =>
-                                    <Card className='p-4' style={{background: "#FEFCE8", borderWidth: "2px", borderColor: "black", marginBottom: "10px"}}>
+                                    <Card className='p-4' style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", marginBottom: "10px"}}>
                                         <CardBody>
                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                                 {editMode[index] ? <Input value={newName} onValueChange={setNewName} className='max-w-[220px]' label="Nombre"></Input> : <b style={{color: "black"}}>{gastos[gastoId].nombre}</b>}
-                                                <Button color='warning' onClick={() => {
+                                                <Button className="submitBtn" onClick={() => {
                                                     if(editMode[index]) {
                                                         const gastosSerializados = JSON.stringify(gastos);
                                                         const itemSerializado = JSON.stringify(gastos[gastoId]);
@@ -398,12 +407,12 @@ export default function GroupDetails(props) {
                                                 }}>{editMode[index] ? "Guardar" : "Editar"}</Button>
                                             </div>
                                             <p style={{color: "black"}}>Quien pagó: {usuarios[gastos[gastoId].payer].nombre}</p>
-                                            <p style={{color: "black"}}>Monto Total: {gastos[gastoId].monto}</p>
+                                            <p style={{color: "black"}}>Monto Total: ${gastos[gastoId].monto}</p>
                                             <p style={{color: "black"}}>Fecha: {gastos[gastoId].fecha}</p>
                                             
                                             { Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && (editMode[index] ?
                                                 <Input endContent={<p style={{fontSize: '14px'}}>c/u</p>} className='max-w-[220px]' label="Deuda" value={nuevaDeuda} onValueChange={setNuevaDeuda}></Input> :
-                                                <p style={{color: 'red'}}>Deuda: {gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length))} c/u</p>)}
+                                                <p style={{color: 'red'}}>Deuda: ${gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length))} c/u</p>)}
                                             
                                             {Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && <p style={{color: "black"}}>Deudores: {gastos[gastoId].deudores.length > 0 && imprimirNombres(gastoId)}</p>}
                                             {gastos[gastoId].invitados && Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && <p style={{color: "black"}}>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
@@ -425,16 +434,16 @@ export default function GroupDetails(props) {
 
                     <CardFooter>
                         {editingGroup && (
-                            <Button onClick={saveEdit("group")} color="primary">
+                            <Button onClick={saveEdit("group")} className="submitBtn">
                                 Guardar
                             </Button>
                         )}
                         {editingMember && (
-                            <Button onClick={saveEdit("member")} color="primary">
+                            <Button onClick={saveEdit("member")} className="submitBtn">
                                 Guardar
                             </Button>
                         )}
-                        <Button href='/home' as={Link} color="warning" showAnchorIcon variant="solid">
+                        <Button href='/home' as={Link} className="submitBtn" showAnchorIcon variant="solid">
                             Volver
                         </Button>
                     </CardFooter>

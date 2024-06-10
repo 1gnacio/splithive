@@ -1,3 +1,25 @@
+.submitBtn {
+    background-color: #FFBB39; 
+    border: 3px; 
+    border-color: black; 
+    border-radius: 9px; 
+    padding: 3px 20px; 
+    color: black;
+}
+
+.cancelarBtn{
+    background-color: lightgray; 
+    border: 3px; 
+    border-color: black; 
+    border-radius: 9px; 
+    padding: 3px 10px; 
+    color: black;
+}
+
+.btn:hover {
+    background-color: #f5b52b; 
+}
+
 .btn {
     background-color: #FEFCE8; ; 
     color: rgb(0, 0, 0); 
@@ -8,8 +30,4 @@
     border-color: #f5b52b;
     border-width: 1px;
     transition: all .3s ease-in-out;
-}
-
-.btn:hover {
-    background-color: #f5b52b; 
 }

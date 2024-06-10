@@ -225,7 +225,7 @@ export default function FormListaDeCompras(props) {
                                 }} id="searchUsername" name="searchUsername"placeholder="Nombre de usuario fuera de mi colmena"
                         />
 
-                        <Button className="submitBtn" id="executeSearch" color="warning" >Agregar</Button>
+                        <Button className="submitBtn" id="executeSearch" >Agregar</Button>
 
                     </div>
 
