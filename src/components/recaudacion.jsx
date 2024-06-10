@@ -36,7 +36,7 @@ export default function RecaudacionDisplay(props) {
     )
     var porcentajeProgreso = suma * 100 / grupo.objetivo
 
-    var labelProgreso = (suma < grupo.objetivo) ? "Lleguemos a los " + grupo.objetivo + " pesos!" : "Meta Cumplida!"
+    var labelProgreso = (suma < grupo.objetivo) ? "Lleguemos a los $" + grupo.objetivo + '!' : "Meta Cumplida!"
 
     const nombreDonante = (id) =>{
         if (donaciones[id].donante != -1)  { return usuarios[donaciones[id].donante].nombre}
@@ -108,7 +108,7 @@ export default function RecaudacionDisplay(props) {
                                     {suma >= grupo.objetivo ? (
                                         <p style={{color: "gold"}}>Cumplimos con el objetivo!! Muchas gracias a aquellos que colaboraron!!</p>
                                     ) : (
-                                        <p style={{color: "gold"}}>Vamos {suma} pesos! Faltan {grupo.objetivo - suma} para cumplir nuestro objetivo!</p>
+                                        <p style={{color: "gold"}}>Vamos ${suma}! Faltan ${grupo.objetivo - suma} para cumplir nuestro objetivo!</p>
                                     )}
                                     <div>
                                         <Button style={{marginBottom: '12px'}} color="warning" onClick={() => {switchFormDonacion()}}>Donar!</Button>
@@ -138,7 +138,7 @@ export default function RecaudacionDisplay(props) {
                                     <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                         <CardBody>
                                             <p style={{color: "gold"}}>Donante: {nombreDonante(id)}</p>
-                                            <p style={{color: "gold"}}>Monto: {donaciones[id].monto}</p>
+                                            <p style={{color: "gold"}}>Monto: ${donaciones[id].monto}</p>
                                             <p style={{color: "gold"}}>Fecha: {donaciones[id].fecha}</p>
                                             <p style={{color: "gold"}}>Mensaje: {(donaciones[id].mensaje != '') ? donaciones[id].mensaje : "No se adjuntó mensaje."}</p>
                                         </CardBody>
