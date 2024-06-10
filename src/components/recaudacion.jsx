@@ -1,8 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
-import { getGrupos, getDonaciones, getUsuarios, getCurrentUser } from "../utils/utilities"
+import { getGrupos, getDonaciones, getUsuarios, getCurrentUser, agregarIntegrante } from "../utils/utilities"
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Progress} from '@nextui-org/react';
 import inputStyle from "../styles/form.module.css"
+import {HeartIcon} from './HeartIcon';
 
 export default function RecaudacionDisplay(props) {
     let [id,setId] = useState(props.id);
@@ -10,6 +11,9 @@ export default function RecaudacionDisplay(props) {
     let [grupo, setGrupo] = useState(grupos[id]);
     let [donaciones, setDonaciones] = useState(getDonaciones());
     let [usuarios, setUsuarios] = useState(getUsuarios());
+
+    const user = getCurrentUser();
+    const isUserInGroup = (grupo.integrantes).includes(parseInt(user));
 
     const [formDonacion, setfFormDonacion] = useState(false);
 
@@ -50,7 +54,7 @@ export default function RecaudacionDisplay(props) {
         var dia = fecha.getDate()
 
         var fechaString = dia + '/' + mes + '/' + anio
-        var user = getCurrentUser();
+        
         var usuario;
         if (!user){
             usuario = -1;
@@ -81,6 +85,11 @@ export default function RecaudacionDisplay(props) {
 
         window.location.reload()
     }
+
+    const addToHive = (id) => {
+        agregarIntegrante(user, id);
+        window.location.reload()
+      };
 
     return (
         <div className="p-5">
@@ -137,12 +146,30 @@ export default function RecaudacionDisplay(props) {
                                 )
                             )}
                         </Tab>
+
                     </Tabs>
+
                 </CardBody>
                 <CardFooter>
-                    <Button href='/home' as={Link} color="warning" showAnchorIcon variant="solid">
-                        Volver
+
+                    {user && (
+                        <Button href='/home' as={Link} color="warning" showAnchorIcon variant="solid">
+                            My Hive
+                        </Button>
+                    )}
+
+                    <Button style={{marginLeft: "10px"}} href='/publico' as={Link} color="warning" showAnchorIcon variant="solid">
+                        Mas grupos publicos
                     </Button>
+
+                    {user && !isUserInGroup && (
+                        <Button style={{marginLeft: "320px"}} onClick={() => {addToHive(id)}}
+                        isIconOnly color="warning" aria-label="Like" title="Add to my hive" className="btn-grupo unirse-btn">
+                            <HeartIcon  />
+                        </Button>
+                    )}
+
+                    
                 </CardFooter>
             </Card>
         </div>
