@@ -4,6 +4,8 @@ import { getGrupos, getDonaciones, getUsuarios, getCurrentUser, agregarIntegrant
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Progress} from '@nextui-org/react';
 import inputStyle from "../styles/form.module.css"
 import {HeartIcon} from './HeartIcon';
+import "../styles/btn.css"
+
 
 export default function RecaudacionDisplay(props) {
     let [id,setId] = useState(props.id);
@@ -93,35 +95,35 @@ export default function RecaudacionDisplay(props) {
 
     return (
         <div className="p-5">
-            <Card className='p-4' style={{background: "black"}}>
+            <Card className='p-4' style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39"}}>
                 <CardHeader>
-                    <h4 className="font-bold text-large" style={{color: "gold"}}>
+                    <h4 className="font-bold text-large" style={{color: "black"}}>
                         {grupo.nombre}
                     </h4>
                 </CardHeader>
                 <CardBody>
-                    <Tabs aria-label="Options" color="warning" radius="full">
+                    <Tabs aria-label="Options" variant="underlined" radius="full">
                         <Tab key="info" title="Info">
-                            <Card style={{background: "black", borderWidth: "2px", borderColor: "gold"}}>
+                            <Card style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39"}}>
                                 <CardBody>
-                                    <Progress size="lg" color="warning" style={{color:"gold"}} label={labelProgreso} value={porcentajeProgreso}/>
+                                    <Progress size="lg" color="warning" style={{color:"black"}} label={labelProgreso} value={porcentajeProgreso}/>
                                     {suma >= grupo.objetivo ? (
-                                        <p style={{color: "gold"}}>Cumplimos con el objetivo!! Muchas gracias a aquellos que colaboraron!!</p>
+                                        <p style={{color: "black"}}>Cumplimos con el objetivo!! Muchas gracias a aquellos que colaboraron!!</p>
                                     ) : (
-                                        <p style={{color: "gold"}}>Vamos ${suma}! Faltan ${grupo.objetivo - suma} para cumplir nuestro objetivo!</p>
+                                        <p style={{color: "black"}}>Vamos ${suma}! Faltan ${grupo.objetivo - suma} para cumplir nuestro objetivo!</p>
                                     )}
                                     <div>
-                                        <Button style={{marginBottom: '12px'}} color="warning" onClick={() => {switchFormDonacion()}}>Donar!</Button>
+                                        <Button className="submitBtn" style={{marginBottom: '10px', marginTop: '10px'}} color="warning" onClick={() => {switchFormDonacion()}}>Donar!</Button>
                                         {formDonacion && (
-                                            <Card style={{background: "black", borderWidth: "2px", borderColor: "gold"}} className="donacionPopup" id="crearDonacion">
-                                                <CardHeader style={{color: 'gold'}}>Ingrese los datos!</CardHeader>
+                                            <Card style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#F5A524"}} className="donacionPopup" id="crearDonacion">
+                                                <CardHeader style={{color: 'black'}}>Ingrese los datos!</CardHeader>
                                                 <CardBody>
                                                     <form>
-                                                        <label style={{color: 'gold'}}>Monto:</label><br/>
+                                                        <label style={{color: 'black'}}>Monto:</label><br/>
                                                         <input className={inputStyle.formInputStyle} type="number" value={montoDonacion} onChange={handleMonto}/><br/>
-                                                        <label style={{color: 'gold'}}>Mensaje:</label><br/>
+                                                        <label style={{color: 'black'}}>Mensaje:</label><br/>
                                                         <input className={inputStyle.formInputStyle} type="text" value={mensajeDonacion} onChange={handleMensaje}/><br/>
-                                                        <Button style={{marginTop: '10px'}} onClick={enviarDonacion} color="warning" type="submit">Enviar donación</Button>
+                                                        <Button style={{marginTop: '15px'}} onClick={enviarDonacion} color="warning" type="submit">Enviar donación</Button>
                                                     </form>
                                                 </CardBody>
                                             </Card>
@@ -132,15 +134,15 @@ export default function RecaudacionDisplay(props) {
                         </Tab>
                         <Tab key="donaciones" title="Donaciones">
                             {grupo.donaciones.length === 0 ? (
-                                <p style={{color:"gold"}}>No se han recibido donaciones aún.</p>
+                                <p style={{color:"#FEFCE8"}}>No se han recibido donaciones aún.</p>
                             ) : (
                                 grupo.donaciones.map((id, index) =>
-                                    <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
+                                    <Card key={id} style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", marginBottom: "10px"}}>
                                         <CardBody>
-                                            <p style={{color: "gold"}}>Donante: {nombreDonante(id)}</p>
-                                            <p style={{color: "gold"}}>Monto: ${donaciones[id].monto}</p>
-                                            <p style={{color: "gold"}}>Fecha: {donaciones[id].fecha}</p>
-                                            <p style={{color: "gold"}}>Mensaje: {(donaciones[id].mensaje != '') ? donaciones[id].mensaje : "No se adjuntó mensaje."}</p>
+                                            <p style={{color: "black"}}>𝗗𝗼𝗻𝗮𝗻𝘁𝗲: {nombreDonante(id)}</p>
+                                            <p style={{color: "black"}}>𝗠𝗼𝗻𝘁𝗼: ${donaciones[id].monto}</p>
+                                            <p style={{color: "black"}}>𝗙𝗲𝗰𝗵𝗮: {donaciones[id].fecha}</p>
+                                            <p style={{color: "black"}}>𝗠𝗲𝗻𝘀𝗮𝗷𝗲: {(donaciones[id].mensaje != '') ? donaciones[id].mensaje : "No se adjuntó mensaje."}</p>
                                         </CardBody>
                                     </Card>
                                 )
@@ -164,7 +166,7 @@ export default function RecaudacionDisplay(props) {
 
                     {user && !isUserInGroup && (
                         <Button style={{marginLeft: "320px"}} onClick={() => {addToHive(id)}}
-                        isIconOnly color="warning" aria-label="Like" title="Add to my hive" className="btn-grupo unirse-btn">
+                        isIconOnly aria-label="Like" title="Add to my hive" color="warning" className="btn-grupo unirse-btn">
                             <HeartIcon  />
                         </Button>
                     )}

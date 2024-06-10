@@ -374,7 +374,7 @@ export default function GroupDetails(props) {
                                 })}
                             </Tab>
                             
-                            <Tab key="gastos" title="Gastos">
+                            <Tab key="gastos" title="Gastos"> 
                                 {grupo.gastos.map((gastoId, index) =>
                                     <Card className='p-4' style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", marginBottom: "10px"}}>
                                         <CardBody>
