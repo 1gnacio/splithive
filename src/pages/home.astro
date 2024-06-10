@@ -4,12 +4,12 @@ import { Button } from "@nextui-org/react";
 import '../styles/modal.css'
 import '../styles/btn.css'
 import '../styles/global.css'
+import '../styles/groups-cards.css'
 import Header from '../components/Header';
 import GroupsModal from '../components/GroupsModal';
 import CerrarSesion from "../components/cerrarsesion"
 import { navigate } from 'astro:transitions/client';
 import NightBtn from '../components/nightBtn';
-
 
 ---
 
@@ -122,38 +122,6 @@ import NightBtn from '../components/nightBtn';
 </Layout>
 
 <style is:global>
-
-    .home{
-        margin-top: 5px
-    }
-
-    #grupos {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        margin-top: 40px;
-    }
-    .grupo-card {
-        background-color: #FEFCE8;
-        border-radius: 8px;
-        padding: 20px;
-        width: calc(33.33% - 20px);
-        box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s   ease-in-out;
-        text-decoration: none;
-        color: inherit;
-    }
-    .grupo-card:hover {
-        transform: translateY(-8px);
-    }
-    .grupo-card h2 {
-        margin-top: 0;
-        color: black;
-    }
-    .grupo-card p {
-        margin: 0;
-        color: grey;
-    }
 
 
 

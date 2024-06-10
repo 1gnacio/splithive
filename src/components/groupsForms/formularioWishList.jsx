@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, Input, Link } from '@nextui-org/react';
-import { getGrupos, getHives, getCurrentUser } from "../utils/utilities"
-import ImageContainer from '../components/groupsForms/ImageContainer'
-import '../styles/global.css'
-import '../styles/formGroups.css'
+import { getGrupos, getHives, getCurrentUser } from "../../utils/utilities"
+import ImageContainer from './ImageContainer'
+import '../../styles/global.css'
+import '../../styles/formGroups.css'
 
 export default function FormularioDivisionDeGastos() {
     const [currentUser, setCurrentUser] = useState(getCurrentUser());

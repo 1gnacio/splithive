@@ -1,9 +1,9 @@
-import ImageContainer from '../components/groupsForms/ImageContainer'
+import ImageContainer from './ImageContainer'
 import { useEffect, useState } from 'react';
 import { Button, Card, Input, Link } from '@nextui-org/react';
-import { getContactos, getApodos, getUserByUsername, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
-import '../styles/global.css'
-import '../styles/formGroups.css'
+import { getContactos, getApodos, getUserByUsername, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../../utils/utilities"
+import '../../styles/global.css'
+import '../../styles/formGroups.css'
 
 export default function FormListaDeCompras(props) {
     const [currentUser, setCurrentUser] = useState(getCurrentUser());

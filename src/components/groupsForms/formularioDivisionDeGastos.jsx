@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, Input, Link, Select, SelectItem,  } from '@nextui-org/react';
-import { getContactos, getApodos, getInvitados, getUsuarios, getGrupos, getUserByUsername, getHives, getCurrentUser } from "../utils/utilities"
-import ImageContainer from '../components/groupsForms/ImageContainer'
-import '../styles/global.css'
-import '../styles/formGroups.css'
+import { getContactos, getApodos, getInvitados, getUsuarios, getGrupos, getUserByUsername, getHives, getCurrentUser } from "../../utils/utilities"
+import ImageContainer from './ImageContainer'
+import '../../styles/global.css'
+import '../../styles/formGroups.css'
 
 export default function FormularioDivisionDeGastos() {
     const [currentUser, setCurrentUser] = useState(getCurrentUser());
