@@ -397,7 +397,7 @@ export default function GroupDetails(props) {
                                                     setEditMode(editMode.map((x, i) => i != index ? x : !x));
                                                 }}>{editMode[index] ? "Guardar" : "Editar"}</Button>
                                             </div>
-                                            <p style={{color: "gold"}}>Quien pagó: {usuarios[gastos[gastoId].payer].nombre}</p>
+                                            <p style={{color: "gold"}}>Quien pagó: {getApodo(gastos[gastoId].payer)}</p>
                                             <p style={{color: "gold"}}>Monto Total: {gastos[gastoId].monto}</p>
                                             <p style={{color: "gold"}}>Fecha: {gastos[gastoId].fecha}</p>
                                             
