@@ -21,6 +21,7 @@ export default function GroupDetails(props) {
     let [newName, setNewName] = useState("");
     let [nuevaDeuda, setNuevaDeuda] = useState("");
     let [gastos,setGastos] = useState(getGastos());
+    const [porcentajes, setPorcentajes] = useState({});
     const [editingGroup, setEditingGroup] = useState(false);
     const [newGroupName, setNewGroupName] = useState(grupo.nombre);
     const [editingMember, setEditingMember] = useState(null);
@@ -91,27 +92,36 @@ export default function GroupDetails(props) {
         document.getElementById("errorGasto").style.display = "none";
         document.getElementById("crearGastoBtn").disabled = false;
         let deudores_ = []
-        if (deudores.includes(id)) {
-            deudores_ = deudores.filter(x => x != id)
-        } else {
-            deudores_ = [...deudores, id]
-        }
+
+        Array.from(document.getElementsByClassName('deudorCheckbox')).forEach(function(checkbox) {
+            if (checkbox.checked) {
+                deudores_ = [...deudores_, Number(checkbox.id.replace('deudor', ''))]
+            }
+        })
         setDeudores(deudores_)
+
+        let porcentajes_ = {...porcentajes};
 
         grupo.integrantes.forEach(function(integrante) {
             document.getElementById('porcentaje' + integrante).value = "";
+            porcentajes_[integrante] = "";
             document.getElementById('porcentaje' + integrante).placeholder = 0;
             document.getElementById('porcentaje' + integrante).disabled = true;
         })
+        setPorcentajes(porcentajes_);
         deudores_.forEach(function(deudor) {
             document.getElementById('porcentaje' + deudor).disabled = false;
             document.getElementById('porcentaje' + deudor).placeholder = Math.round((100 / deudores_.length) * 100) / 100;
         })
     }
 
-    const handlePorcentaje = (e, id) => {
+    const handlePorcentaje = (id) => {
         document.getElementById("errorGasto").style.display = "none";
         document.getElementById("crearGastoBtn").disabled = false;
+
+        let porcentajes_ = {...porcentajes};
+        porcentajes_[id] = document.getElementById('porcentaje' + id).value;
+        setPorcentajes(porcentajes_);
 
         let total = 0;
         let sinP = [];
@@ -215,9 +225,9 @@ export default function GroupDetails(props) {
 
         var fechaString = dia + '/' + mes + '/' + anio;
 
-        var porcentajes = {};
+        var porcentajes_ = {};
         grupo.integrantes.forEach(function(integrante) {
-            porcentajes[integrante] = Number(document.getElementById('porcentaje' + integrante).value) == "" ? Number(document.getElementById('porcentaje' + integrante).placeholder) : Number(document.getElementById('porcentaje' + integrante).value);
+            porcentajes_[integrante] = Number(document.getElementById('porcentaje' + integrante).value) == "" ? Number(document.getElementById('porcentaje' + integrante).placeholder) : Number(document.getElementById('porcentaje' + integrante).value);
         });
 
         var repartos = {};
@@ -228,7 +238,7 @@ export default function GroupDetails(props) {
 
         grupo.integrantes.forEach(integrante => {
             if (deudores.includes(integrante)) {
-                repartos[integrante] = Math.round((montoGasto * porcentajes[integrante] / 100) * 100) / 100;
+                repartos[integrante] = Math.round((montoGasto * porcentajes_[integrante] / 100) * 100) / 100;
             } else {
                 repartos[integrante] = 0;
             }
@@ -310,7 +320,7 @@ export default function GroupDetails(props) {
                                                         <ul>
                                                             <li key={id} style={{ display: "flex", alignItems: "center" }}>
                                                                 <label content={getApodo(id)} style={{color: 'black', flexGrow: 1}}>
-                                                                    <input type="checkbox" id={"deudor" + id} onClick={() => handleNuevoDeudor(id)}></input>
+                                                                    <input type="checkbox" id={"deudor" + id} className='deudorCheckbox' onClick={() => handleNuevoDeudor(id)}></input>
                                                                     {getApodo(id)}
                                                                 </label>
                                                                 <p style={{marginRight: "400px"}}>
@@ -320,7 +330,8 @@ export default function GroupDetails(props) {
                                                                     disabled 
                                                                     id={"porcentaje" + id} 
                                                                     placeholder="0" 
-                                                                    onChange={handlePorcentaje}
+                                                                    onChange={() => handlePorcentaje(id)}
+                                                                    value={porcentajes[id]}
                                                                     style={{ width: "100px", textAlign: "right", marginRight: "0px",
                                                                     MozAppearance: "textfield",
                                                                     WebkitAppearance: "none",
