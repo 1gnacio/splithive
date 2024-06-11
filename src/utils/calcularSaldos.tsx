@@ -1,12 +1,12 @@
 import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter, Button, Link} from '@nextui-org/react';
 
-export default function calcularSaldos(id_grupo, id_gastos, gastos){
+export default function calcularSaldos(id_grupo, id_gastos, gastos, force = false){
 
     // Resultado: <Clave>: integrante. <Valor>: lista de gente a quien le debo, y cuanto.
 
     var metaSaldos = JSON.parse(sessionStorage.getItem("saldos"))
     var saldos = {};
-    if (!metaSaldos) {
+    if (!metaSaldos || force) {
         metaSaldos = {}
     }
     else if (id_grupo in metaSaldos) {
@@ -14,10 +14,10 @@ export default function calcularSaldos(id_grupo, id_gastos, gastos){
     }
 
     let gastosProcesados = JSON.parse(sessionStorage.getItem("gastosProcesados"))
-    if (!gastosProcesados) gastosProcesados = {}
+    if (!gastosProcesados || force) gastosProcesados = {}
 
     id_gastos.forEach(id =>{
-        if (id in gastosProcesados) return;
+        if (!force && id in gastosProcesados) return;
         gastosProcesados[id] = 1
 
         gastos[id].deudores.forEach(deudor =>{

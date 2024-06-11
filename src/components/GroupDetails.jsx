@@ -357,7 +357,7 @@ export default function GroupDetails(props) {
                                                     </>
                                                 )}
                                             </div>
-                                            <p style={{color: deudas[nombre] < 0 ? 'red' : 'green'}}>Saldo: ${deuda}</p>
+                                            <p style={{color: deuda < 0 ? 'red' : 'green'}}>Saldo: ${deuda}</p>
                                         </CardBody>
                                     </Card>
                                 ))}

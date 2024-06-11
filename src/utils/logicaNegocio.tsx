@@ -1,5 +1,6 @@
 import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter, Button, Link} from '@nextui-org/react';
 import { getGastos, getGrupos, getHives } from "../utils/utilities"
+import calcularSaldos from './calcularSaldos';
 
 export default function calcularDeudas(saldos, integrantes){
     if (!saldos) return {}
@@ -78,6 +79,8 @@ export function relacionarUsuarioInvitado(usuario, grupo, invitado) {
                     delete gastos[e].invitados[`${invitado}`]
                 }
             });
+
+            calcularSaldos(grupo, gastosGrupo, gastos, true)
         }
 
         sessionStorage.setItem("grupos", JSON.stringify(nuevoGrupos))
