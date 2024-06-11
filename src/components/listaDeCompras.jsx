@@ -29,12 +29,37 @@ export default function ShopListDisplay(props) {
             if (grupo.articulos.hasOwnProperty(id) && grupo.articulos[id].comprado) {
                 var reparto = (grupo.articulos[id].costo / grupo.integrantes.length);
                 grupo.integrantes.forEach((integrante) => {
-                    if (integrante === grupo.articulos[id].payer) {
+                    if (integrante === grupo.articulos[id].payer) { // Soy el payer, no debo plata
                         saldos[integrante] += reparto;
                     }
-                    else {
+                    else { // NO soy el payer, debo dinero.
                         saldos[integrante] -= reparto;
-                        deudas[integrante][grupo.articulos[id].payer] = reparto;
+                        if (grupo.articulos[id].payer in deudas[integrante]) { // Ya le debia plata?
+                            var deuda_anterior = deudas[integrante][grupo.articulos[id].payer];
+                            deudas[integrante][grupo.articulos[id].payer] = deuda_anterior + reparto;
+                        }
+                        else { // Si no le debia, seteo la deuda al valor del reparto.
+                            deudas[integrante][grupo.articulos[id].payer] = reparto;
+                        }
+                        // chequear si el payer me debe a mi.
+                        if (integrante in deudas[grupo.articulos[id].payer]) {
+                            var deuda_payer = deudas[grupo.articulos[id].payer][integrante];
+                            var deuda_integrante = deudas[integrante][grupo.articulos[id].payer];
+                            if (deuda_payer == deuda_integrante) {
+                                deudas[grupo.articulos[id].payer][integrante] = 0;
+                                deudas[integrante][grupo.articulos[id].payer] = 0;
+                            }
+                            else if (deuda_payer > deuda_integrante) {
+                                var diferencia = deuda_payer - deuda_integrante;
+                                deudas[grupo.articulos[id].payer][integrante] = diferencia;
+                                deudas[integrante][grupo.articulos[id].payer] = 0;
+                            }
+                            else if (deuda_integrante > deuda_payer) {
+                                var diferencia = deuda_integrante - deuda_payer;
+                                deudas[integrante][grupo.articulos[id].payer] = diferencia;
+                                deudas[grupo.articulos[id].payer][integrante] = 0;
+                            }
+                        }
                     }
                 })
             }
@@ -167,7 +192,7 @@ export default function ShopListDisplay(props) {
                                                     </div>
                                                 )}
                                                 {articulo.comprado && (
-                                                    <p style={{color: "gold"}}>Costo: {articulo.costo}$ | Pagado por: {getApodo(articulo.payer)}</p>
+                                                    <p style={{color: "gold"}}>Costo: {articulo.costo}$ | Pagado por {articulo.payer === Number(getCurrentUser()) ? "mí" : getApodo(articulo.payer)}</p>
                                                 )}
                                             </CardBody>
                                         </Card>
@@ -180,23 +205,27 @@ export default function ShopListDisplay(props) {
                                 <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                     <CardBody>
                                         <p style={{color: "gold"}}>{getApodo(id)}</p>
-                                        <p style={{color: (saldos[id] > 0 ? "#17c964" : 'red')}}>Saldo: {saldos[id]}$</p>
+                                        <p style={{color: (saldos[id] > 0 ? "#17c964" : 'red')}}>Saldo: ${saldos[id]}</p>
                                     </CardBody>
                                 </Card>
                             )}
                         </Tab>
-                        <Tab key="saldos" title="Saldos">
+                        <Tab key="deudas" title="Deudas">
                             {Object.entries(deudas).map(([deudor, acreedores]) => {
                                 return (
                                     <div key={deudor}>
                                         {Object.entries(acreedores).map(([acreedor, monto]) => {
-                                            return (
+                                            if (monto > 0) return (
                                                 <Card key={acreedor} style={{background: "black", borderWidth: "2px", borderColor: "gold", display: "flex", justifyContent: "center", marginBottom: "10px"}}>
                                                     <CardBody style={{color: "gold"}}>
-                                                        {getApodo(deudor)} le debe {monto}$ a {getApodo(acreedor)}.
-                                                        <div>
-                                                            <Button color="warning" style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => console.log(`saldado!`)}>Saldar</Button>
-                                                        </div>
+                                                        {deudor === getCurrentUser() ? (
+                                                            <div>
+                                                                Yo le debo ${monto} a {getApodo(acreedor)}
+                                                                <Button color="warning" style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => console.log(`saldado!`)}>Saldar</Button>
+                                                            </div>
+                                                        ) : (
+                                                            <p>{acreedor === getCurrentUser() ? (`${getApodo(deudor)} me debe $${monto}`) : (`${getApodo(deudor)} le debe $${monto} a ${getApodo(acreedor)}`)}</p>
+                                                        )}
                                                     </CardBody>
                                                 </Card>
                                             )
