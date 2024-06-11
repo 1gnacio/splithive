@@ -1,14 +1,22 @@
 import React from 'react';
-import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter, Button, Link} from '@nextui-org/react';
-import { useEffect, useState } from 'react';
-import calcularSaldos, { saldar } from '../utils/calcularSaldos';
-import { addScaleCorrector } from 'framer-motion';
-import {getUsuarios, getSaldos, getCurrentUser} from "../utils/utilities"
+import { Card, CardBody, Button } from '@nextui-org/react';
+import { useState } from 'react';
+import { saldar } from '../utils/calcularSaldos';
+import { getUsuarios, getSaldos, getCurrentUser, getApodos } from "../utils/utilities"
 
 export function MapListbox(props) {
 
     let [usuarios, setUsuarios] = useState(getUsuarios())
     let [metaSaldos, setMetaSaldos] = useState(getSaldos())
+    
+    const apodos = getApodos()[getCurrentUser()];
+
+    function getApodo(usuario) {
+        if (!apodos || !apodos.hasOwnProperty(usuario) || apodos[usuario] == "") {
+            return usuarios[usuario].nombre
+        }
+        return apodos[usuario]
+    }
 
     return (
         <div>
@@ -24,11 +32,11 @@ export function MapListbox(props) {
                                             <CardBody style={{color: "gold"}}>
                                                 {deudor === getCurrentUser() ? (
                                                     <div>
-                                                        <p>Yo le debo ${monto} a {usuarios[acreedor].nombre}</p>
+                                                        <p>Yo le debo ${monto} a {getApodo(acreedor)}</p>
                                                         <Button color="warning" style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => {saldar(props.id_grupo, deudor, acreedor), window.location.reload()}}>Saldar</Button>
                                                     </div>
                                                 ) : (
-                                                    <p>{acreedor === getCurrentUser() ? (`${usuarios[deudor].nombre} me debe $${monto}`) : (`${usuarios[deudor].nombre} le debe $${monto} a ${usuarios[acreedor].nombre}`)}</p>
+                                                    <p>{acreedor === getCurrentUser() ? (`${getApodo(deudor)} me debe $${monto}`) : (`${getApodo(deudor)} le debe $${monto} a ${getApodo(acreedor)}`)}</p>
                                                 )}
                                             </CardBody>
                                         </Card>
