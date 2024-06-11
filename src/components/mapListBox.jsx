@@ -3,7 +3,7 @@ import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter,
 import { useEffect, useState } from 'react';
 import calcularSaldos, { saldar } from '../utils/calcularSaldos';
 import { addScaleCorrector } from 'framer-motion';
-import {getUsuarios, getSaldos} from "../utils/utilities"
+import {getUsuarios, getSaldos, getCurrentUser} from "../utils/utilities"
 
 export function MapListbox(props) {
 
@@ -22,10 +22,14 @@ export function MapListbox(props) {
                                         <li key={deudor}>
                                         <Card style={{background: "black", borderWidth: "2px", borderColor: "gold", display: "flex", justifyContent: "center", marginBottom: "10px"}}>
                                             <CardBody style={{color: "gold"}}>
-                                                {usuarios[deudor].nombre} le debe {monto} a {usuarios[acreedor].nombre}
-                                                <div>
-                                                    <Button color="warning" style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => {saldar(props.id_grupo, deudor, acreedor), window.location.reload()}}>Saldar</Button>
-                                                </div>
+                                                {deudor === getCurrentUser() ? (
+                                                    <div>
+                                                        <p>Yo le debo ${monto} a {usuarios[acreedor].nombre}</p>
+                                                        <Button color="warning" style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => {saldar(props.id_grupo, deudor, acreedor), window.location.reload()}}>Saldar</Button>
+                                                    </div>
+                                                ) : (
+                                                    <p>{acreedor === getCurrentUser() ? (`${usuarios[deudor].nombre} me debe $${monto}`) : (`${usuarios[deudor].nombre} le debe $${monto} a ${usuarios[acreedor].nombre}`)}</p>
+                                                )}
                                             </CardBody>
                                         </Card>
                                         </li>
