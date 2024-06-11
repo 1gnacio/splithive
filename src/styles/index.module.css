@@ -1,0 +1,10 @@
+.button {
+    display: block;
+    margin-top: 10%;
+}
+
+.conexion{
+    display: flex;
+    gap: 3px;
+    padding-bottom: 10px;
+  }

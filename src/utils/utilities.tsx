@@ -27,12 +27,28 @@ export const getGrupos = () => {
 }
 
 export const getGruposPublicosForUser = (userId) => {
+    if (!userId){
+        return gruposPublicosFunding();
+    }
     var grupos = getGrupos();
     var gruposPublicos = {};
     for(const id in grupos) {
         var incluyeUsuario = (grupos[id].integrantes).includes(parseInt(userId));
         var esPublico = grupos[id].publico === true;
         if(esPublico && !incluyeUsuario) {
+            gruposPublicos[id] = grupos[id];
+        }
+    }
+    return gruposPublicos;
+}
+
+const gruposPublicosFunding = () =>{
+    var grupos = getGrupos();
+    var gruposPublicos = {};
+    for(const id in grupos) {
+        var esPublico = grupos[id].publico === true;
+        var esRecaudacion = String(grupos[id].tipo) === "recaudación";
+        if(esPublico && esRecaudacion) {
             gruposPublicos[id] = grupos[id];
         }
     }
