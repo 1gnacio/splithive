@@ -26,6 +26,16 @@ export const getGrupos = () => {
     return JSON.parse(sessionStorage.getItem("grupos"));
 }
 
+export const getGrupoById = (id) => {
+    const grupos = getGrupos();
+    for(const idGrupo in grupos) {
+        if(idGrupo == id) {
+            return grupos[id];
+        }
+    }
+    return null;
+}
+
 export const getGruposPublicosForUser = (userId) => {
     if (!userId){
         return gruposPublicosFunding();

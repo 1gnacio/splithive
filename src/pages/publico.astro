@@ -20,7 +20,7 @@ import NightBtn from '../components/nightBtn';
 
             <div class="buscador-grupo">
                 <input type="text" id="buscarGrupoInput" placeholder="Ingresa el ID del grupo">
-                <button class="btn-unirse" id="buscarGrupoBtn">Unirse</button>
+                <button class="btn-unirse" id="buscarGrupo">Buscar</button>
             </div>
             <div id="grupos"></div>
             <div class="btns">
@@ -31,14 +31,11 @@ import NightBtn from '../components/nightBtn';
         </div>
 
         <script>
-            import { navigate } from "astro:transitions/client";
-            import { getCurrentUser, getGruposPublicosForUser, agregarIntegrante } from "../utils/utilities"
+            import { getCurrentUser, getGruposPublicosForUser, agregarIntegrante, getGrupoById } from "../utils/utilities"
 
             var currentUser = getCurrentUser();
             var gruposPublicos;
             gruposPublicos = getGruposPublicosForUser(currentUser);
-
-            
 
             function actualizarListaGrupos() {
                 var contenedorGrupos = document.getElementById('grupos');
@@ -64,29 +61,24 @@ import NightBtn from '../components/nightBtn';
                     enlaceDetalle.appendChild(grupoElemento);
                     contenedorGrupos.appendChild(enlaceDetalle);
                 };
-                // document.querySelectorAll('.unirse-btn').forEach(button => {
-                //     button.addEventListener('click', handleUnirseClick);
-                // });
             }
 
-            // function handleUnirseClick(event) {
-            //     var grupoId = event.target.getAttribute('data-id');
-            //     agregarIntegrante(currentUser, grupoId);
-            // }
-
-            function handleSearchClick() {
+            function handleBuscarGrupo() {
                 var searchInput = document.getElementById('buscarGrupoInput');
                 var grupoId = searchInput.value;
-                if (grupoId) {
-                    agregarIntegrante(currentUser, grupoId);
+                var grupo = getGrupoById(grupoId);
+                if (grupo) {
+                    if(grupo.publico) {
+                        window.location.href = '/grupos/' + grupoId + '-' + grupo.tipo;
+                    } else {
+                        alert('El grupo es Privado');
+                    }
                 } else {
                     alert("Por favor ingrese un ID de grupo.");
                 }
-                window.location.href = '/publico';
             }
 
-            document.getElementById('buscarGrupoBtn').addEventListener('click', handleSearchClick);
-
+            document.getElementById('buscarGrupo').addEventListener('click', handleBuscarGrupo);
             actualizarListaGrupos();
         </script>
     </main>

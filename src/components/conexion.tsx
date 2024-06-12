@@ -14,7 +14,7 @@ export default function Conexion(){
           </a>
 
           <a href="/publico">
-            <img src="/public/images/help.png" alt="Sign In" className={index.button}/>
+            <img src="/public/images/help.png" alt="Help a Bee" className={index.button}/>
           </a>
         </div>
 
