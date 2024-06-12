@@ -105,23 +105,31 @@ export default function WishListDisplay(props) {
                                 <Card style={{ background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39" }}>
                                     <CardBody>
                                         <form onSubmit={handleAddWish}>
-                                            <Input
-                                                fullWidth
-                                                clearable
-                                                bordered
-                                                placeholder="Wish Name"
-                                                value={newWishName}
-                                                onChange={(e) => setNewWishName(e.target.value)}
-                                            />
-                                            <Input
-                                                fullWidth
-                                                clearable
-                                                bordered
-                                                placeholder="Wish Link"
-                                                value={newWishLink}
-                                                onChange={(e) => setNewWishLink(e.target.value)}
-                                            />
-                                            <Button onClick={(e)=>{handleAddWish(e)}} type="submit" color="warning" style={{ marginTop: "10px" }}>
+                                            <div style={{ marginTop: "15px" }}>
+                                                <Input
+                                                    fullWidth
+                                                    clearable
+                                                    bordered
+                                                    placeholder="Wish Name"
+                                                    variant="bordered"
+                                                    value={newWishName}
+                                                    color = "warning"
+                                                    onChange={(e) => setNewWishName(e.target.value)}
+                                                />
+                                            </div>
+                                            <div style={{ marginTop: "15px" }}>
+                                                <Input 
+                                                    fullWidth
+                                                    clearable
+                                                    bordered
+                                                    placeholder="Wish Link"
+                                                    variant="bordered"
+                                                    value={newWishLink}
+                                                    color = "warning"
+                                                    onChange={(e) => setNewWishLink(e.target.value)}
+                                                />
+                                            </div>
+                                            <Button onClick={(e)=>{handleAddWish(e)}} type="submit" color="warning" style={{ marginTop: "15px" }}>
                                                 Add Wish
                                             </Button>
                                         </form>

@@ -79,12 +79,19 @@ export default function App(props) {
                     </a>
               </TableCell>
               <TableCell>
-                {wishes[item].comprado ===false? "Pendiente":"Cumplido 🖤"}
-                { !wishes[item].comprado && 
-                  <Button onClick={(e) => handlePurchase(item)} style={{marginLeft:"10px",width:"fit-content",color:"warning"}} color="warning">
-                    Comprado :3
-                  </Button>}
-              </TableCell>
+                {!wishes[item].comprado ? (
+                    <Button 
+                      onClick={(e) => handlePurchase(item)} 
+                      style={{width: "fit-content"}} 
+                      color="warning" 
+                      variant="flat"
+                    >
+                        Cumplir el deseo
+                    </Button>
+                ) : (
+                  "🧡 Cumplido"
+                )}
+            </TableCell>
             </TableRow>
           )})}
         </TableBody>
