@@ -27,7 +27,7 @@ export function MapListbox(props) {
                             if (monto != 0 && acreedor != deudor) {
                                 return (
                                     <ul>
-                                        <li key={deudor}>
+                                        <li key={acreedor}>
                                         <Card style={{background: "black", borderWidth: "2px", borderColor: "gold", display: "flex", justifyContent: "center", marginBottom: "10px"}}>
                                             <CardBody style={{color: "gold"}}>
                                                 {deudor === getCurrentUser() ? (
