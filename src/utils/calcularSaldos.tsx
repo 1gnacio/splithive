@@ -6,6 +6,9 @@ export default function calcularSaldos(id_grupo, id_gastos, gastos, force = fals
 
     var metaSaldos = JSON.parse(sessionStorage.getItem("saldos"))
     var saldos = {};
+    getGrupos()[id_grupo].integrantes.forEach((integrante) => {
+        saldos[integrante] = {}
+    })
 
     if (!metaSaldos || force) {
         metaSaldos = {}
@@ -22,9 +25,6 @@ export default function calcularSaldos(id_grupo, id_gastos, gastos, force = fals
         gastosProcesados[id] = 1
 
         gastos[id].deudores.forEach(deudor =>{
-            if (!(deudor in saldos)) {
-                saldos[deudor] = {}
-            }
 
             if (gastos[id].payer in saldos[deudor]) {
                 var saldo_anterior = saldos[deudor][gastos[id].payer]
