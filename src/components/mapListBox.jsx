@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardBody, Button } from '@nextui-org/react';
 import { useState } from 'react';
 import { saldar } from '../utils/calcularSaldos';
-import {getUsuarios, getSaldos} from "../utils/utilities"
+import { getUsuarios, getSaldos, getApodos, getCurrentUser } from "../utils/utilities"
 import '../styles/btn.css'
 
 export function MapListbox(props) {
@@ -30,7 +30,7 @@ export function MapListbox(props) {
                                     <ul>
                                         <li key={acreedor}>
                                         <Card style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", display: "flex", justifyContent: "center", marginBottom: "10px"}}>
-                                            <CardBody style={{color: "gold"}}>
+                                            <CardBody style={{color: "black"}}>
                                                 {deudor === getCurrentUser() ? (
                                                     <div>
                                                         <p>Yo le debo ${monto} a {getApodo(acreedor)}</p>
