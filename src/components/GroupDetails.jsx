@@ -304,9 +304,10 @@ export default function GroupDetails(props) {
                                                 <input className={inputStyle.formInputStyle} type="number" value={montoGasto} onChange={handleMonto}/><br/>
                                                 <label style={{color: 'black'}} htmlFor="dropdown">Quién pagó:</label><br/>
                                                 <select id="quienPago" onChange={(e) => handlePayer(e)}>
-                                                {grupo.integrantes.map((id, index) => {
-                                                    return <option value={id}>{getApodo(id)}</option>
-                                                })}
+                                                    <option value="none" selected disabled hidden>Seleccionar quién pagó</option>
+                                                    {grupo.integrantes.map((id, index) => {
+                                                        return <option value={id}>{getApodo(id)}</option>
+                                                    })}
                                                 </select>
                                                 <br/>
                                                 <label htmlFor="dropdown">Quienes participaron:</label>
