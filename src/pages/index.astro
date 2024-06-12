@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import '../styles/global.css';
 import Header from '../../src/components/Header';
 import '../styles/btn.css'
+import Conexion from "../components/conexion"
 ---
 
 <Layout title="Inicio">
@@ -12,7 +13,7 @@ import '../styles/btn.css'
       
       <Header />
 
-      <div class="conexion">
+      <!-- <div class="conexion">
         <a href="/login">
             <img src="/public/images/logIn.png" alt="Log In" class="button"/>
         </a>
@@ -20,7 +21,11 @@ import '../styles/btn.css'
           <img src="/public/images/signIn.png" alt="Sign In" class="button"/>
         </a>
       </div>
-    </div>
+      <img src = "/public/images/bee.png">
+      Help a bee
+      </img>
+    </div> -->
+    <Conexion client:only></Conexion>
     
     <script>
       import { getContactos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser, getUserByUsername } from "../utils/utilities"

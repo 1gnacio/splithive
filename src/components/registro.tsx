@@ -3,6 +3,8 @@ import registro from "../styles/registro.module.css"
 import { Button, Input } from "@nextui-org/react";
 import {getContactos, getHives, getUsuarios} from "../utils/utilities"
 import { navigate } from "astro/virtual-modules/transitions-router.js";
+import { EyeFilledIcon } from "../styles/EyeFilledIcon";
+import { EyeSlashFilledIcon } from "../styles/EyeSlashFilledIcon";
 
 export default function Registro(){
     
@@ -13,10 +15,15 @@ export default function Registro(){
     let [okContra,setOkContra] = useState(false)
     
     let [emailUser, setEmail] = useState(null)
+    let [errorEmailMessage, setErrorEmailMessage] = useState("")
     let [okEmail, setOkEmail] = useState(false)
 
     let [nombreUser,setNombre] = useState(null)
     let [okNombre, setOkNombre] = useState(false)
+
+    const [isVisible, setIsVisible] = React.useState(false);
+
+    const toggleVisibility = () => setIsVisible(!isVisible);
 
 
     function handleSubmit(){
@@ -120,12 +127,19 @@ export default function Registro(){
             if (!usuarios.hasOwnProperty(user)){
                 continue
             }
-            if (usuarios[user].email == emailUser){
+            if (String(usuarios[user].mail) === String(emailUser)){
+                setErrorEmailMessage("Email ya esta en uso")
                 setOkEmail(true)
                 return false
             }
         }
-        return true
+        var regex = new RegExp("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
+        if (regex.test(emailUser)){
+            return true
+        }
+        setErrorEmailMessage("Dirección email invalida");
+        setOkEmail(true)
+        return false
     }
 
 
@@ -145,15 +159,30 @@ export default function Registro(){
         <div className={registro.password_bar}>
             <div className={registro.password_info}>Password</div>
             <Input className={registro.bar} isInvalid={okContra}
-                errorMessage="Contraseña invalida" type={"password"} onChange={(e =>{onChangePass(e)})}></Input>
+                errorMessage="Contraseña invalida" type={isVisible ? "text" : "password"} onChange={(e =>{onChangePass(e)})}
+                endContent={
+                    <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                      {isVisible ? (
+                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      ) : (
+                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      )}
+                    </button>
+                    }>
+
+            </Input>
         </div>
         <div className={registro.username_bar}>
             <div className= {registro.username_info}>Email</div>
             <Input className={registro.bar_email} isInvalid={okEmail}
-                errorMessage="Email ya esta en uso" onChange={(e => {onChaneEmail(e)})} type ="username">
+                errorMessage={errorEmailMessage} onChange={(e => {onChaneEmail(e)})} type ="username">
             </Input>    
         </div>
-        <Button onClick={e => {handleSubmit()}}>Registrarse</Button>
+
+        <div className={registro.buttons}>
+            <Button color="warning" onClick={e => {handleSubmit()}}>Sign In</Button>
+            <Button onClick={e => navigate("/")}>Cancelar</Button>
+        </div>
     </div> 
     );
 }

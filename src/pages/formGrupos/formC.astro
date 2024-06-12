@@ -1,39 +1,53 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { Card } from '@nextui-org/react'
+import { Card, Button, Link } from '@nextui-org/react'
 import '../../styles/global.css'
 import '../../styles/formGroups.css'
 import ImageContainer from '../../components/groupsForms/ImageContainer'
+
 ---
 
-<Layout title="Nueva Rec">
+<Layout title="New Rec">
   <main>
-    <Card className='p-4'>
+    <Card>
         <form id="crearRecFormulario">
+            
             <ImageContainer rightImageSrc='/public/images/recaudacion.png'/>
                      
-            <div class="form-group flex-row">
-                <div class="form-group-item item-nombre-grupo">
-                    <label for="nombreRec">Nombre de la recaudación:</label>
-                    <input type="text" id="nombreRec" name="nombreRec" class="input-field">
-                </div>
-                <div class="form-group-item">
-                    <p>Visibilidad Publica</p>
-                    <div class="checkbox-wrapper-7">
-                        <input class="tgl tgl-ios" id="grupoPublico" type="checkbox"/>
-                        <label class="tgl-btn" for="grupoPublico">
+            <div class="form-group">
+
+                <div class="form-group-item" style={{gap: "50px", display:"flex"}}>
+
+                    <div>
+                        <label for="nombreRec">Nombre de la recaudación:</label>
+                        <input type="text" id="nombreRec" name="nombreRec" class="input-field">
                     </div>
+                    
+                    <div >
+                        
+                        <p>Visibilidad Publica </p>
+
+                        <div class="checkbox-wrapper-7">
+                            <input class="tgl tgl-ios" id="grupoPublico" type="checkbox"/>
+                            <label class="tgl-btn" for="grupoPublico">
+                        </div>
+                        
+                    </div>
+
                 </div>
+
             </div>
 
             <div class="form-group">
-                <label for="objetivo">Dinero a alcanzar:</label>
-                <input type="number" id="objetivo" name="objetivo" class="input-field">
+                <div class="form-group-item">
+                    <label for="objetivo">Dinero a alcanzar:</label>
+                    <input type="number" id="objetivo" name="objetivo" class="input-field">
+                </div>
             </div>
 
-            <div style="margin-top: 60px;">
-                <button class="submitBtn" type="submit">Crear</button>
-                <button class="cancelarBtn" id="cerrarFormBtn" type="button">Cancelar</button>
+            <div style={{margin: "20px", display: "flex", gap: "5px"}} >
+                <Button className="submitBtn font-semibold fs-5" type="submit">Crear</Button>
+                <Button id="cerrarFormBtn" as={Link} className="cancelarBtn font-semibold fs-5" href='/home'>Cancelar</Button>
             </div>
         </form>
     </Card>
@@ -101,10 +115,6 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
             window.location.href = '/home';
 
             document.getElementById('crearRecFormulario').reset();
-        });
-
-        document.getElementById('cerrarFormBtn').addEventListener('click', function() {
-            window.location.href = '/home';
         });
     </script>
   </main>

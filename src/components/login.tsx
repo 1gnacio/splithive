@@ -3,6 +3,8 @@ import login from "../styles/login.module.css"
 import { Button, Input } from "@nextui-org/react";
 import {getUsuarios} from "../utils/utilities"
 import { navigate } from "astro/virtual-modules/transitions-router.js";
+import { EyeFilledIcon } from "../styles/EyeFilledIcon";
+import { EyeSlashFilledIcon } from "../styles/EyeSlashFilledIcon";
 
 export default function Login(){
 
@@ -10,6 +12,11 @@ export default function Login(){
     let [password,setPassword] = useState(null)
     let [okContra,setOkContra] = useState(false)
     let [okUsername,setOkUsername] = useState(false)
+
+    
+    const [isVisible, setIsVisible] = React.useState(false);
+
+    const toggleVisibility = () => setIsVisible(!isVisible);
 
     function handleSubmit(){
         var userCorrect = handleUsername();
@@ -89,9 +96,24 @@ export default function Login(){
         <div className={login.password_bar}>
             <div className={login.password_info}>Password</div>
             <Input className={login.bar} isInvalid={okContra}
-                errorMessage="Contraseña incorrecta" type={"password"} onChange={(e =>{onChangePass(e)})}></Input>
+                errorMessage="Contraseña incorrecta" type={isVisible ? "text" : "password"} onChange={(e =>{onChangePass(e)})}
+                endContent={
+                    <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                      {isVisible ? (
+                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      ) : (
+                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      )}
+                    </button>
+                    }>
+
+            </Input>
         </div>
-        <Button onClick={e => {handleSubmit()}}>Login</Button>
+        <div className={login.buttons}>
+            <Button color="warning" onClick={e => {handleSubmit()}}>Login</Button>
+            <Button onClick={e => navigate("/")}>Cancelar</Button>
+        </div>
+        
     </div> 
     );
 }

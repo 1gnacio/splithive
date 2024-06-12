@@ -2,7 +2,8 @@ import React from 'react';
 import { Card, CardBody, Button } from '@nextui-org/react';
 import { useState } from 'react';
 import { saldar } from '../utils/calcularSaldos';
-import { getUsuarios, getSaldos, getCurrentUser, getApodos } from "../utils/utilities"
+import {getUsuarios, getSaldos} from "../utils/utilities"
+import '../styles/btn.css'
 
 export function MapListbox(props) {
 
@@ -28,12 +29,12 @@ export function MapListbox(props) {
                                 return (
                                     <ul>
                                         <li key={acreedor}>
-                                        <Card style={{background: "black", borderWidth: "2px", borderColor: "gold", display: "flex", justifyContent: "center", marginBottom: "10px"}}>
+                                        <Card style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", display: "flex", justifyContent: "center", marginBottom: "10px"}}>
                                             <CardBody style={{color: "gold"}}>
                                                 {deudor === getCurrentUser() ? (
                                                     <div>
                                                         <p>Yo le debo ${monto} a {getApodo(acreedor)}</p>
-                                                        <Button color="warning" style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => {saldar(props.id_grupo, deudor, acreedor), window.location.reload()}}>Saldar</Button>
+                                                        <Button className="submitBtn" style={{display: "flex", alignContent: "center", width: "auto", marginTop: "5px"}} name="Saldar" onClick={() => {saldar(props.id_grupo, deudor, acreedor), window.location.reload()}}>Saldar</Button>
                                                     </div>
                                                 ) : (
                                                     <p>{acreedor === getCurrentUser() ? (`${getApodo(deudor)} me debe $${monto}`) : (`${getApodo(deudor)} le debe $${monto} a ${getApodo(acreedor)}`)}</p>

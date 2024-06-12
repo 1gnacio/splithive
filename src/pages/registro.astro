@@ -1,20 +1,10 @@
 ---
 import Registro from "../components/registro"
 import Layout from "../layouts/Layout.astro"
-import global from "../styles/global.css"
+import  "../styles/global.css"
 ---
 <Layout>
     <main>
         <Registro client:only></Registro>
     </main>
 </Layout>
-
-
-<style is:global>
-
-body {
-    background-image: url('/images/fondo.jpg'); 
-    background-size: cover;  
-    height: 100%;
-    min-height: 100vh;
-}
