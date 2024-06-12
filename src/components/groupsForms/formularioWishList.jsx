@@ -171,7 +171,7 @@ export default function FormularioDivisionDeGastos(props) {
                     />
                 </div>
                 <div className="form-group">
-                    <label className='form-group-item'>Los items deberán ser agregados en el grupo</label>
+                    <label className='form-group-item'>Los items deberán ser agregados en el grupo, sólo por el administrador</label>
                 </div>
                 <div style={{ margin: "20px", display: "flex", gap: "5px" }}>
                     <Button className="submitBtn font-semibold fs-5" type="submit">Crear</Button>

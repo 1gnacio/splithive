@@ -86,7 +86,7 @@ export default function App(props) {
                       color="warning" 
                       variant="flat"
                     >
-                        Cumplir el deseo
+                        Cumplir deseo
                     </Button>
                 ) : (
                   "🧡 Cumplido"

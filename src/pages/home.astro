@@ -9,7 +9,6 @@ import Header from '../components/Header';
 import GroupsModal from '../components/GroupsModal';
 import CerrarSesion from "../components/cerrarsesion"
 import { navigate } from 'astro:transitions/client';
-import NightBtn from '../components/nightBtn';
 
 ---
 
@@ -17,10 +16,9 @@ import NightBtn from '../components/nightBtn';
 
     <main>
 
-        <div class="header">
+        <div >
 
             <!-- <Header /> -->
-            <NightBtn></NightBtn>
             <CerrarSesion client:only></CerrarSesion>
 
         </div>
