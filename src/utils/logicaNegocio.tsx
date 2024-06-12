@@ -1,4 +1,3 @@
-import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter, Button, Link} from '@nextui-org/react';
 import { getGastos, getHives } from "../utils/utilities"
 
 export default function calcularDeudas(saldos, integrantes){
