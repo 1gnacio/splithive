@@ -444,7 +444,7 @@ export default function GroupDetails(props) {
                                             {Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && <p style={{color: "black"}}>Deudores: {gastos[gastoId].deudores.length > 0 && imprimirNombres(gastoId)}</p>}
                                             {gastos[gastoId].invitados && gastos[gastoId].invitados.length > 0 && Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && <p style={{color: "black"}}>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
                                         
-                                            {Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) || <p>Deuda: {Object.entries(gastos[gastoId].reparto).map(([key, value]) => {
+                                            {Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) || <p>Reparto: {Object.entries(gastos[gastoId].reparto).map(([key, value]) => {
                                                 if (value != 0) {
                                                     return <p style={{marginLeft:"10px", color: "black"}}>{getApodo(key)}: ${value}</p>
                                                 }
