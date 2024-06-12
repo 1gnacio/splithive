@@ -4,7 +4,10 @@ import { getGrupos, getDonaciones, getUsuarios, getCurrentUser, agregarIntegrant
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Progress} from '@nextui-org/react';
 import inputStyle from "../styles/form.module.css"
 import {HeartIcon} from './HeartIcon';
+import CerrarSesion from './cerrarsesion';
+
 import "../styles/btn.css"
+import "../styles/global.css"
 
 
 export default function RecaudacionDisplay(props) {
@@ -38,7 +41,7 @@ export default function RecaudacionDisplay(props) {
     )
     var porcentajeProgreso = suma * 100 / grupo.objetivo
 
-    var labelProgreso = (suma < grupo.objetivo) ? "Lleguemos a los $" + grupo.objetivo + '!' : "Meta Cumplida!"
+    var labelProgreso = (suma < grupo.objetivo) ? "𝙇𝙡𝙚𝙜𝙪𝙚𝙢𝙤𝙨 𝙖 𝙡𝙤𝙨: $" + grupo.objetivo + '!' : "Meta Cumplida!"
 
     const nombreDonante = (id) =>{
         if (donaciones[id].donante != -1)  { return usuarios[donaciones[id].donante].nombre}
@@ -96,21 +99,41 @@ export default function RecaudacionDisplay(props) {
     return (
         <div className="p-5">
             <Card className='p-4' style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39"}}>
-                <CardHeader>
+
+                <CardHeader className='header'>
+                   
                     <h4 className="font-bold text-large" style={{color: "black"}}>
                         {grupo.nombre}
                     </h4>
+
+                    {user && (
+                        <CerrarSesion client:only></CerrarSesion>
+                    )}
+
                 </CardHeader>
+
                 <CardBody>
                     <Tabs aria-label="Options" variant="underlined" radius="full">
                         <Tab key="info" title="Info">
                             <Card style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39"}}>
+
+                                <CardBody>
+                                    <h3 className="text-large"> {grupo.infoSaludo} </h3>
+                                    <h4 className="text-large" style={{ color: "black", marginTop: "10px" }}>
+                                        {grupo.infoCuerpo}
+                                    </h4>
+                                    <h4 className="text-large" style={{ color: "black", marginTop: "10px" }}>
+                                        {grupo.infoFinal}
+                                    </h4>
+
+                                </CardBody>
+
                                 <CardBody>
                                     <Progress size="lg" color="warning" style={{color:"black"}} label={labelProgreso} value={porcentajeProgreso}/>
                                     {suma >= grupo.objetivo ? (
-                                        <p style={{color: "black"}}>Cumplimos con el objetivo!! Muchas gracias a aquellos que colaboraron!!</p>
+                                        <h4 style={{color: "black"}} className="text-large">Cumplimos con el objetivo!! Muchas gracias a aquellos que colaboraron!!</h4>
                                     ) : (
-                                        <p style={{color: "black"}}>Vamos ${suma}! Faltan ${grupo.objetivo - suma} para cumplir nuestro objetivo!</p>
+                                        <h4 style={{color: "black"}} className="text-large">Faltan ${grupo.objetivo - suma} para cumplir nuestro objetivo!</h4>
                                     )}
                                     <div>
                                         <Button className="submitBtn" style={{marginBottom: '10px', marginTop: '10px'}} color="warning" onClick={() => {switchFormDonacion()}}>Donar!</Button>
@@ -130,7 +153,9 @@ export default function RecaudacionDisplay(props) {
                                         )}
                                     </div>
                                 </CardBody>
-                            </Card>  
+                                
+                            </Card> 
+
                         </Tab>
                         <Tab key="donaciones" title="Donaciones">
                             {grupo.donaciones.length === 0 ? (

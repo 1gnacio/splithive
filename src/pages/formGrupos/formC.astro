@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { Card, Button, Link } from '@nextui-org/react'
+import { Card, Button, Link, Textarea } from '@nextui-org/react'
 import '../../styles/global.css'
 import '../../styles/formGroups.css'
 import ImageContainer from '../../components/groupsForms/ImageContainer'
@@ -45,6 +45,80 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
                 </div>
             </div>
 
+            <div class="form-group">
+                <label  class='form-group-item'>Mensaje para las abejas-madrinas:</label>
+                <Textarea
+                    labelPlacement="outside"
+                    placeholder="Saludo inicial" id="textSaludo" color="warning"
+                    className='form-group-item'
+                    maxRows={2}
+                    classNames={{
+                        label: ["text-black/50 dark:text-white/90"],
+                        input: ["bg-yellow-300", "text-black/90 dark:text-white/90"],
+                        innerWrapper: "bg-yellow-300",
+                        inputWrapper: [
+                            "shadow-md",
+                            "!bg-yellow-300",
+                            "dark:bg-blue-500/60",
+                            "backdrop-blur-xl",
+                            "backdrop-yellow-300",
+                            "hover:bg-yellow-300",
+                            "dark:hover:bg-default/70",
+                            "group-data-[focus=false]:bg-yellow-200/50",
+                            "dark:group-data-[focus=false]:bg-default/60",
+                            "!cursor-text",
+                        ],
+                    }}
+                />
+                <Textarea
+                    labelPlacement="outside"
+                    placeholder="Cuerpo del mensaje" id="textCuerpo" color="warning"
+                    className='form-group-item max-h-xs'
+                    minRows={4}
+                    classNames={{
+                        label: ["text-black/50 dark:text-white/90"],
+                        input: ["bg-yellow-300", "text-black/90 dark:text-white/90"],
+                        innerWrapper: "bg-yellow-300",
+                        inputWrapper: [
+                            "shadow-md",
+                            "!bg-yellow-300",
+                            "dark:bg-blue-500/60",
+                            "backdrop-blur-xl",
+                            "backdrop-yellow-300",
+                            "hover:bg-yellow-300",
+                            "dark:hover:bg-default/70",
+                            "group-data-[focus=false]:bg-yellow-200/50",
+                            "dark:group-data-[focus=false]:bg-default/60",
+                            "!cursor-text",
+                        ],
+                    }}
+                />
+                <Textarea
+                    labelPlacement="outside"
+                    placeholder="Mensaje final" id="textFinal" color="warning"
+                    className='form-group-item'
+                    maxRows={2}
+                    classNames={{
+                        label: ["text-black/50 dark:text-white/90"],
+                        input: ["bg-yellow-300", "text-black/90 dark:text-white/90"],
+                        innerWrapper: "bg-yellow-300",
+                        inputWrapper: [
+                            "shadow-md",
+                            "!bg-yellow-300",
+                            "dark:bg-blue-500/60",
+                            "backdrop-blur-xl",
+                            "backdrop-yellow-300",
+                            "hover:bg-yellow-300",
+                            "dark:hover:bg-default/70",
+                            "group-data-[focus=false]:bg-yellow-200/50",
+                            "dark:group-data-[focus=false]:bg-default/60",
+                            "!cursor-text",
+                        ],
+                    }}
+                />
+            </div>
+
+
             <div style={{margin: "20px", display: "flex", gap: "5px"}} >
                 <Button className="submitBtn font-semibold fs-5" type="submit">Crear</Button>
                 <Button id="cerrarFormBtn" as={Link} className="cancelarBtn font-semibold fs-5" href='/home'>Cancelar</Button>
@@ -81,6 +155,11 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
                 document.getElementById('crearRecFormulario').reset();
                 return;
             }
+
+            const textSaludo = document.getElementById("textSaludo").value;
+            const textCuerpo = document.getElementById("textCuerpo").value;
+            const textFinal = document.getElementById("textFinal").value;
+
             var currentUserID = getCurrentUser();
             var grupos = getGrupos();
 
@@ -90,6 +169,9 @@ import ImageContainer from '../../components/groupsForms/ImageContainer'
                 objetivo: objetivo, 
                 donaciones: [],
                 integrantes: [parseInt(currentUserID)],
+                infoSaludo: textSaludo,
+                infoCuerpo: textCuerpo,
+                infoFinal: textFinal,
                 publico: esPublico
             };
 

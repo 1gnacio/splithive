@@ -14,7 +14,7 @@ const { id, tipo } = Astro.params;
 
 <Layout title="Welcome to Splithive">
     <main>
-        <CerrarSesion client:only></CerrarSesion>
+        
         {tipo === "gastos" && (<GroupDetails client:only id={id}></GroupDetails>)}
         {tipo === "recaudación" && (<RecaudacionDisplay client:only id={id}></RecaudacionDisplay>)}
         {tipo === "compras" && (<ShopListDisplay client:only id={id}></ShopListDisplay>)}

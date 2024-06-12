@@ -10,6 +10,8 @@ import {
     ModalFooter
   } from "@nextui-org/modal";
 import inputStyle from "../styles/form.module.css"
+import CerrarSesion from './cerrarsesion';
+import "../styles/global.css"
 
 export default function ShopListDisplay(props) {
     let [id,setId] = useState(props.id);
@@ -17,6 +19,8 @@ export default function ShopListDisplay(props) {
     let [grupo, setGrupo] = useState(grupos[id]);
     let [usuarios, setUsuarios] = useState(getUsuarios());
     let [apodos, setApodos] = useState(getApodos()[getCurrentUser()]);
+    const currentUser = getCurrentUser();
+
 
     function calcularDeudas() {
         var metaSaldos = JSON.parse(sessionStorage.getItem("saldos"));
@@ -193,10 +197,13 @@ export default function ShopListDisplay(props) {
     return (
         <div className="p-5">
             <Card className='p-4' style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39"}}>
-                <CardHeader>
+                <CardHeader className='header'>
                     <h4 className="font-bold text-large">
                         {grupo.nombre}
                     </h4>
+                    {currentUser && (
+                        <CerrarSesion client:only></CerrarSesion>
+                    )}
                 </CardHeader>
                 <CardBody>
                     <Tabs aria-label="Options" variant="underlined" radius="full">

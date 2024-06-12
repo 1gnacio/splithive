@@ -4,6 +4,8 @@ import { Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input 
 import { HeartIcon } from './HeartIcon';
 import WishListItems from './WishListItems';
 import "../styles/btn.css";
+import CerrarSesion from './cerrarsesion';
+import "../styles/global.css"
 
 //import { wishes } from '../../public/wishes.astro';
 
@@ -75,17 +77,23 @@ export default function WishListDisplay(props) {
     return (
         <div className="p-5">
             <Card className='p-4' style={{ background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39" }}>
-                <CardHeader>
-                    <h4 className="font-bold text-large" style={{ color: "black" }}>
-                        {grupo.nombre}
-                    </h4>
-                </CardHeader>
+                <CardHeader className='header'>
+                   
+                   <h4 className="font-bold text-large" style={{color: "black"}}>
+                       {grupo.nombre}
+                   </h4>
+
+                   {user && (
+                       <CerrarSesion client:only></CerrarSesion>
+                   )}
+
+               </CardHeader>
                 <CardBody>
                     <Tabs aria-label="Options" variant="underlined" radius="full">
                         <Tab key="info" title="Info">
                             <Card style={{ background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39" }}>
                                 <CardBody>
-                                    <h3 className="text-large"> {grupo.infoSaludo} </h3>
+                                    <h4 className="text-large"> {grupo.infoSaludo} </h4>
                                     <h4 className="text-large" style={{ color: "black", marginTop: "10px" }}>
                                         {grupo.infoCuerpo}
                                     </h4>

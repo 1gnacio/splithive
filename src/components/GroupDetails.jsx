@@ -7,6 +7,9 @@ import { useState } from 'react';
 import { getUsuarios, getGrupos, getGastos, getSaldos, getApodos, getInvitados, getCurrentUser } from "../utils/utilities"
 import inputStyle from "../styles/form.module.css"
 
+import CerrarSesion from './cerrarsesion';
+import "../styles/global.css"
+
 import { navigate } from 'astro/virtual-modules/transitions-router.js';
 
 
@@ -274,7 +277,7 @@ export default function GroupDetails(props) {
 
                 <Card className='p-4' style={{background: "#FEFCE8"}}>
 
-                    <CardHeader>
+                    <CardHeader className='header'>
                         <h4 className="font-bold text-large" style={{color: "black"}}>
                             {editingGroup ? (
                                 <input
@@ -292,6 +295,9 @@ export default function GroupDetails(props) {
                                 </>
                             )}
                         </h4>
+                        {currentUser && (
+                            <CerrarSesion client:only></CerrarSesion>
+                        )}
                     </CardHeader>
 
                     <CardBody>
