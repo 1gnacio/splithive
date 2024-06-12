@@ -58,7 +58,8 @@ const gruposPublicosFunding = () =>{
     for(const id in grupos) {
         var esPublico = grupos[id].publico === true;
         var esRecaudacion = String(grupos[id].tipo) === "recaudación";
-        if(esPublico && esRecaudacion) {
+        var esWishlist = String(grupos[id].tipo) === "WishList";
+        if(esPublico && (esRecaudacion || esWishlist)){
             gruposPublicos[id] = grupos[id];
         }
     }

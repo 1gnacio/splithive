@@ -1,0 +1,16 @@
+.image{
+    width: 30px,
+}
+
+.image:hover{
+    cursor: pointer;
+}
+
+.textoInfo{
+    text-align:left;
+    overflow: visible;
+    max-height: max-content;
+    justify-content: center;
+}
+
+/*overflow-visible flex justify-center items-center*/
