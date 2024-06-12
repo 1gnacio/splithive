@@ -196,32 +196,32 @@ export default function ShopListDisplay(props) {
 
     return (
         <div className="p-5">
-            <Card className='p-4' style={{background: "black"}}>
+            <Card className='p-4' style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39"}}>
                 <CardHeader>
-                    <h4 className="font-bold text-large" style={{color: "gold"}}>
+                    <h4 className="font-bold text-large">
                         {grupo.nombre}
                     </h4>
                 </CardHeader>
                 <CardBody>
-                    <Tabs aria-label="Options" color="warning" radius="full">
+                    <Tabs aria-label="Options" variant="underlined" radius="full">
                         <Tab key="articulos" title="Artículos">
                             <Button color="warning" style={{marginBottom: '12px'}} onClick={() => switchNuevoItem()}>Nuevo artículo</Button>
                             {nuevoItem && (
                                 <p>
-                                    <label style={{color: 'gold'}}>Nombre:</label>
+                                    <label>Nombre:</label>
                                     <input style={{marginLeft: '10px', marginBottom: '12px'}} className={inputStyle.formInputStyle} type="text" value={nombreNuevoItem} onChange={handleNuevoItem}/>
                                     <Button style={{marginLeft: '10px'}} color="warning" onClick={() => agregarArticulo()}>Agregar</Button>
                                 </p>
                             )}
-                            <p style={{marginBottom: '14px', color:"gold"}}>Total: {suma}$</p>
+                            <p style={{marginBottom: '14px'}}>Total: {suma}$</p>
                             {grupo.articulos.length === 0 ? (
                                 <p style={{color:"gold"}}>No se han agregado artículos aún.</p>
                             ) : (
                                 Object.entries(grupo.articulos).map(([id, articulo]) => {
                                     return (
-                                        <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
+                                        <Card key={id} style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", marginBottom: "10px"}}>
                                             <CardBody>
-                                                <p style={{color: articulo.comprado ? "#17c964" : "gold"}}>{articulo.nombre}</p>
+                                                <p style={{color: articulo.comprado ? "#17c964" : "black"}}>{articulo.nombre}</p>
                                                 {!articulo.comprado && (
                                                     <div>
                                                         <Button key={id} color="warning" onPress={() => handleOpen(id, articulo.nombre)}>Comprar artículo</Button>
@@ -244,7 +244,7 @@ export default function ShopListDisplay(props) {
                                                     </div>
                                                 )}
                                                 {articulo.comprado && (
-                                                    <p style={{color: "gold"}}>Costo: {articulo.costo}$ | Pagado por {articulo.payer === Number(getCurrentUser()) ? "mí" : getApodo(articulo.payer)}</p>
+                                                    <p>Costo: {articulo.costo}$ | Pagado por {articulo.payer === Number(getCurrentUser()) ? "mí" : getApodo(articulo.payer)}</p>
                                                 )}
                                             </CardBody>
                                         </Card>
@@ -254,9 +254,9 @@ export default function ShopListDisplay(props) {
                         </Tab>
                         <Tab key="abejas" title="Abejas">
                             {grupo.integrantes.map((id, index) =>
-                                <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
+                                <Card key={id} style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", marginBottom: "10px"}}>
                                     <CardBody>
-                                        <p style={{color: "gold"}}>{getApodo(id)}</p>
+                                        <p>{getApodo(id)}</p>
                                         <p style={{color: (saldos[id] >= 0 ? "#17c964" : 'red')}}>Saldo: ${saldos[id]}</p>
                                     </CardBody>
                                 </Card>
@@ -268,8 +268,8 @@ export default function ShopListDisplay(props) {
                                     <div key={deudor}>
                                         {Object.entries(acreedores).map(([acreedor, monto]) => {
                                             if (monto > 0) return (
-                                                <Card key={acreedor} style={{background: "black", borderWidth: "2px", borderColor: "gold", display: "flex", justifyContent: "center", marginBottom: "10px"}}>
-                                                    <CardBody style={{color: "gold"}}>
+                                                <Card key={acreedor} style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", marginBottom: "10px"}}>
+                                                    <CardBody>
                                                         {deudor === getCurrentUser() ? (
                                                             <div>
                                                                 Yo le debo ${monto} a {getApodo(acreedor)}
@@ -290,7 +290,7 @@ export default function ShopListDisplay(props) {
                 </CardBody>
                 <CardFooter>
                     <Button href='/home' as={Link} color="warning" showAnchorIcon variant="solid">
-                        Volver
+                        My Hive
                     </Button>
                 </CardFooter>
             </Card>
