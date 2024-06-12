@@ -5,6 +5,7 @@ import {hives} from "../../public/hives.astro"
 import {usuarios} from "../../public/usuarios.astro"
 import {donaciones} from "../../public/donaciones.astro"
 import {invitados} from "../../public/invitados.astro"
+import {wishes} from "../../public/wishes.astro"
 
 export default function cargarDatos(){
     if (!sessionStorage.getItem('grupos')) {
@@ -33,5 +34,8 @@ export default function cargarDatos(){
 
     if (!sessionStorage.getItem('invitados')) {
         sessionStorage.setItem('invitados', JSON.stringify(invitados));
+    }
+    if (!sessionStorage.getItem('wishes')){
+        sessionStorage.setItem('wishes', JSON.stringify(wishes));
     }
 }

@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
-import { getGrupos, getUsuarios, getCurrentUser, agregarIntegrante } from "../utils/utilities";
+import { getGrupos, getUsuarios, getCurrentUser, agregarIntegrante, getWishes } from "../utils/utilities";
 import { Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input } from '@nextui-org/react';
 import { HeartIcon } from './HeartIcon';
 import WishListItems from './WishListItems';
 import "../styles/btn.css";
 
-import { wishes } from '../../public/wishes.astro';
+//import { wishes } from '../../public/wishes.astro';
 
 export default function WishListDisplay(props) {
     let [id, setId] = useState(props.id);
     let [grupos, setGrupos] = useState(getGrupos());
     let [grupo, setGrupo] = useState(grupos[id]);
     let [usuarios, setUsuarios] = useState(getUsuarios());
+    let [wishes, setWishes] = useState(getWishes());
     const [newWishName, setNewWishName] = useState("");
     const [newWishLink, setNewWishLink] = useState("");
 
     const user = getCurrentUser();
     const isUserInGroup = grupo.integrantes.includes(parseInt(user));
-    const isAdmin = grupo.admins.includes(parseInt(user));
+    const isAdmin = grupo.admins.includes(Number(user));
 
     const addToHive = (id) => {
         agregarIntegrante(user, id);
@@ -32,17 +33,27 @@ export default function WishListDisplay(props) {
             link: newWishLink,
             comprado: false,
         };
-
+        console.log(newWish);
         // Find the next available ID for the wish
-        const newWishId = Object.keys(wishes).length;
+        var maxID = 0
+        for (const id in wishes) {
+            if (wishes.hasOwnProperty(id)) {
+                if (Number(id) > Number(maxID)) {
+                    maxID = Number(id)
+                }
+            }
+        }
 
         // Add the new wish to wishes object
-        wishes[newWishId] = newWish;
-
+        var updatedWishes = {
+            ...wishes,
+            [maxID+1]: newWish
+        }
+        setWishes(updatedWishes)
         // Update grupo.deseos with the new wish ID
         const updatedGrupo = {
             ...grupo,
-            deseos: [...(grupo.deseos || []), newWishId],
+            deseos: [...(grupo.deseos || []), maxID+1],
         };
 
         // Update the component state
@@ -53,6 +64,7 @@ export default function WishListDisplay(props) {
         setGrupos(updatedGrupos);
 
         // Save to session storage
+        sessionStorage.setItem('wishes', JSON.stringify(updatedWishes));
         sessionStorage.setItem('grupos', JSON.stringify(updatedGrupos));
 
         // Reset the form fields
@@ -85,7 +97,7 @@ export default function WishListDisplay(props) {
                         </Tab>
                         <Tab key="Wish-List" title="Wish-List">
                             <Card style={{ background: "transparent", borderWidth: "1px", borderColor: "#FFBB39" }}>
-                                <WishListItems client:only id={id} />
+                                <WishListItems client:only wishes={wishes} setWishes={setWishes} id={id} />
                             </Card>
                         </Tab>
                         {isAdmin && (
@@ -109,7 +121,7 @@ export default function WishListDisplay(props) {
                                                 value={newWishLink}
                                                 onChange={(e) => setNewWishLink(e.target.value)}
                                             />
-                                            <Button type="submit" color="warning" style={{ marginTop: "10px" }}>
+                                            <Button onClick={(e)=>{handleAddWish(e)}} type="submit" color="warning" style={{ marginTop: "10px" }}>
                                                 Add Wish
                                             </Button>
                                         </form>

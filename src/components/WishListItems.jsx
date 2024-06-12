@@ -1,16 +1,16 @@
 import React, { useState, useMemo } from "react";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Pagination, getKeyValue } from "@nextui-org/react";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Pagination, getKeyValue, Button } from "@nextui-org/react";
 import { wishes as wishesObject } from "../../public/wishes.astro";
-import { getGrupos, getUsuarios, getCurrentUser, agregarIntegrante } from "../utils/utilities";
+import { getGrupos, getUsuarios, getCurrentUser, agregarIntegrante,getWishes } from "../utils/utilities";
 
 // Convert the wishes object to an array
-const wishes = Object.keys(wishesObject).map(key => ({ id: Number(key), ...wishesObject[key] }));
 
 export default function App(props) {
   const [id, setId] = useState(props.id);
   const [grupos, setGrupos] = useState(getGrupos());
   const [grupo, setGrupo] = useState(grupos[id]);
   const [usuarios, setUsuarios] = useState(getUsuarios());
+  const [wishes,setWishes] = [props.wishes,props.setWishes]
 
   const user = getCurrentUser();
 
@@ -18,8 +18,7 @@ export default function App(props) {
   const rowsPerPage = 4;
 
   // Filter wishes based on grupo.deseos
-  const filteredWishes = wishes.filter(wish => grupo.deseos.includes(wish.id));
-
+  const filteredWishes = grupo.deseos
   const pages = Math.ceil(filteredWishes.length / rowsPerPage);
 
   const items = useMemo(() => {
@@ -29,11 +28,22 @@ export default function App(props) {
     return filteredWishes.slice(start, end);
   }, [page, filteredWishes]);
 
+
+  const handlePurchase = (item) =>{
+    wishes[item].comprado = true
+    setWishes({
+      ...wishes,
+      [item]:wishes[item]
+    })
+    sessionStorage.setItem('wishes', JSON.stringify(wishes))
+  }
+
   return (
     <div>
       <Table removeWrapper
         aria-label="Example table with client side pagination"
         bottomContent={
+          <>
           <div className="flex justify-center" style={{ marginBottom: "10px" }}>
             <Pagination
               isCompact
@@ -45,6 +55,7 @@ export default function App(props) {
               onChange={(page) => setPage(page)}
             />
           </div>
+          </>
         }
         classNames={{
           wrapper: "min-h-[222px]",
@@ -56,23 +67,26 @@ export default function App(props) {
           <TableColumn key="comprado">ESTADO</TableColumn>
         </TableHeader>
         <TableBody items={items}>
-          {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => (
-                <TableCell>
-                  {columnKey === "link" ? (
-                    <a href={item[columnKey]} target="_blank" rel="noopener noreferrer" className="link-style">
+          {items.map(item =>{
+            return(
+            <TableRow key={item}>
+              <TableCell>
+                {wishes[item].nombre}
+              </TableCell>
+              <TableCell>
+              <a href={wishes[item].link} target="_blank" rel="noopener noreferrer" className="link-style">
                       Más detalles
                     </a>
-                  ) : columnKey === "comprado" ? (
-                    item[columnKey] === false ? "Pendiente" : "Cumplido 🖤"
-                  ) : (
-                    getKeyValue(item, columnKey)
-                  )}
-                </TableCell>
-              )}
+              </TableCell>
+              <TableCell>
+                {wishes[item].comprado ===false? "Pendiente":"Cumplido 🖤"}
+                { !wishes[item].comprado && 
+                  <Button onClick={(e) => handlePurchase(item)} style={{marginLeft:"10px",width:"fit-content",color:"warning"}} color="warning">
+                    Comprado :3
+                  </Button>}
+              </TableCell>
             </TableRow>
-          )}
+          )})}
         </TableBody>
       </Table>
       <style jsx>{`

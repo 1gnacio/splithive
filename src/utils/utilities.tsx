@@ -125,3 +125,7 @@ export const agregarIntegrante = (userId, grupoId) => {
         alert('Grupo inexistente');
     }
 }
+
+export const getWishes = () =>{
+    return JSON.parse(sessionStorage.getItem('wishes'));
+}

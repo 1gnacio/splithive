@@ -35,7 +35,7 @@ export default function FormularioDivisionDeGastos(props) {
                 }
             }
 
-            const integrantes = [currentUser];
+            const integrantes = [Number(currentUser)];
             hives[currentUser].push(maxID + 1);
 
             const nuevaWishList = {
