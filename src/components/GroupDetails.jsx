@@ -265,7 +265,7 @@ export default function GroupDetails(props) {
 
         sessionStorage.setItem("grupos", JSON.stringify(grupos));
     
-        //window.location.reload();
+        window.location.reload();
     }
 
     return <div className="p-5">
