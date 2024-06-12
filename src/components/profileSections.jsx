@@ -109,6 +109,13 @@ export default function ProfileSections() {
         setOtrasAbejas(obtenerDetalleDeudas(otrosDeudores, otrosAcreedores))
     }, [])
 
+    for(const contactoDeuda in deudaContactos) {
+        var idUsuario = deudaContactos[contactoDeuda].usuario;
+        if(contactos.includes(idUsuario)) {
+            setContactos(contactos.filter(contacto => contacto != idUsuario));
+        }
+    }
+
     function obtenerDetalleDeudas(deudores, acreedores) {
         const otrosGastos = deudores.concat(...acreedores);
         const otrasDeudas = [];
@@ -265,6 +272,35 @@ export default function ProfileSections() {
                                 })}
                                 </AccordionItem>
                             </Accordion>
+                        </Card>
+                })}
+                
+                {contactos.map((userId) => {
+                        return <Card key={userId} href={`/${usuarios[userId].nombre}`} className="contact-card">
+                            {/* <p>{getApodo(userId)}
+                                    <button name="edit" onClick={"startEditingContact"}>
+                                        <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
+                                    </button>
+                            </p> */}
+                            {
+                                editingContact && editingContactId == userId ? (
+                                    <p><input
+                                        type="text"
+                                        value={getApodo(userId)}
+                                        onChange={handleContactEdit}
+                                        autoFocus/>
+                                        <button name="edit" onClick={stopEditingContact}>
+                                        <img style={{width: '15px', marginLeft: '15px'}} src="/public//images/check.png" alt="save" />
+                                        </button>
+                                    </p>
+                                ) : (
+                                    <p>{getApodo(userId)}
+                                        <button name="edit" onClick={() => startEditingContact(userId)}>
+                                        <img style={{width: '15px', marginLeft: '15px'}} src="/src//icons/edit.svg" alt="Edit" />
+                                        </button>
+                                    </p>
+                                )
+                            }
                         </Card>
                 })}
             </div>
