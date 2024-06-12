@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { getGrupos, getUsuarios } from "../utils/utilities"
+import { getGrupos, getUsuarios, getCurrentUser, getSaldos, getApodos } from "../utils/utilities"
 import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, useDisclosure} from '@nextui-org/react';
 import {
     Modal, 
@@ -16,6 +16,115 @@ export default function ShopListDisplay(props) {
     let [grupos, setGrupos] = useState(getGrupos());
     let [grupo, setGrupo] = useState(grupos[id]);
     let [usuarios, setUsuarios] = useState(getUsuarios());
+    let [apodos, setApodos] = useState(getApodos()[getCurrentUser()]);
+
+    function calcularDeudas() {
+        var metaSaldos = JSON.parse(sessionStorage.getItem("saldos"));
+
+        var deudas = {};
+
+        grupo.integrantes.forEach((integrante) => {
+            deudas[integrante] = {};
+        })
+        if (!metaSaldos) {
+            metaSaldos = {};
+        }
+        else if (id in metaSaldos) {
+            deudas = metaSaldos[id];
+        }
+
+        let itemsProcesados = JSON.parse(sessionStorage.getItem("itemsProcesados"));
+        if (!itemsProcesados) itemsProcesados = {};
+        
+        for (const id in grupo.articulos) {
+            if (id in itemsProcesados) {
+                continue;
+            };
+
+            if (grupo.articulos.hasOwnProperty(id) && grupo.articulos[id].comprado) {
+
+                itemsProcesados[id] = 1;
+                var reparto = (grupo.articulos[id].costo / grupo.integrantes.length);
+
+                grupo.integrantes.forEach((integrante) => {
+
+                    if (integrante != grupo.articulos[id].payer) { // NO soy el payer, debo dinero.
+
+                        if (grupo.articulos[id].payer in deudas[integrante]) { // Ya le debia plata?
+                            var deuda_anterior = deudas[integrante][grupo.articulos[id].payer];
+                            deudas[integrante][grupo.articulos[id].payer] = deuda_anterior + reparto;
+                        }
+                        else { // Si no le debia, seteo la deuda al valor del reparto.
+                            deudas[integrante][grupo.articulos[id].payer] = reparto;
+                        }
+
+                        // chequear si el payer me debe a mi.
+                        if (integrante in deudas[grupo.articulos[id].payer]) {
+
+                            var deuda_payer = deudas[grupo.articulos[id].payer][integrante];
+                            var deuda_integrante = deudas[integrante][grupo.articulos[id].payer];
+
+                            if (deuda_payer == deuda_integrante) {
+                                deudas[grupo.articulos[id].payer][integrante] = 0;
+                                deudas[integrante][grupo.articulos[id].payer] = 0;
+                            }
+                            else if (deuda_payer > deuda_integrante) {
+                                var diferencia = deuda_payer - deuda_integrante;
+                                deudas[grupo.articulos[id].payer][integrante] = diferencia;
+                                deudas[integrante][grupo.articulos[id].payer] = 0;
+                            }
+                            else if (deuda_integrante > deuda_payer) {
+                                var diferencia = deuda_integrante - deuda_payer;
+                                deudas[integrante][grupo.articulos[id].payer] = diferencia;
+                                deudas[grupo.articulos[id].payer][integrante] = 0;
+                            }
+                        }
+                    }
+                })
+            }
+        }
+
+        metaSaldos[id] = deudas;
+
+        for (const item in itemsProcesados) {
+            console.log(`item procesado: ${item}`);
+        }
+
+        sessionStorage.setItem("itemsProcesados", JSON.stringify(itemsProcesados));
+        sessionStorage.setItem("saldos", JSON.stringify(metaSaldos));
+        
+        return deudas;
+    }
+
+    function calcularSaldos(deudas) {
+        if (!deudas) return {};
+        var saldos = {};
+        grupo.integrantes.forEach((integrante) => {
+            saldos[integrante] = 0;
+        })
+        for (const integrante in deudas) {
+            for (const acreedor in deudas[integrante]) {
+                saldos[integrante] -= deudas[integrante][acreedor];
+                saldos[acreedor] += deudas[integrante][acreedor];
+            }
+        }
+        return saldos;
+    }
+
+    function saldar(deudor, acreedor) {
+        var metaSaldos = JSON.parse(sessionStorage.getItem("saldos"));
+        if (!metaSaldos) return;
+
+        metaSaldos[id][deudor][acreedor] = 0;
+        sessionStorage.setItem("saldos", JSON.stringify(metaSaldos));
+    }
+
+    function getApodo(usuario) {
+        if (!apodos || !apodos.hasOwnProperty(usuario) || apodos[usuario] == "") {
+            return usuarios[usuario].nombre
+        }
+        return apodos[usuario]
+    }
 
     const [nuevoItem, setNuevoItem] = useState(false);
 
@@ -53,7 +162,7 @@ export default function ShopListDisplay(props) {
     }
 
     const pagarItem = () => {
-        var itemComprado = {nombre: nombreItemComprado, comprado: true, costo: Number(costoItem)};
+        var itemComprado = {nombre: nombreItemComprado, comprado: true, costo: Number(costoItem), payer: Number(getCurrentUser())};
         grupo.articulos[itemIndex] = itemComprado;
         sessionStorage.setItem("grupos", JSON.stringify(grupos));
         window.location.reload();
@@ -71,15 +180,19 @@ export default function ShopListDisplay(props) {
         return maxID + 1;
     }
 
-    function calcularSaldos() {
+    function calcularSuma() {
         var suma = 0;
         Object.entries(grupo.articulos).map(([id, articulo]) => {
             suma += articulo.costo;
         })
-        return [suma, (suma / grupo.integrantes.length)];
+        return suma;
     }
 
-    var [suma, saldo] = calcularSaldos();
+    var suma = calcularSuma();
+
+    calcularDeudas();
+    let [metaSaldos, setMetaSaldos] = useState(getSaldos());
+    var saldos = calcularSaldos(metaSaldos[id]);
 
     return (
         <div className="p-5">
@@ -131,7 +244,7 @@ export default function ShopListDisplay(props) {
                                                     </div>
                                                 )}
                                                 {articulo.comprado && (
-                                                    <p style={{color: "gold"}}>Costo: {articulo.costo}$</p>
+                                                    <p style={{color: "gold"}}>Costo: {articulo.costo}$ | Pagado por {articulo.payer === Number(getCurrentUser()) ? "mí" : getApodo(articulo.payer)}</p>
                                                 )}
                                             </CardBody>
                                         </Card>
@@ -143,11 +256,35 @@ export default function ShopListDisplay(props) {
                             {grupo.integrantes.map((id, index) =>
                                 <Card key={id} style={{background: "black", borderWidth: "2px", borderColor: "gold", marginBottom: "10px"}}>
                                     <CardBody>
-                                        <p style={{color: "gold"}}>{usuarios[id].nombre}</p>
-                                        <p style={{color: "gold"}}>Saldo: {saldo}$</p>
+                                        <p style={{color: "gold"}}>{getApodo(id)}</p>
+                                        <p style={{color: (saldos[id] >= 0 ? "#17c964" : 'red')}}>Saldo: ${saldos[id]}</p>
                                     </CardBody>
                                 </Card>
                             )}
+                        </Tab>
+                        <Tab key="deudas" title="Deudas">
+                            {Object.entries(metaSaldos[id]).map(([deudor, acreedores]) => {
+                                return (
+                                    <div key={deudor}>
+                                        {Object.entries(acreedores).map(([acreedor, monto]) => {
+                                            if (monto > 0) return (
+                                                <Card key={acreedor} style={{background: "black", borderWidth: "2px", borderColor: "gold", display: "flex", justifyContent: "center", marginBottom: "10px"}}>
+                                                    <CardBody style={{color: "gold"}}>
+                                                        {deudor === getCurrentUser() ? (
+                                                            <div>
+                                                                Yo le debo ${monto} a {getApodo(acreedor)}
+                                                                <Button color="warning" style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => {saldar(deudor, acreedor), window.location.reload()}}>Saldar</Button>
+                                                            </div>
+                                                        ) : (
+                                                            <p>{acreedor === getCurrentUser() ? (`${getApodo(deudor)} me debe $${monto}`) : (`${getApodo(deudor)} le debe $${monto} a ${getApodo(acreedor)}`)}</p>
+                                                        )}
+                                                    </CardBody>
+                                                </Card>
+                                            )
+                                        })}
+                                    </div>
+                                )
+                            })}
                         </Tab>
                     </Tabs>
                 </CardBody>

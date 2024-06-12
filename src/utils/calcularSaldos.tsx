@@ -1,4 +1,4 @@
-import {Tabs, Tab, Card, CardBody, CardHeader, Listbox, ListboxItem, CardFooter, Button, Link} from '@nextui-org/react';
+import { getGrupos } from '../utils/utilities'
 
 export default function calcularSaldos(id_grupo, id_gastos, gastos, force = false){
 
@@ -6,6 +6,7 @@ export default function calcularSaldos(id_grupo, id_gastos, gastos, force = fals
 
     var metaSaldos = JSON.parse(sessionStorage.getItem("saldos"))
     var saldos = {};
+
     if (!metaSaldos || force) {
         metaSaldos = {}
     }
@@ -31,6 +32,25 @@ export default function calcularSaldos(id_grupo, id_gastos, gastos, force = fals
             }
             else {
                 saldos[deudor][gastos[id].payer] = gastos[id].reparto[deudor]
+            }
+
+            if (deudor in saldos[gastos[id].payer]) {
+                var deuda_payer = saldos[gastos[id].payer][deudor];
+                var deuda_integrante = saldos[deudor][gastos[id].payer];
+                if (deuda_payer == deuda_integrante) {
+                    saldos[gastos[id].payer][deudor] = 0;
+                    saldos[deudor][gastos[id].payer] = 0;
+                }
+                else if (deuda_payer > deuda_integrante) {
+                    var diferencia = deuda_payer - deuda_integrante;
+                    saldos[gastos[id].payer][deudor] = diferencia;
+                    saldos[deudor][gastos[id].payer] = 0;
+                }
+                else if (deuda_payer < deuda_integrante) {
+                    var diferencia = deuda_integrante - deuda_payer;
+                    saldos[deudor][gastos[id].payer] = diferencia;
+                    saldos[gastos[id].payer][deudor] = 0;
+                }
             }
         })
     })
