@@ -10,6 +10,7 @@ export const getContactos =() =>{
     }
     return contactos;
 }
+
 export const getApodos = () => {
     return JSON.parse(sessionStorage.getItem("contactos"))
 }

@@ -1,5 +1,5 @@
 import { Tab, Tabs, useDisclosure, Modal, ModalBody, Card, CardBody, CardFooter, ModalContent, Button, ModalHeader, ModalFooter, Input, Link, Accordion, AccordionItem } from "@nextui-org/react"
-import { calcularDeudasAtravesDeGrupos } from '../utils/logicaNegocio';
+import { calcularDeudasAtravesDeGrupos_FORBEES } from '../utils/logicaNegocio';
 import { getContactos, getApodos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
 import { useEffect, useState } from "react";
 import { contactos } from "../../public/contactos.astro";
@@ -120,12 +120,12 @@ export default function ProfileSections() {
         const otrosGastos = deudores.concat(...acreedores);
         const otrasDeudas = [];
         const otrosUsuariosUnicos = [];
-
         otrosGastos.forEach(x => {
             x.usuarios.forEach(y => {
                 if (!otrosUsuariosUnicos.some(z => z == y)) {
                     otrosUsuariosUnicos.push(y);
-                    const monto = calcularDeudasAtravesDeGrupos(grupos, currentUser, y) * -1;
+                    const monto = calcularDeudasAtravesDeGrupos_FORBEES(grupos, currentUser, y) * -1;
+
                     if (monto != 0) {
                         const nombres = Object.values(grupos)
                             .filter(w => w.gastos 
@@ -133,7 +133,6 @@ export default function ProfileSections() {
                                 && w.integrantes.some(z => z == currentUser)
                                 && w.integrantes.some(z => z == y))
                             .map(w => {return w.nombre})
-
                         otrasDeudas.push({ 
                             gastos: nombres.map(w => generarDetalle(
                                         gastos[x.id].payer == currentUser,
@@ -144,7 +143,9 @@ export default function ProfileSections() {
                             usuario: y
                         })
                     }
-                } else {
+                    
+                } 
+                else {
                     otrasDeudas.filter(z => z.usuario == y).forEach(z => {
                         const nombres = Object.values(grupos)
                             .filter(w => w.gastos 
@@ -171,6 +172,7 @@ export default function ProfileSections() {
     }
 
     function agregarBee(onClose) {
+            let contactos_bis = getApodos()[currentUser];
             var usuarios = getUsuarios();
             var user = document.getElementById('usuarioBee').value;
             var nombre =0;
@@ -190,19 +192,17 @@ export default function ProfileSections() {
             }
             var esContacto = false;
             
-            contactos.forEach((contacto) => {
-                if (contacto == nombre) {
-                    esContacto = true;
-                }
-            });
+            if (nombre in contactos_bis){
+                esContacto = true;
+            }
             if (esContacto) {
                 alert('El usuario ya es un contacto');
                 return;
             }
+            contactos_bis[nombre] = ""
             
-            contactos.push(Number(nombre))
-            var lista_contactos = getContactos();
-            lista_contactos[currentUser] = contactos
+            var lista_contactos = getApodos();
+            lista_contactos[currentUser] = contactos_bis
             sessionStorage.setItem('contactos', JSON.stringify(lista_contactos));
 
             document.getElementById('usuarioBee').innerText = "";
@@ -216,7 +216,6 @@ export default function ProfileSections() {
         }
         return apodos[usuario]
     }
-
     return <><Tabs>
     <Tab key="contactos" title="Mis Bees">
         <div className="container">
