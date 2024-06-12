@@ -2,6 +2,7 @@
 import GroupDetails from '../../components/GroupDetails';
 import RecaudacionDisplay from '../../components/recaudacion';
 import ShopListDisplay from '../../components/listaDeCompras';
+import WishListDisplay from '../../components/wishList';
 import Layout from '../../layouts/Layout.astro';
 import '../../styles/modal.css'
 import '../../styles/btn.css'
@@ -17,5 +18,6 @@ const { id, tipo } = Astro.params;
         {tipo === "gastos" && (<GroupDetails client:only id={id}></GroupDetails>)}
         {tipo === "recaudación" && (<RecaudacionDisplay client:only id={id}></RecaudacionDisplay>)}
         {tipo === "compras" && (<ShopListDisplay client:only id={id}></ShopListDisplay>)}
+        {tipo === "WishList" && (<WishListDisplay client:only id={id}></WishListDisplay>)}
     </main>
 </Layout>

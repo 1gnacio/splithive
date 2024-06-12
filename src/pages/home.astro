@@ -63,7 +63,6 @@ import NightBtn from '../components/nightBtn';
             var currentDate = new Date();
             var currentUser = getCurrentUser();
             if (!currentUser){
-                console.log("asdasd")
                 navigate("/")
             } 
             
@@ -116,15 +115,11 @@ import NightBtn from '../components/nightBtn';
             });
 
             actualizarListaGrupos();
-
         </script>
     </main>
 </Layout>
 
 <style is:global>
-
-
-
 	.instructions {
 		margin-bottom: 2rem;
 		border: 1px solid rgba(var(--accent-light), 25%);

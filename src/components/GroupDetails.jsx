@@ -1,5 +1,5 @@
-import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input, Badge} from '@nextui-org/react';
-import calcularDeudas from '../utils/logicaNegocio';
+import {Tabs, Tab, Card, CardBody, CardHeader, CardFooter, Button, Link, Input, Badge, useDisclosure, Spacer, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from '@nextui-org/react';
+import calcularDeudas, { relacionarUsuarioInvitado } from '../utils/logicaNegocio';
 import calcularSaldos from '../utils/calcularSaldos';
 import MapListbox from './mapListBox';
 import React, { useEffect } from 'react';
@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { getUsuarios, getGrupos, getGastos, getSaldos, getApodos, getInvitados, getCurrentUser } from "../utils/utilities"
 import inputStyle from "../styles/form.module.css"
 
+import { navigate } from 'astro/virtual-modules/transitions-router.js';
 
 
 export default function GroupDetails(props) {
@@ -20,6 +21,7 @@ export default function GroupDetails(props) {
     let [newName, setNewName] = useState("");
     let [nuevaDeuda, setNuevaDeuda] = useState("");
     let [gastos,setGastos] = useState(getGastos());
+    const [porcentajes, setPorcentajes] = useState({});
     const [editingGroup, setEditingGroup] = useState(false);
     const [newGroupName, setNewGroupName] = useState(grupo.nombre);
     const [editingMember, setEditingMember] = useState(null);
@@ -55,6 +57,9 @@ export default function GroupDetails(props) {
     calcularSaldos(id, grupo.gastos, gastos)
     let [metaSaldos, setMetaSaldos] = useState(getSaldos())
     let [deudas, setDeudas] = useState(calcularDeudas(metaSaldos[id], grupo.integrantes))
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    const [invitar, setInvitar] = useState();
+    const [invitarUsuario, setInvitarUsuario] = useState();
     
     const handleGroupNameEdit = (event) => {
         setNewGroupName(event.target.value);
@@ -87,27 +92,36 @@ export default function GroupDetails(props) {
         document.getElementById("errorGasto").style.display = "none";
         document.getElementById("crearGastoBtn").disabled = false;
         let deudores_ = []
-        if (deudores.includes(id)) {
-            deudores_ = deudores.filter(x => x != id)
-        } else {
-            deudores_ = [...deudores, id]
-        }
+
+        Array.from(document.getElementsByClassName('deudorCheckbox')).forEach(function(checkbox) {
+            if (checkbox.checked) {
+                deudores_ = [...deudores_, Number(checkbox.id.replace('deudor', ''))]
+            }
+        })
         setDeudores(deudores_)
+
+        let porcentajes_ = {...porcentajes};
 
         grupo.integrantes.forEach(function(integrante) {
             document.getElementById('porcentaje' + integrante).value = "";
+            porcentajes_[integrante] = "";
             document.getElementById('porcentaje' + integrante).placeholder = 0;
             document.getElementById('porcentaje' + integrante).disabled = true;
         })
+        setPorcentajes(porcentajes_);
         deudores_.forEach(function(deudor) {
             document.getElementById('porcentaje' + deudor).disabled = false;
             document.getElementById('porcentaje' + deudor).placeholder = Math.round((100 / deudores_.length) * 100) / 100;
         })
     }
 
-    const handlePorcentaje = (e, id) => {
+    const handlePorcentaje = (id) => {
         document.getElementById("errorGasto").style.display = "none";
         document.getElementById("crearGastoBtn").disabled = false;
+
+        let porcentajes_ = {...porcentajes};
+        porcentajes_[id] = document.getElementById('porcentaje' + id).value;
+        setPorcentajes(porcentajes_);
 
         let total = 0;
         let sinP = [];
@@ -211,9 +225,9 @@ export default function GroupDetails(props) {
 
         var fechaString = dia + '/' + mes + '/' + anio;
 
-        var porcentajes = {};
+        var porcentajes_ = {};
         grupo.integrantes.forEach(function(integrante) {
-            porcentajes[integrante] = Number(document.getElementById('porcentaje' + integrante).value) == "" ? Number(document.getElementById('porcentaje' + integrante).placeholder) : Number(document.getElementById('porcentaje' + integrante).value);
+            porcentajes_[integrante] = Number(document.getElementById('porcentaje' + integrante).value) == "" ? Number(document.getElementById('porcentaje' + integrante).placeholder) : Number(document.getElementById('porcentaje' + integrante).value);
         });
 
         var repartos = {};
@@ -224,7 +238,7 @@ export default function GroupDetails(props) {
 
         grupo.integrantes.forEach(integrante => {
             if (deudores.includes(integrante)) {
-                repartos[integrante] = Math.round((montoGasto * porcentajes[integrante] / 100) * 100) / 100;
+                repartos[integrante] = Math.round((montoGasto * porcentajes_[integrante] / 100) * 100) / 100;
             } else {
                 repartos[integrante] = 0;
             }
@@ -306,7 +320,7 @@ export default function GroupDetails(props) {
                                                         <ul>
                                                             <li key={id} style={{ display: "flex", alignItems: "center" }}>
                                                                 <label content={getApodo(id)} style={{color: 'black', flexGrow: 1}}>
-                                                                    <input type="checkbox" id={"deudor" + id} onClick={() => handleNuevoDeudor(id)}></input>
+                                                                    <input type="checkbox" id={"deudor" + id} className='deudorCheckbox' onClick={() => handleNuevoDeudor(id)}></input>
                                                                     {getApodo(id)}
                                                                 </label>
                                                                 <p style={{marginRight: "400px"}}>
@@ -316,7 +330,8 @@ export default function GroupDetails(props) {
                                                                     disabled 
                                                                     id={"porcentaje" + id} 
                                                                     placeholder="0" 
-                                                                    onChange={handlePorcentaje}
+                                                                    onChange={() => handlePorcentaje(id)}
+                                                                    value={porcentajes[id]}
                                                                     style={{ width: "100px", textAlign: "right", marginRight: "0px",
                                                                     MozAppearance: "textfield",
                                                                     WebkitAppearance: "none",
@@ -353,7 +368,7 @@ export default function GroupDetails(props) {
                                                     </>
                                                 )}
                                             </div>
-                                            <p style={{color: deudas[nombre] < 0 ? 'red' : 'green'}}>Saldo: ${deuda}</p>
+                                            <p style={{color: deuda < 0 ? 'red' : 'green'}}>Saldo: ${deuda}</p>
                                         </CardBody>
                                     </Card>
                                 ))}
@@ -369,6 +384,12 @@ export default function GroupDetails(props) {
                                                 <span style={{color: "black"}}>{invitado.nombre}</span>
                                             </Badge>
                                             <p style={{color: deudaInvitados[x] < 0 ? 'red' : 'green'}}>Saldo: ${deudaInvitados[x] ?? 0}</p>
+                                            <Button color='warning' onClick={() => {
+                                                setInvitar(x);
+                                                onOpen();
+                                            }} content="Asociar usuario" className='p-1 mt-2'>
+                                                Asociar usuario
+                                            </Button>
                                         </CardBody>
                                     </Card>
                                 })}
@@ -415,7 +436,7 @@ export default function GroupDetails(props) {
                                                 <p style={{color: 'red'}}>Deuda: ${gastos[gastoId].monto / ((Object.keys(gastos[gastoId].reparto).length - 1) + (Object.keys(gastos[gastoId].invitados ?? {}).length))} c/u</p>)}
                                             
                                             {Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && <p style={{color: "black"}}>Deudores: {gastos[gastoId].deudores.length > 0 && imprimirNombres(gastoId)}</p>}
-                                            {gastos[gastoId].invitados && Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && <p style={{color: "black"}}>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
+                                            {gastos[gastoId].invitados && gastos[gastoId].invitados.length > 0 && Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) && <p style={{color: "black"}}>Invitados deudores: {imprimirInvitadosDeudores(gastoId)}</p>}
                                         
                                             {Object.values(gastos[gastoId].reparto).every(value => value == Object.values(gastos[gastoId].reparto)[0]) || <p>Deuda: {Object.entries(gastos[gastoId].reparto).map(([key, value]) => {
                                                 if (value != 0) {
@@ -448,5 +469,52 @@ export default function GroupDetails(props) {
                         </Button>
                     </CardFooter>
                 </Card>
+                <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Invita a una abeja!</ModalHeader>
+              <ModalBody>
+                <p> 
+                  Busca a una abeja que ya usa SplitHive:
+                </p>
+                <div className="form-group">
+                    <Input endContent={<Button onClick={() => {
+                        const buscado = Object.values(usuarios).find(x => x.usuario == invitarUsuario);
+                        if (!buscado) {
+                            alert("El usuario no existe.")
+                            return;
+                        }
+                        const elemento = Object.keys(usuarios).find(key => usuarios[key] === buscado)
+                        if (grupo.integrantes.includes(Number(elemento))) {
+                            alert("El usuario ya es parte del grupo")
+                            return;
+                        }
+                        relacionarUsuarioInvitado(Number(elemento), String(id), String(invitar))
+                        location.reload();
+                        onClose()
+                    }} color='warning'>Agregar</Button>} value={invitarUsuario} onValueChange={setInvitarUsuario} label="Nombre de usuario" color='warning' />
+                </div>
+                <Spacer y={4}></Spacer>
+                O clickea el boton de abajo para copiar un link de invitacion al grupo si todavia no usa SplitHive.
+                <Button color='warning' onClick={() => {
+                    // Copy the text inside the text field
+                    navigator.clipboard.writeText(`localhost:4321/registro?grupo=${id}&invitado=${invitar}`);
+
+                    // Alert the copied text
+                    alert("Copiado!");
+                }}>
+                    Copiar invitacion
+                </Button>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Cerrar
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
             </div>
 }
