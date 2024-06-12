@@ -465,7 +465,7 @@ export default function GroupDetails(props) {
                             </Button>
                         )}
                         <Button href='/home' as={Link} className="submitBtn" showAnchorIcon variant="solid">
-                            Volver
+                            My Hive
                         </Button>
                     </CardFooter>
                 </Card>
