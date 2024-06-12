@@ -86,10 +86,6 @@ export default function ShopListDisplay(props) {
 
         metaSaldos[id] = deudas;
 
-        for (const item in itemsProcesados) {
-            console.log(`item procesado: ${item}`);
-        }
-
         sessionStorage.setItem("itemsProcesados", JSON.stringify(itemsProcesados));
         sessionStorage.setItem("saldos", JSON.stringify(metaSaldos));
         
