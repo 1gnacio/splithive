@@ -90,6 +90,17 @@ export default function GroupDetails(props) {
         setNewMemberName(null);
     };
 
+    let [currentPayer, setCurrentPayer] = useState(1);
+
+    const handlePayer = (event) => {
+        document.getElementById("deudor" + currentPayer).checked = false;
+        document.getElementById("deudor" + currentPayer).disabled = false;
+        setCurrentPayer(event.target.value);
+        document.getElementById("deudor" + event.target.value).checked = true;
+        document.getElementById("deudor" + event.target.value).disabled = true;
+        handleNuevoDeudor();
+    }
+
     const handleNuevoDeudor = () => {
         document.getElementById("errorGasto").style.display = "none";
         document.getElementById("crearGastoBtn").disabled = false;
@@ -253,8 +264,6 @@ export default function GroupDetails(props) {
 
     return <div className="p-5">
 
-                
-
                 <Card className='p-4' style={{background: "#FEFCE8"}}>
 
                     <CardHeader className='header'>
@@ -294,7 +303,7 @@ export default function GroupDetails(props) {
                                                 <label style={{color: 'black'}}>Monto:</label><br/>
                                                 <input className={inputStyle.formInputStyle} type="number" value={montoGasto} onChange={handleMonto}/><br/>
                                                 <label style={{color: 'black'}} htmlFor="dropdown">Quién pagó:</label><br/>
-                                                <select id="quienPago">
+                                                <select id="quienPago" onChange={(e) => handlePayer(e)}>
                                                 {grupo.integrantes.map((id, index) => {
                                                     return <option value={id}>{getApodo(id)}</option>
                                                 })}
@@ -306,14 +315,14 @@ export default function GroupDetails(props) {
                                                         <ul>
                                                             <li key={id} style={{ display: "flex", alignItems: "center" }}>
                                                                 <label content={getApodo(id)} style={{color: 'black', flexGrow: 1}}>
-                                                                    <input type="checkbox" id={"deudor" + id} className='deudorCheckbox' onClick={() => handleNuevoDeudor(id)}></input>
+                                                                    <input type="checkbox" id={"deudor" + id} className='deudorCheckbox' onClick={() => handleNuevoDeudor()}></input>
                                                                     {getApodo(id)}
                                                                 </label>
                                                                 <p style={{marginRight: "400px"}}>
                                                                     <Input type="number" 
                                                                     endContent={<p style={{fontSize: '14px'}}>%</p>} 
                                                                     className='max-w-[220px]'
-                                                                    disabled 
+                                                                    disabled
                                                                     id={"porcentaje" + id} 
                                                                     placeholder="0" 
                                                                     onChange={() => handlePorcentaje(id)}
