@@ -3,6 +3,8 @@ import { calcularDeudasAtravesDeGrupos_FORBEES } from '../utils/logicaNegocio';
 import { getContactos, getApodos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
 import { useEffect, useState } from "react";
 import { contactos } from "../../public/contactos.astro";
+import { saldar } from '../utils/calcularSaldos';
+
 
 export default function ProfileSections() {
     const [currentUser, setCurrentUser] = useState(getCurrentUser());
@@ -24,6 +26,14 @@ export default function ProfileSections() {
 
     const stopEditingContact = () => {
         setEditingContact(false);
+    };
+
+    const saldarDeudaTotal = (currentUser, acreedor, grupos) => {
+        grupos.forEach(grupo_ => {
+            if (grupo_.integrantes.includes(parseInt(currentUser)) && grupo_.integrantes.includes(acreedor)) {
+                saldar(grupo_.id, currentUser, acreedor);
+            }
+        });
     };
 
     const handleContactEdit = (e) => {
@@ -232,8 +242,10 @@ export default function ProfileSections() {
                 {deudaContactos && deudaContactos.map((x, index) => {
                         const color = x.monto < 0 ? 'red' : 'green';
                         let deudaText = <></>;
+                        let leDebo = false;
                         if (x.monto < 0){
                             deudaText = <>Debo en total: <span style={{color: color}}>${(x.monto * -1).toFixed(2)}</span></>
+                            leDebo = true;
                         }
                         else if (x.monto > 0){
                             deudaText = <>Me debe en total: <span style={{color: color}}>${x.monto.toFixed(2)}</span></>
@@ -264,6 +276,24 @@ export default function ProfileSections() {
                                 )
                             }
                             <p>{deudaText}</p>
+
+                            {leDebo && (
+                                <div>
+                                    <Button 
+                                        color="warning" 
+                                        variant="solid" 
+                                        onClick={() => {
+                                            saldarDeudaTotal(currentUser, usuarios[x.usuario].id, grupos);
+                                            window.location.reload();
+                                        }}
+                                    >
+                                        Saldar deuda total
+                                    </Button>
+                                </div>
+                            )}
+
+                            
+
                             <Accordion>
                                 <AccordionItem key="1" aria-label="Detalle" title="Detalle">
                                 {x.gastos.map((x, index) => {
@@ -271,6 +301,7 @@ export default function ProfileSections() {
                                 })}
                                 </AccordionItem>
                             </Accordion>
+
                         </Card>
                 })}
                 
@@ -324,10 +355,10 @@ export default function ProfileSections() {
                     <Input type="text" label="Usuario" id="usuarioBee" minLength={2} required></Input>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onPress={() => agregarBee(onClose)}>
+                    <Button color="warning" onPress={() => agregarBee(onClose)}>
                         Agregar al panal
                     </Button>
-                    <Button color="danger" variant="light" onPress={onClose}>
+                    <Button color="default" variant="light" onPress={onClose}>
                         Cancelar
                     </Button>
                 </ModalFooter>
