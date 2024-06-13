@@ -153,17 +153,17 @@ export default function ShopListDisplay(props) {
 
     const [itemIndex, setItemIndex] = useState(0);
 
-    const [nombreItemComprado, setNombreItemComprado] = useState('');
-
-    const handleOpen = (index, nombre) => {
+    const handleOpen = (index) => {
         setItemIndex(index);
-        setNombreItemComprado(nombre);
         onOpen();
     }
 
     const pagarItem = () => {
-        var itemComprado = {nombre: nombreItemComprado, comprado: true, costo: Number(costoItem), payer: Number(getCurrentUser())};
-        grupo.articulos[itemIndex] = itemComprado;
+        var item = grupo.articulos[itemIndex];
+        item.comprado = true;
+        item.costo = Number(costoItem);
+        item.payer = Number(getCurrentUser());
+        grupo.articulos[itemIndex] = item;
         sessionStorage.setItem("grupos", JSON.stringify(grupos));
         window.location.reload();
     }
@@ -227,7 +227,7 @@ export default function ShopListDisplay(props) {
                                                 <p style={{color: articulo.comprado ? "#17c964" : "black"}}>{articulo.nombre}</p>
                                                 {!articulo.comprado && (
                                                     <div>
-                                                        <Button key={id} color="warning" onPress={() => handleOpen(id, articulo.nombre)}>Comprar artículo</Button>
+                                                        <Button key={id} color="warning" onPress={() => handleOpen(id)}>Comprar artículo</Button>
                                                         <Modal isOpen={isOpen} onClose={onClose}>
                                                             <ModalContent>
                                                                 {(onClose) => (
