@@ -31,14 +31,17 @@ export function MapListbox(props) {
                                         <li key={acreedor}>
                                         <Card style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", display: "flex", justifyContent: "center", marginBottom: "10px"}}>
                                             <CardBody style={{color: "black"}}>
-                                                {deudor === getCurrentUser() ? (
-                                                    <div>
-                                                        <p>Yo le debo ${monto} a {getApodo(acreedor)}</p>
-                                                        <Button className="submitBtn" style={{display: "flex", alignContent: "center", width: "auto", marginTop: "5px"}} name="Saldar" onClick={() => {saldar(props.id_grupo, deudor, acreedor), window.location.reload()}}>Saldar</Button>
-                                                    </div>
-                                                ) : (
-                                                    <p>{acreedor === getCurrentUser() ? (`${getApodo(deudor)} me debe $${monto}`) : (`${getApodo(deudor)} le debe $${monto} a ${getApodo(acreedor)}`)}</p>
-                                                )}
+                                            {deudor === getCurrentUser() ? (
+                                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                                    <p style={{ margin: 0 }}>Yo le debo ${monto} a {getApodo(acreedor)}</p>
+                                                    <Button className="submitBtn" style={{ marginLeft: "10px" }} name="Saldar" onClick={() => { saldar(props.id_grupo, deudor, acreedor); window.location.reload(); }}>
+                                                        Saldar
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <p>{acreedor === getCurrentUser() ? (`${getApodo(deudor)} me debe $${monto}`) : (`${getApodo(deudor)} le debe $${monto} a ${getApodo(acreedor)}`)}</p>
+                                            )}
+
                                             </CardBody>
                                         </Card>
                                         </li>
