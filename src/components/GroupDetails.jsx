@@ -292,57 +292,7 @@ export default function GroupDetails(props) {
                     <CardBody>
                         <Tabs aria-label="Options" variant="underlined" size="lg">
                             <Tab key="integrantes" title="Integrantes">
-                                <Button className="submitBtn" style={{marginBottom: '12px'}} onClick={() => switchFormGasto()}>Nuevo gasto</Button>
-                                {formGasto && (
-                                    <Card className="crearGasto" style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "gold", marginBottom: "10px"}}>
-                                        <CardHeader style={{color: 'black'}}>Ingrese los datos!</CardHeader>
-                                        <CardBody>
-                                            <form id="formGasto">
-                                                <label style={{color: 'black'}}>Nombre del gasto:</label><br/>
-                                                <input className={inputStyle.formInputStyle} type="text" value={nombreGasto} onChange={handleNombre}/><br/>
-                                                <label style={{color: 'black'}}>Monto:</label><br/>
-                                                <input className={inputStyle.formInputStyle} type="number" value={montoGasto} onChange={handleMonto}/><br/>
-                                                <label style={{color: 'black'}} htmlFor="dropdown">Quién pagó:</label><br/>
-                                                <select id="quienPago" onChange={(e) => handlePayer(e)}>
-                                                    <option value="none" selected disabled hidden>Seleccionar quién pagó</option>
-                                                    {grupo.integrantes.map((id, index) => {
-                                                        return <option value={id}>{getApodo(id)}</option>
-                                                    })}
-                                                </select>
-                                                <br/>
-                                                <label htmlFor="dropdown">Quienes participaron:</label>
-                                                {grupo.integrantes.map((id, index) => {
-                                                    return (
-                                                        <ul>
-                                                            <li key={id} style={{ display: "flex", alignItems: "center" }}>
-                                                                <label content={getApodo(id)} style={{color: 'black', flexGrow: 1}}>
-                                                                    <input type="checkbox" id={"deudor" + id} className='deudorCheckbox' onClick={() => handleNuevoDeudor()}></input>
-                                                                    {getApodo(id)}
-                                                                </label>
-                                                                <p style={{marginRight: "400px"}}>
-                                                                    <Input type="number" 
-                                                                    endContent={<p style={{fontSize: '14px'}}>%</p>} 
-                                                                    className='max-w-[220px]'
-                                                                    disabled
-                                                                    id={"porcentaje" + id} 
-                                                                    placeholder="0" 
-                                                                    onChange={() => handlePorcentaje(id)}
-                                                                    value={porcentajes[id]}
-                                                                    style={{ width: "100px", textAlign: "right", marginRight: "0px",
-                                                                    MozAppearance: "textfield",
-                                                                    WebkitAppearance: "none",
-                                                                    appearance: "textfield"}}>
-                                                                        </Input>
-                                                                </p>
-                                                            </li>
-                                                        </ul>
-                                                    )
-                                                })}
-                                                <Button id="crearGastoBtn" onClick={crearGasto} className="submitBtn" type="submit">Crear Gasto</Button> <p id="errorGasto"></p>
-                                            </form>
-                                        </CardBody>
-                                    </Card>
-                                )}
+        
                                 {Object.entries(deudas).map(([nombre, deuda]) =>
                                 (
                                     <Card key={nombre} className='w-50 gap gap-2' style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", marginBottom: "10px"}}>
@@ -447,6 +397,74 @@ export default function GroupDetails(props) {
                             </Tab>
                             <Tab key="saldos" title="Saldos">
                                 <MapListbox id_grupo = {id}></MapListbox>
+                            </Tab>
+
+                            <Tab key="Agregar gasto" title="Agregar gasto">
+                                    <Card className="crearGasto" style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "gold", marginBottom: "10px"}}>
+                                        <CardHeader style={{color: 'black'}}>Ingrese los datos!</CardHeader>
+                                        <CardBody>
+                                            <form id="formGasto">
+
+                                                <label style={{color: 'black'}}>Nombre del gasto:</label><br/>
+
+                                                <input 
+                                                className={inputStyle.formInputStyle} 
+                                                type="text" 
+                                                value={nombreGasto} 
+                                                onChange={handleNombre}/><br/>
+
+                                                <label style={{color: 'black'}}>Monto:</label><br/>
+
+                                                <input 
+                                                className={inputStyle.formInputStyle} 
+                                                type="number" 
+                                                value={montoGasto} 
+                                                onChange={handleMonto}/><br/>
+
+                                                <label style={{color: 'black'}} htmlFor="dropdown">Quién pagó:</label><br/>
+
+                                                <select id="quienPago" onChange={(e) => handlePayer(e)}>
+                                                    <option value="none" selected disabled hidden>Seleccionar quién pagó</option>
+                                                    {grupo.integrantes.map((id, index) => {
+                                                        return <option value={id}>{getApodo(id)}</option>
+                                                    })}
+                                                </select>
+
+                                                <br/>
+
+                                                <label htmlFor="dropdown">Quienes participaron:</label>
+
+                                                {grupo.integrantes.map((id, index) => {
+                                                    return (
+                                                        <ul>
+                                                            <li key={id} style={{ display: "flex", alignItems: "center" }}>
+                                                                <label content={getApodo(id)} style={{color: 'black', flexGrow: 1}}>
+                                                                    <input type="checkbox" id={"deudor" + id} className='deudorCheckbox' onClick={() => handleNuevoDeudor()}></input>
+                                                                    {getApodo(id)}
+                                                                </label>
+                                                                <p style={{marginRight: "400px"}}>
+                                                                    <Input type="number" 
+                                                                    endContent={<p style={{fontSize: '14px'}}>%</p>} 
+                                                                    className='max-w-[220px]'
+                                                                    disabled
+                                                                    id={"porcentaje" + id} 
+                                                                    placeholder="0" 
+                                                                    onChange={() => handlePorcentaje(id)}
+                                                                    value={porcentajes[id]}
+                                                                    style={{ width: "100px", textAlign: "right", marginRight: "0px",
+                                                                    MozAppearance: "textfield",
+                                                                    WebkitAppearance: "none",
+                                                                    appearance: "textfield"}}>
+                                                                        </Input>
+                                                                </p>
+                                                            </li>
+                                                        </ul>
+                                                    )
+                                                })}
+                                                <Button id="crearGastoBtn" onClick={crearGasto} className="submitBtn" type="submit">Crear Gasto</Button> <p id="errorGasto"></p>
+                                            </form>
+                                        </CardBody>
+                                    </Card>
                             </Tab>
                         </Tabs>
                     </CardBody>
