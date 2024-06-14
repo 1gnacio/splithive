@@ -208,7 +208,47 @@ export default function ShopListDisplay(props) {
                 <CardBody>
                     <Tabs aria-label="Options" variant="underlined" radius="full">
                         <Tab key="articulos" title="Artículos">
-                            <Button color="warning" style={{marginBottom: '12px'}} onClick={() => switchNuevoItem()}>Nuevo artículo</Button>
+                            
+                            {grupo.articulos.length === 0 ? (
+                                <p style={{color:"gold"}}>No se han agregado artículos aún.</p>
+                            ) : (
+                                Object.entries(grupo.articulos).map(([id, articulo]) => {
+                                    return (
+                                        <Card key={id} style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", marginBottom: "10px", display: "flex", justifyContent: "center"}}>
+                                            <CardBody>
+                                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                                        <p style={{color: articulo.comprado ? "#17c964" : "black"}}>{articulo.nombre}</p>
+                                                        {!articulo.comprado && (
+                                                            <div>
+                                                                <Button style={{ marginLeft: "10px" }} key={id} color="warning" variant="flat" onPress={() => handleOpen(id, articulo.nombre)}>Comprar artículo</Button>
+                                                                <Modal isOpen={isOpen} onClose={onClose}>
+                                                                    <ModalContent>
+                                                                        {(onClose) => (
+                                                                            <>
+                                                                                <ModalHeader>Ingrese el costo:</ModalHeader>
+                                                                                <ModalBody>
+                                                                                    <input style={{marginLeft: '10px', marginBottom: '12px'}} className={inputStyle.formInputStyle} type="number" value={costoItem} onChange={handleCostoItem}/>
+                                                                                </ModalBody>
+                                                                                <ModalFooter>
+                                                                                    <Button color="danger" variant="light" onPress={onClose}>Cerrar</Button>
+                                                                                    <Button color="warning" onClick={() => pagarItem()} onPress={onClose}>Pagar</Button>
+                                                                                </ModalFooter>
+                                                                            </>
+                                                                        )}
+                                                                    </ModalContent>
+                                                                </Modal>
+                                                            </div>
+                                                        )}
+                                                        {articulo.comprado && (
+                                                            <p>Costo: ${articulo.costo} | Pagado por {articulo.payer === Number(getCurrentUser()) ? "mí" : getApodo(articulo.payer)}</p>
+                                                        )}
+                                                    </div>
+                                            </CardBody>
+                                        </Card>
+                                    )
+                                })
+                            )}
+                            <Button color="warning" style={{marginBottom: '12px', width: "100%"}} onClick={() => switchNuevoItem()}>Nuevo artículo</Button>
                             {nuevoItem && (
                                 <p>
                                     <label>Nombre:</label>
@@ -216,44 +256,8 @@ export default function ShopListDisplay(props) {
                                     <Button style={{marginLeft: '10px'}} color="warning" onClick={() => agregarArticulo()}>Agregar</Button>
                                 </p>
                             )}
-                            <p style={{marginBottom: '14px'}}>Total: {suma}$</p>
-                            {grupo.articulos.length === 0 ? (
-                                <p style={{color:"gold"}}>No se han agregado artículos aún.</p>
-                            ) : (
-                                Object.entries(grupo.articulos).map(([id, articulo]) => {
-                                    return (
-                                        <Card key={id} style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", marginBottom: "10px"}}>
-                                            <CardBody>
-                                                <p style={{color: articulo.comprado ? "#17c964" : "black"}}>{articulo.nombre}</p>
-                                                {!articulo.comprado && (
-                                                    <div>
-                                                        <Button key={id} color="warning" onPress={() => handleOpen(id, articulo.nombre)}>Comprar artículo</Button>
-                                                        <Modal isOpen={isOpen} onClose={onClose}>
-                                                            <ModalContent>
-                                                                {(onClose) => (
-                                                                    <>
-                                                                        <ModalHeader>Ingrese el costo:</ModalHeader>
-                                                                        <ModalBody>
-                                                                            <input style={{marginLeft: '10px', marginBottom: '12px'}} className={inputStyle.formInputStyle} type="number" value={costoItem} onChange={handleCostoItem}/>
-                                                                        </ModalBody>
-                                                                        <ModalFooter>
-                                                                            <Button color="danger" variant="light" onPress={onClose}>Cerrar</Button>
-                                                                            <Button color="warning" onClick={() => pagarItem()} onPress={onClose}>Pagar</Button>
-                                                                        </ModalFooter>
-                                                                    </>
-                                                                )}
-                                                            </ModalContent>
-                                                        </Modal>
-                                                    </div>
-                                                )}
-                                                {articulo.comprado && (
-                                                    <p>Costo: {articulo.costo}$ | Pagado por {articulo.payer === Number(getCurrentUser()) ? "mí" : getApodo(articulo.payer)}</p>
-                                                )}
-                                            </CardBody>
-                                        </Card>
-                                    )
-                                })
-                            )}
+                            <p style={{marginTop: '20px', marginLeft: "8px"}}>Total: ${suma}</p>
+                            
                         </Tab>
                         <Tab key="abejas" title="Abejas">
                             {grupo.integrantes.map((id, index) =>
@@ -272,11 +276,11 @@ export default function ShopListDisplay(props) {
                                         {Object.entries(acreedores).map(([acreedor, monto]) => {
                                             if (monto > 0) return (
                                                 <Card key={acreedor} style={{background: "#FEFCE8", borderWidth: "1px", borderColor: "#FFBB39", marginBottom: "10px"}}>
-                                                    <CardBody>
+                                                    <CardBody >
                                                         {deudor === getCurrentUser() ? (
-                                                            <div>
+                                                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                                                 Yo le debo ${monto} a {getApodo(acreedor)}
-                                                                <Button color="warning" style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => {saldar(deudor, acreedor), window.location.reload()}}>Saldar</Button>
+                                                                <Button color="warning" variant="flat" style={{display: "flex", alignContent: "center", width: "auto"}} name="Saldar" onClick={() => {saldar(deudor, acreedor), window.location.reload()}}>Saldar</Button>
                                                             </div>
                                                         ) : (
                                                             <p>{acreedor === getCurrentUser() ? (`${getApodo(deudor)} me debe $${monto}`) : (`${getApodo(deudor)} le debe $${monto} a ${getApodo(acreedor)}`)}</p>

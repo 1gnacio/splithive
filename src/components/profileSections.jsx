@@ -2,8 +2,6 @@ import { Tab, Tabs, useDisclosure, Modal, ModalBody, Card, CardBody, CardFooter,
 import { calcularDeudasAtravesDeGrupos_FORBEES } from '../utils/logicaNegocio';
 import { getContactos, getApodos, getUsuarios, getGrupos, getGastos, getHives, getCurrentUser } from "../utils/utilities"
 import { useEffect, useState } from "react";
-import { contactos } from "../../public/contactos.astro";
-import { saldar } from '../utils/calcularSaldos';
 
 
 export default function ProfileSections() {
@@ -28,12 +26,41 @@ export default function ProfileSections() {
         setEditingContact(false);
     };
 
-    const saldarDeudaTotal = (currentUser, acreedor, grupos) => {
-        grupos.forEach(grupo_ => {
-            if (grupo_.integrantes.includes(parseInt(currentUser)) && grupo_.integrantes.includes(acreedor)) {
-                saldar(grupo_.id, currentUser, acreedor);
+    var maxID = 0;
+            for (const id in grupos) {
+                if (grupos.hasOwnProperty(id)){
+                    if (Number(id) > Number(maxID)){
+                        maxID = Number(id);
+                    }
+                }
             }
-        });
+
+    const saldarDeudaTotal = (id_currentUser, id_acreedor) => {
+        var metaSaldos = JSON.parse(sessionStorage.getItem("saldos"));
+        if (!metaSaldos) return;
+        
+        for (const id_ in grupos) {
+            if (grupos.hasOwnProperty(id_)){
+                if (grupos[id_].integrantes.includes(id_currentUser) && grupos[id_].integrantes.includes(id_acreedor)){
+                    // saldar(grupos[id], id_currentUser, id_acreedor);
+                    metaSaldos[id_][deudor][acreedor] = 0;
+                    sessionStorage.setItem("saldos", JSON.stringify(metaSaldos));
+                }
+            }
+        }
+        // function saldar(deudor, acreedor) {
+        //     var metaSaldos = JSON.parse(sessionStorage.getItem("saldos"));
+        //     if (!metaSaldos) return;
+    
+        //     metaSaldos[id][deudor][acreedor] = 0;
+        //     sessionStorage.setItem("saldos", JSON.stringify(metaSaldos));
+        // }
+        // }
+        // grupos.forEach(grupo_ => {
+        //     if (grupo_.integrantes.includes(id_currentUser) && grupo_.integrantes.includes(id_acreedor)) {
+        //         saldar(grupo_, id_currentUser, id_acreedor);
+        //     }
+        // });
     };
 
     const handleContactEdit = (e) => {
@@ -283,7 +310,7 @@ export default function ProfileSections() {
                                         color="warning" 
                                         variant="solid" 
                                         onClick={() => {
-                                            saldarDeudaTotal(currentUser, usuarios[x.usuario].id, grupos);
+                                            saldarDeudaTotal(currentUser, x.usuario);
                                             window.location.reload();
                                         }}
                                     >

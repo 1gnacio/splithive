@@ -330,7 +330,7 @@ export default function GroupDetails(props) {
                                                 <span style={{color: "black"}}>{invitado.nombre}</span>
                                             </Badge>
                                             <p style={{color: deudaInvitados[x] < 0 ? 'red' : 'green'}}>Saldo: ${deudaInvitados[x] ?? 0}</p>
-                                            <Button color='warning' onClick={() => {
+                                            <Button color='warning' variant="flat" onClick={() => {
                                                 setInvitar(x);
                                                 onOpen();
                                             }} content="Asociar usuario" className='p-1 mt-2'>
@@ -347,7 +347,7 @@ export default function GroupDetails(props) {
                                         <CardBody>
                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                                 {editMode[index] ? <Input value={newName} onValueChange={setNewName} className='max-w-[220px]' label="Nombre"></Input> : <b style={{color: "black"}}>{gastos[gastoId].nombre}</b>}
-                                                <Button className="submitBtn" onClick={() => {
+                                                <Button color='warning' variant="flat" onClick={() => {
                                                     if(editMode[index]) {
                                                         const gastosSerializados = JSON.stringify(gastos);
                                                         const itemSerializado = JSON.stringify(gastos[gastoId]);
@@ -461,7 +461,7 @@ export default function GroupDetails(props) {
                                                         </ul>
                                                     )
                                                 })}
-                                                <Button id="crearGastoBtn" onClick={crearGasto} className="submitBtn" type="submit">Crear Gasto</Button> <p id="errorGasto"></p>
+                                                <Button id="crearGastoBtn" onClick={crearGasto} color='warning' variant="flat" type="submit">Crear Gasto</Button> <p id="errorGasto"></p>
                                             </form>
                                         </CardBody>
                                     </Card>

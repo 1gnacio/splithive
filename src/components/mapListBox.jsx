@@ -34,7 +34,7 @@ export function MapListbox(props) {
                                             {deudor === getCurrentUser() ? (
                                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                                     <p style={{ margin: 0 }}>Yo le debo ${monto} a {getApodo(acreedor)}</p>
-                                                    <Button className="submitBtn" style={{ marginLeft: "10px" }} name="Saldar" onClick={() => { saldar(props.id_grupo, deudor, acreedor); window.location.reload(); }}>
+                                                    <Button color='warning' variant="flat" style={{ marginLeft: "10px" }} name="Saldar" onClick={() => { saldar(props.id_grupo, deudor, acreedor); window.location.reload(); }}>
                                                         Saldar
                                                     </Button>
                                                 </div>
