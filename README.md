@@ -1,4 +1,4 @@
-![banner](public\screenshots\banner.PNG)
+![banner](https://github.com/1gnacio/splithive/blob/main/public/screenshots/banner.PNG)
 
 Splithive parte de la base de una aplicación de división de gastos, y va más allá. Además de administrar gastos compartidos, Splithive abarca otros tipos de gastos, como listas de compras, recaudaciones y wishlists - incluyendo un sistema de contactos y rastreo de deudas.
 
@@ -25,10 +25,10 @@ All commands are run from the root of the project, from a terminal:
 
 ## Screenshots
 
-![opciones](public\screenshots\opciones.PNG)
+![opciones](https://github.com/1gnacio/splithive/blob/main/public/screenshots/opciones.PNG)
 
-![grupo1](public\screenshots\grupo1.PNG)
+![grupo1](https://github.com/1gnacio/splithive/blob/main/public/screenshots/grupo1.PNG)
 
-![saldos](public\screenshots\saldos.PNG)
+![saldos](https://github.com/1gnacio/splithive/blob/main/public/screenshots/saldos.PNG)
 
-![recaudacion](public\screenshots\recauda.PNG)
+![recaudacion](https://github.com/1gnacio/splithive/blob/main/public/screenshots/recauda.PNG)
